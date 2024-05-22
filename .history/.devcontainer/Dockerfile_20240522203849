@@ -1,0 +1,24 @@
+# Use node base image for the frontend and backend
+FROM node:16 AS frontend
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm install
+COPY frontend .
+RUN npm run build
+
+FROM node:16 AS backend
+WORKDIR /app/backend
+COPY backend/package.json backend/package-lock.json ./
+RUN npm install
+COPY backend .
+
+# Use the same nginx image for load balancer
+FROM nginx:latest AS load-balancer
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Use the same mongo image for database
+FROM mongo AS database
+
+# Use the same kong image for api-gateway
+FROM kong:latest AS api-gateway
+COPY kong.yml /usr/local/kong/kong.yml

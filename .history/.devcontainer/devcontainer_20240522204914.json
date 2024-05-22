@@ -1,0 +1,16 @@
+{
+    "name": "Food cesi dev",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode"
+    ],
+    "mounts": [
+      "source=C:/a4/foodCesi,target=/app,type=bind,consistency=cached"
+    ],
+    "remoteEnv": {
+      "NODE_ENV": "development"
+    },
+    "service": "frontend"
+  }
+  
