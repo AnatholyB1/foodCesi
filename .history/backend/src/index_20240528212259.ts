@@ -7,13 +7,11 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 8080;
 
-const mongodbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/';
-
 app.get('/', (req, res) => {
   res.send('Hello World! 56');
 });
 
-mongoose.connect(mongodbUrl)
+mongoose.connect('mongodb://http://localhost:27017/')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB...', err));
 
