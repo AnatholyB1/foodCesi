@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
