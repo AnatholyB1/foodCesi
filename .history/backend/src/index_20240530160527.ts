@@ -1,11 +1,9 @@
 import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
 const app = express();
 const server = http.createServer(app);
-dotenv.config();
 
 const port = process.env.PORT || 8000;
 
