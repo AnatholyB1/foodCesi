@@ -2,7 +2,7 @@
     "name": "Food cesi dev",
     "context": "..",
     "dockerComposeFile": ["../docker-compose.yml"],
-    "workspaceFolder": "/app",
+    "workspaceFolder": "./app",
     "settings": { 
       "terminal.integrated.shell.linux": "/bin/bash"
     },

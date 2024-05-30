@@ -5,7 +5,7 @@ services:
     stdin_open: true
     build:
       context: ./frontend/foodcesi
-      dockerfile: Dockerfile 
+      dockerfile: Dockerfile.dev
     volumes:
       - /app/node_modules
       - ./frontend:/app  
@@ -13,7 +13,7 @@ services:
   backend:
     build:
       context: './backend'
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     environment:
       - DATABASE_URL=mongodb://database:27017/mydb
     depends_on:
@@ -33,12 +33,14 @@ services:
     image: nginx
     build:
       context: ./nginx
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - '3050:80'
+      - '80:3000'
     depends_on:
       - frontend
       - backend
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf  
     restart: always
 
 

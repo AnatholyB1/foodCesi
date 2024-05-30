@@ -10,7 +10,7 @@ const port = process.env.PORT || 8000;
 const mongodbUrl = process.env.DATABASE_URL || 'mongodb://database:27017/mydb';
 
 app.get('/', (req, res) => {
-  res.send('Hello World! 60');
+  res.send('Hello World! 56');
 });
 
 mongoose.connect(mongodbUrl)

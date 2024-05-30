@@ -1,0 +1,8 @@
+FROM node:18 
+WORKDIR /app
+COPY foodcesi/package.json .
+COPY foodcesi/package-lock.json .
+RUN npm install
+COPY ./foodcesi .
+EXPOSE 5173
+CMD ["npm", "run", "dev"]

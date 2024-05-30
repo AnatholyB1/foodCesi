@@ -7,10 +7,10 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 8000;
 
-const mongodbUrl = process.env.DATABASE_URL || 'mongodb://database:27017/mydb';
+const mongodbUrl = process.env.MONGODB_URL || 'mongodb://localhost:27017/';
 
 app.get('/', (req, res) => {
-  res.send('Hello World! 60');
+  res.send('Hello World! 56');
 });
 
 mongoose.connect(mongodbUrl)

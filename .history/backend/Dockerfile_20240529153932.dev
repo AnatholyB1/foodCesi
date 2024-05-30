@@ -14,4 +14,4 @@ COPY --from=builder /app/dist ./dist
 COPY package.json package-lock.json ./
 RUN npm install --production
 EXPOSE 8000
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
