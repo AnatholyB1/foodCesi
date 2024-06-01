@@ -49,7 +49,7 @@ export const register = async (req: express.Request, res : express.Response) => 
         const salt = random()
         const saltedPassword = authentication(salt, password)
         const sessionToken = authentication(salt, email);
-        const user = await createUser({
+        const user = createUser({
             email,
             username,
             salt,

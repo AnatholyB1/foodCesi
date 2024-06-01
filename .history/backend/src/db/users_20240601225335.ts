@@ -9,8 +9,6 @@ class User extends Model {
     public password!: string;
     public salt!: string;
     public sessionToken!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
     // Include any other properties here
 }
 
@@ -41,20 +39,12 @@ User.init({
       type: new DataTypes.STRING(200),
       allowNull: false,
     },
-    createdAt: {
-        type: new DataTypes.DATE(),
-        allowNull: false,
-        },
-    updatedAt: {
-        type: new DataTypes.DATE(),
-        allowNull: false,
-    },
   }, {
     tableName: 'users',
     sequelize, // this is the sequelize instance
   });
 
-export default User;
+
 export const getUsers = () => User.findAll();
 export const getUserByEmail = (email: string) => User.findOne({ where: { email } });
 export const getUserBySessionToken = (sessionToken: string) => User.findOne({ where: { sessionToken } });

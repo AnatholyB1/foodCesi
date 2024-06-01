@@ -1,6 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from '../db';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 
+const sequelize = new Sequelize('mysql://root:root@localhost:3306/mydb');
+sequelize.sync().then(() => console.log('Users table has been successfully created, if one doesnt exist')).catch(error => console.log('This error occurred', error));
 
 class User extends Model {
     public id!: string;
@@ -9,8 +10,6 @@ class User extends Model {
     public password!: string;
     public salt!: string;
     public sessionToken!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
     // Include any other properties here
 }
 
@@ -30,35 +29,27 @@ User.init({
       allowNull: false,
     },
     salt: {
-      type: new DataTypes.STRING(200),
+      type: new DataTypes.STRING(128),
       allowNull: false,
     },
     password: {
-      type: new DataTypes.STRING(200),
+      type: new DataTypes.STRING(128),
       allowNull: false,
     },
     sessionToken: {
-      type: new DataTypes.STRING(200),
+      type: new DataTypes.STRING(128),
       allowNull: false,
-    },
-    createdAt: {
-        type: new DataTypes.DATE(),
-        allowNull: false,
-        },
-    updatedAt: {
-        type: new DataTypes.DATE(),
-        allowNull: false,
     },
   }, {
     tableName: 'users',
     sequelize, // this is the sequelize instance
   });
 
-export default User;
+
 export const getUsers = () => User.findAll();
 export const getUserByEmail = (email: string) => User.findOne({ where: { email } });
 export const getUserBySessionToken = (sessionToken: string) => User.findOne({ where: { sessionToken } });
 export const getUserById = (id : string) => User.findByPk(id);
-export const createUser = (values : Record<string, any>) =>  User.create(values);
+export const createUser = (values : Record<string, any>) => new User(values);
 export const deleteUserById = (id : string) => User.destroy({ where: { id } });
 export const updateUserById = (id: string, values: Record<string, any>) => User.update(values, { where: { id } });

@@ -2,6 +2,8 @@ import express from 'express';
 import { getUserByEmail, createUser } from '../db/users';
 import { authentication, random } from '../helpers';
 
+
+
 export const login = async (req: express.Request, res: express.Response) => {
     try{
 
@@ -52,9 +54,11 @@ export const register = async (req: express.Request, res : express.Response) => 
         const user = await createUser({
             email,
             username,
-            salt,
-            password: saltedPassword ,
-            sessionToken
+            authentication: {
+                salt,
+                password: saltedPassword ,
+                sessionToken
+            },
         })  
 
         res.cookie('auth-session', user.sessionToken, {

@@ -54,7 +54,7 @@ User.init({
     sequelize, // this is the sequelize instance
   });
 
-export default User;
+
 export const getUsers = () => User.findAll();
 export const getUserByEmail = (email: string) => User.findOne({ where: { email } });
 export const getUserBySessionToken = (sessionToken: string) => User.findOne({ where: { sessionToken } });

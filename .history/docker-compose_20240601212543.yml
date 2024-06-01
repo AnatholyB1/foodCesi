@@ -18,7 +18,6 @@ services:
       - DATABASE_URL=mongodb://database:27017/mydb
     depends_on:
       - database
-      - database2
     volumes:
       - /app/node_modules
       - ./backend:/app
@@ -37,8 +36,6 @@ services:
       MYSQL_DATABASE: mydb
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    volumes:  
-       - mysql-data:/var/lib/mysql
     ports:
       - '3306:3306'
 
@@ -59,4 +56,3 @@ services:
 
 volumes:
   mongo-data:
-  mysql-data:
