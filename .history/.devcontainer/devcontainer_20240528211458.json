@@ -1,0 +1,15 @@
+{
+    "name": "Food cesi dev",
+    "context": "..",
+    "dockerComposeFile": ["../docker-compose.yml"],
+    "workspaceFolder": "foodCesi",
+    "settings": { 
+      "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode"
+    ],
+    "service": "frontend"
+  }
+  

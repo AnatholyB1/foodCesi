@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
+      "baseUrl": "./src/",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "sourceMap": true,
+      "noImplicitAny": true,
+      "strict": true,
+      "esModuleInterop": true,
+    },
+    "include": ["src/**/*.ts"],
+  }
+  

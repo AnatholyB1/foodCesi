@@ -1,0 +1,14 @@
+FROM node:18 as builder
+WORKDIR /app
+COPY ./foodcesi/package*.json ./
+RUN npm install
+COPY ./foodcesi ./
+
+
+FROM node:18
+WORKDIR /app
+COPY --from=builder /app/package*.json .
+RUN npm install
+COPY ./foodcesi ./
+EXPOSE 5173
+CMD ["npm", "run", "dev"]

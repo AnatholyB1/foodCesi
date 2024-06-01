@@ -1,0 +1,12 @@
+{
+  "name": "foodcesi",
+  "version": "1.0.0",
+  "description": "school project to mimic Uber eats",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cd backend && npm run dev && cd ../frontend/foodcesi && npm dev"
+  },
+  "author": "",
+  "license": "ISC"
+}
