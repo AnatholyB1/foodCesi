@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  frontend:
+    stdin_open: true
+    build:
+      context: ./frontend/foodcesi
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app  
+
+  backend:
+    build:
+      context: './backend'
+      dockerfile: Dockerfile.dev
+    environment:
+      - DATABASE_URL=mongodb://database:27017/mydb
+    depends_on:
+      - database
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+
+  database:
+    image: mongo
+    volumes:
+      - mongo-data:/data/db
+
+
+
+  nginx:
+    image: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - '80:3000'
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf  
+    restart: always
+
+
+
+volumes:
+  mongo-data:

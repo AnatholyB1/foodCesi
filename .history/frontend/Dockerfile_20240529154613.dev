@@ -1,0 +1,15 @@
+# Stage 1: Build the frontend
+FROM node:16 AS builder
+WORKDIR /app
+COPY foodcesi/package.json foodcesi/package-lock.json ./
+RUN npm install
+COPY foodcesi ./
+
+
+# Stage 2: Serve the frontend with a lightweight web server
+FROM node:16 
+WORKDIR /app
+COPY foodcesi/package.json foodcesi/package-lock.json ./
+RUN npm install
+EXPOSE 5173
+CMD ["npm", "run", "dev"]
