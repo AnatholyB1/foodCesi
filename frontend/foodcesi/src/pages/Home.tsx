@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
@@ -80,7 +80,7 @@ export default function Home() {
                     <CarouselContent>
                         {bestRestaurants.map((restaurant) => (
                             <CarouselItem key={restaurant.id} className="basis-1/2">
-                                <div className="flex flex-col bg-white rounded-lg overflow-hidden">
+                                <NavLink to={`/restaurant/${restaurant.id}`} className="flex flex-col bg-white rounded-lg overflow-hidden">
                                     <img src={restaurantImagesPath + restaurant.image} alt={restaurant.name} />
                                     <div className="flex flex-col gap-2 bg-white p-4 pt-1">
                                         <p className="text-lg font-semibold text-nowrap">{restaurant.name}</p>
@@ -92,7 +92,7 @@ export default function Home() {
                                             ))}
                                         </ul>
                                     </div>
-                                </div>
+                                </NavLink>
                             </CarouselItem>
                         ))}
                     </CarouselContent>
@@ -112,7 +112,7 @@ export default function Home() {
                     <CarouselContent>
                         {bestRestaurants.map((restaurant) => (
                             <CarouselItem key={restaurant.id} className="basis-1/2">
-                                <div className="flex flex-col bg-white rounded-lg overflow-hidden">
+                                <NavLink to={`/restaurant/${restaurant.id}`} className="flex flex-col bg-white rounded-lg overflow-hidden">
                                     <img src={restaurantImagesPath + restaurant.image} alt={restaurant.name} />
                                     <div className="flex flex-col gap-2 bg-white p-4 pt-1">
                                         <p className="text-lg font-semibold text-nowrap">{restaurant.name}</p>
@@ -124,7 +124,7 @@ export default function Home() {
                                             ))}
                                         </ul>
                                     </div>
-                                </div>
+                                </NavLink>
                             </CarouselItem>
                         ))}
                     </CarouselContent>
