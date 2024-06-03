@@ -15,11 +15,11 @@ const categories = [
     { id: 1, name: "Burger", icon: "Burger.svg" },
     { id: 2, name: "Pizza", icon: "Pizza.svg" },
     { id: 3, name: "Frites", icon: "Frites.svg" },
-    { id: 3, name: "Hot-dog", icon: "Hot-dog.svg" },
-    { id: 3, name: "Pates", icon: "Pates.svg" },
-    { id: 3, name: "Tacos", icon: "Tacos.svg" },
-    { id: 3, name: "Sushi", icon: "Sushi.svg" },
-    { id: 3, name: "Nouilles", icon: "Nouilles.svg" },
+    { id: 4, name: "Hot-dog", icon: "Hot-dog.svg" },
+    { id: 5, name: "Pates", icon: "Pates.svg" },
+    { id: 6, name: "Tacos", icon: "Tacos.svg" },
+    { id: 7, name: "Sushi", icon: "Sushi.svg" },
+    { id: 8, name: "Nouilles", icon: "Nouilles.svg" },
 ];
 
 const bestRestaurants = [
