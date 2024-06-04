@@ -3,7 +3,7 @@
 export default function Restaurant() {
     // const { id } = useParams();
 
-    const restaurant = { id: 1, name: "McDonald's", image: "mcdonalds.jpg", avatar: "mdconalds.jpg", items: [] };
+    const restaurant = { id: 1, name: "McDonald's", image: "mcdonalds.jpg", avatar: "mcdonalds.jpg", items: [] };
 
     const backgroundImagePath = "/restaurantImages/";
     const avatarImagePath = "/avatars/";
