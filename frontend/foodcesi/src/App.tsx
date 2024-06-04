@@ -8,6 +8,7 @@ import Commandes from "./pages/Commandes";
 import Commande from "./pages/Commande";
 import Compte from "./pages/Compte";
 import Notifications from "./pages/Notifications";
+import Recherche from "./pages/Recherche";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <main className="grow overflow-y-auto">
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/recherche" element={<Recherche />} />
                         <Route path="/commandes" element={<Commandes />} />
                         <Route path="/commandes/:id" element={<Commande />} />
                         <Route path="/restaurant/:id" element={<Restaurant />} />
