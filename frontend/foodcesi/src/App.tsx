@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Restaurant from "./pages/Restaurant";
 import Commandes from "./pages/Commandes";
 import Commande from "./pages/Commande";
+import Compte from "./pages/Compte";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                         <Route path="/commandes" element={<Commandes />} />
                         <Route path="/commandes/:id" element={<Commande />} />
                         <Route path="/restaurant/:id" element={<Restaurant />} />
+                        <Route path="/compte" element={<Compte />} />
                     </Routes>
                 </main>
                 <NavBar />
