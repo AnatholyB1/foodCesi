@@ -44,7 +44,7 @@ export default function Commande() {
                 <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={false}>
                     <div className="flex flex-col">
                         {order.items.map((item, i) => (
-                            <FoodItem key={i} {...item} editable={true} />
+                            <FoodItem key={i} {...item} />
                         ))}
                     </div>
                 </Dropdown>
