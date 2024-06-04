@@ -7,6 +7,7 @@ import Restaurant from "./pages/Restaurant";
 import Commandes from "./pages/Commandes";
 import Commande from "./pages/Commande";
 import Compte from "./pages/Compte";
+import Notifications from "./pages/Notifications";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                         <Route path="/commandes/:id" element={<Commande />} />
                         <Route path="/restaurant/:id" element={<Restaurant />} />
                         <Route path="/compte" element={<Compte />} />
+                        <Route path="/notifications" element={<Notifications />} />
                     </Routes>
                 </main>
                 <NavBar />
