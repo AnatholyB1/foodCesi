@@ -5,6 +5,7 @@ import Restaurant from './restaurants';
 class RestaurantCategory extends Model {
   public id!: number;
   public name!: string;
+  public restaurant_id!: number;
 }
 
 RestaurantCategory.init(
