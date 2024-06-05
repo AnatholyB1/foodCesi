@@ -9,6 +9,8 @@ import Commande from "./pages/Commande";
 import Compte from "./pages/Compte";
 import Notifications from "./pages/Notifications";
 import Recherche from "./pages/Recherche";
+import Panier from "./pages/Panier";
+import Checkout from "./pages/Checkout";
 
 function App() {
     return (
@@ -24,6 +26,8 @@ function App() {
                         <Route path="/restaurant/:id" element={<Restaurant />} />
                         <Route path="/compte" element={<Compte />} />
                         <Route path="/notifications" element={<Notifications />} />
+                        <Route path="/panier" element={<Panier />} />
+                        <Route path="/checkout" element={<Checkout />} />
                     </Routes>
                 </main>
                 <NavBar />
