@@ -7,7 +7,6 @@ import order from "./order"
 import delivery from "./delivery";
 import address from "./address";
 import restaurants_categories from "./restaurants_categories";
-import restaurant from "./restaurant";
 
 const router = express.Router();
 
@@ -16,7 +15,6 @@ router.use(logRequest)
 export default(): express.Router => {
     address(router)
     delivery(router)
-    restaurant(router)
     restaurants_categories(router)
     order(router)
     log(router)
