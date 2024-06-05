@@ -18,7 +18,7 @@ export default function NavBar() {
                         <NavLink
                             to={item.path}
                             className={({ isActive }) =>
-                                cn("flex flex-col items-center", {
+                                cn("flex flex-col items-center w-16", {
                                     "text-black": isActive,
                                     "text-grey": !isActive,
                                 })
