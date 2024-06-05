@@ -80,28 +80,3 @@ export const updateAddress = async (id: number, values: Record<string, any>) => 
 export const deleteAddress = (id: number) => Address.destroy({ where: { id } });
 
 export const deleteAddressesByUserId = (user_id: number) => Address.destroy({ where: { user_id } });
-
-export const getUserByCity = (city: string) => Address.findAll({
-  where: { city },
-  include: [User]
-});
-
-export const getUserByState = (state: string) => Address.findAll({
-  where: { state },
-  include: [User]
-});
-
-export const getUserByCountry = (country: string) => Address.findAll({
-  where: { country },
-  include: [User]
-});
-
-export const getUserByZipCode = (zip_code: string) => Address.findAll({
-  where: { zip_code },
-  include: [User]
-});
-
-export const getUserByStreet = (street: string) => Address.findAll({
-  where: { street },
-  include: [User]
-});
