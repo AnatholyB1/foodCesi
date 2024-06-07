@@ -1,0 +1,7 @@
+FROM mysql:latest
+
+# Copy the script to the Docker image
+COPY init.sh /docker-entrypoint-initdb.d/init.sh
+
+# Make the script executable
+RUN chmod +x /docker-entrypoint-initdb.d/init.sh
