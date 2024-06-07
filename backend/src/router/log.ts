@@ -8,7 +8,7 @@ export default (router: express.Router) => {
      * @swagger
      * tags:
      *   name: Log
-     *   description: Operations about user authentication
+     *   description: Operations about user logging
      */
 
     router.get('/log', getAllLogs);
