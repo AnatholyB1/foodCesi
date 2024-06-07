@@ -15,6 +15,7 @@ class Restaurant extends Model {
   public getCategories!: Function;
   public addCategory! : Function;
   public removeCategory! : Function;
+
 }
 
 Restaurant.init(

@@ -43,38 +43,10 @@ Category.belongsToMany(Restaurant, { through: RestaurantCategory });
 
 
 export default RestaurantCategory;
-export const getRestaurantCategories = () => Category.findAll()
-export const getCategoriesByRestaurant = async (restaurantId: number) => {
+export const getRestaurantCategories = async (restaurantId: number) => {
   const restaurant = await Restaurant.findByPk(restaurantId);
-  return restaurant ? await restaurant.getCategories() : null;
+  return restaurant ? restaurant.getCategories() : null;
 };
 export const createRestaurantCategory =  (values : Record<string, any>) => Category.create(values)
 export const updateRestaurantCategory =  (id: number, values: Record<string, any>) => Category.update(values, { where: { id } });
 export const deleteRestaurantCategory = (id: number) => Category.destroy({ where: { id } });
-export const addCategoryToRestaurant = async (
-  restaurantId: number,
-  categoryId: number
-) => {
-  const restaurant = await Restaurant.findByPk(restaurantId);
-  const category = await Category.findByPk(categoryId);
-
-  if (restaurant && category) {
-    return restaurant.addCategory(category);
-  }
-
-  return null;
-};
-
-export const removeCategoryFromRestaurant = async (
-  restaurantId: number,
-  categoryId: number
-) => {
-  const restaurant = await Restaurant.findByPk(restaurantId);
-  const category = await Category.findByPk(categoryId);
-
-  if (restaurant && category) {
-    return restaurant.removeCategory(category);
-  }
-
-  return null;
-};

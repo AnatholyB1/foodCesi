@@ -106,3 +106,8 @@ export const getUserByStreet = (street: string) => Address.findAll({
   include: [User]
 });
 
+sequelize.sync().then(() => {
+  console.log('Book table created successfully!');
+}).catch((error) => {
+  console.error('Unable to create table : ', error);
+});

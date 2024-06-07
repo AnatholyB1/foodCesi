@@ -242,19 +242,8 @@ export const deleteARestaurant = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { id } = req.params;
-      if(!id) {
-        return res.status(404).json({message: "no Id found"})
-      }
-      const restaurant = await Restaurant.findByPk(id);
-      if(!restaurant) {
-        return res.status(404).json({message: "no restaurant found"})
-      }
-      const categories = restaurant.getCategories()
-      categories.forEach(async(category : any) => {
-        await removeCategoryFromRestaurant(restaurant.id,category.id)
-      });
-      const nb_restaurant = await deleteRestaurant(Number(id));
-      return res.status(200).json(nb_restaurant);
+      const restaurant = await deleteRestaurant(Number(id));
+      return res.status(200).json(restaurant);
     } catch (error) {
       console.log(error);
       return res.status(500);

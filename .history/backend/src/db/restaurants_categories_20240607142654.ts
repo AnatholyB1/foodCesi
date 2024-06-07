@@ -43,10 +43,9 @@ Category.belongsToMany(Restaurant, { through: RestaurantCategory });
 
 
 export default RestaurantCategory;
-export const getRestaurantCategories = () => Category.findAll()
-export const getCategoriesByRestaurant = async (restaurantId: number) => {
+export const getRestaurantCategories = async (restaurantId: number) => {
   const restaurant = await Restaurant.findByPk(restaurantId);
-  return restaurant ? await restaurant.getCategories() : null;
+  return restaurant ? restaurant.getCategories() : null;
 };
 export const createRestaurantCategory =  (values : Record<string, any>) => Category.create(values)
 export const updateRestaurantCategory =  (id: number, values: Record<string, any>) => Category.update(values, { where: { id } });

@@ -1,5 +1,5 @@
 import express from "express";
-import Restaurant, {
+import {
   getRestaurants,
   getRestaurantById,
   getRestaurantsByUserId,
@@ -15,7 +15,6 @@ import {
 } from "../db/restaurants_categories";
 import { createAddress, getAddressById, updateAddress } from "../db/addresses";
 import { withLogging } from "../helpers";
-import Category from "../db/category";
 
 export const getAllRestaurants = withLogging(
   "getAllRestaurants",
@@ -191,38 +190,11 @@ export const updateARestaurant = withLogging(
 
       // Find the categories to add and the categories to remove
       const categoriesToAdd = categories.filter(
-        (category: any) => !current_categories.includes(category)
+        (id) => !current_categories.includes(umber(id))
       );
-      const categoriesToRemove = current_categories.filter(
-        (category: any) => !categories.includes(category)
+      const categoriesToRemove = categories.filter(
+        () => !current_categories.includes()
       );
-
-      // Get the restaurant
-      const restaurant = await Restaurant.findByPk(id);
-
-      if(!restaurant) {
-        return res.status(404).json({ message: "no restaurant found"})
-      }
-
-      // Add the new categories
-      for (const categoryName of categoriesToAdd) {
-        const category = await Category.findOne({
-          where: { name: categoryName },
-        });
-        if (category) {
-          await restaurant.addCategory(category);
-        }
-      }
-
-      // Remove the old categories
-      for (const categoryName of categoriesToRemove) {
-        const category = await Category.findOne({
-          where: { name: categoryName },
-        });
-        if (category) {
-          await restaurant.removeCategory(category);
-        }
-      }
 
       const return_info = {
         ...updated_address,
@@ -242,19 +214,8 @@ export const deleteARestaurant = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { id } = req.params;
-      if(!id) {
-        return res.status(404).json({message: "no Id found"})
-      }
-      const restaurant = await Restaurant.findByPk(id);
-      if(!restaurant) {
-        return res.status(404).json({message: "no restaurant found"})
-      }
-      const categories = restaurant.getCategories()
-      categories.forEach(async(category : any) => {
-        await removeCategoryFromRestaurant(restaurant.id,category.id)
-      });
-      const nb_restaurant = await deleteRestaurant(Number(id));
-      return res.status(200).json(nb_restaurant);
+      const restaurant = await deleteRestaurant(Number(id));
+      return res.status(200).json(restaurant);
     } catch (error) {
       console.log(error);
       return res.status(500);

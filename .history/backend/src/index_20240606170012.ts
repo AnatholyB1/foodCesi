@@ -43,11 +43,7 @@ sequelize.authenticate().then(() => {
 }).catch((error) => {
   console.error('Unable to connect to the database: ', error);
 });
-sequelize.sync().then(() => {
-  console.log('db synced successfully.');
-}).catch((error) => {
-  console.error('Unable to create table : ', error);
-});
+
 startServer();
 
 app.use(cookieParser());

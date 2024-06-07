@@ -14,7 +14,7 @@ class Restaurant extends Model {
   public readonly updated_at!: Date;
   public getCategories!: Function;
   public addCategory! : Function;
-  public removeCategory! : Function;
+
 }
 
 Restaurant.init(
