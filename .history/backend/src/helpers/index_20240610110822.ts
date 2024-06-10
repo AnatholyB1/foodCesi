@@ -19,7 +19,7 @@ export const withLogging = (name : string,fn: Function) => {
         createAndConsoleLogs(`Start ${name}`);
         try {
             const result = await fn(...args);
-            createAndConsoleLogs(`result ${name}: ${result.statusCode + ' ' + result.statusMessage}`);
+            createAndConsoleLogs(`result ${name}: ${result}`);
             return result;
         } catch (error) {
             createAndConsoleLogs(`Error ${name}: ${error}`, 'error');

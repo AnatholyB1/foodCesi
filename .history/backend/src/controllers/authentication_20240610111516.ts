@@ -10,15 +10,15 @@ export const login = withLogging(
     try {
       const { email, password } = req.body;
 
-      if (!email || !password) return res.status(400).json({message:"missing fields"}).end();
+      if (!email || !password) return res.status(400).end();
 
       const user = await getUserByEmail(email);
 
-      if (!user) return res.status(400).json({message:"user not found"}).end();
+      if (!user) return res.status(400).json("invalid credentials").end();
 
       const valid = bcrypt.compareSync(password, user.password);
 
-      if (!valid) return res.status(400).json({message:"invalid password"}).end();
+      if (!valid) return res.status(400).json("invalid credentials").end();
 
       const accessToken = jwt.sign(
         {
@@ -61,14 +61,14 @@ export const register = withLogging(
       const { email, password, username, type } = req.body;
 
       if (!email || !password || !username || !type) {
-        return res.status(400).json({message:"missing fields"}).end();
+        return res.sendStatus(400).json("missing fields").end();
       }
 
       const existingUser = await getUserByEmail(email);
       
 
       if (existingUser) {
-        return res.status(400).json({message:"user already exists"}).end();
+        return res.status(400).json("user already exists").end();
       }
       
       const saltedPassword = bcrypt.hashSync(password, 10);
@@ -89,7 +89,7 @@ export const register = withLogging(
       });
 
       if (!user) {
-        return res.status(400).json({message:"user not found"}).end()
+        return res.sendStatus(400).json("no user").end();
       }
 
       res.cookie("auth-session", accessToken, {
@@ -102,7 +102,7 @@ export const register = withLogging(
       return res.status(200).json(user).end();
     } catch (error) {
       console.log(error);
-      return res.status(500);
+      return res.sendStatus(500);
     } 
   }
 );
@@ -113,14 +113,14 @@ export const refreshToken = withLogging(
     try {
       const { refreshToken } = req.params;
 
-      if (!refreshToken) return res.status(403).json({message:"no token"}).end();
+      if (!refreshToken) return res.sendStatus(403).json("no token").end();
 
       jwt.verify(
         refreshToken,
         process.env.REFRESH || "secret",
         async (err: any, decoded: any) => {
           if (err) {
-            return res.status(403).json({message:"invalid token"}).end();
+            return res.sendStatus(403).json("token not valid").end();
           }
 
           const accessToken = jwt.sign(
@@ -140,7 +140,7 @@ export const refreshToken = withLogging(
           );
 
           const user = await getUserById(decoded.id);
-          if (!user) return res.status(404).json({message:"user not found"}).end();
+          if (!user) return res.sendStatus(404).json("no user").end();
 
           user.refreshToken = refreshToken;
 
@@ -153,12 +153,12 @@ export const refreshToken = withLogging(
             path: "/",
           });
 
-          return res.status(200).json(user).end();
+          return res.sendStatus(200).json(user).end();
         }
       );
     } catch (error) {
       console.log(error);
-      return res.status(500).end();
+      return res.sendStatus(500).end();
     }
   }
 );
