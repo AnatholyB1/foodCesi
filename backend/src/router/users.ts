@@ -69,32 +69,6 @@ export default (router: express.Router) => {
  *     responses:
  *       200:
  *         description: Utilisateur supprimé avec succès
- *         schema:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               description: L'identifiant de l'utilisateur
- *             username:
- *               type: string
- *               description: Le nom d'utilisateur
- *             email:
- *               type: string
- *               description: L'email de l'utilisateur
- *             type:
- *               type: string
- *               description: Le type d'utilisateur
- *             refreshToken:
- *               type: string
- *               description: Le jeton de rafraîchissement de l'utilisateur
- *             createdAt:
- *               type: string
- *               format: date-time
- *               description: La date et l'heure de création de l'utilisateur
- *             updatedAt:
- *               type: string
- *               format: date-time
- *               description: La date et l'heure de la dernière mise à jour de l'utilisateur
  *       401:
  *         description: Non autorisé
  *       404:

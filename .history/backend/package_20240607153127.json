@@ -40,7 +40,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts",
-    "start -user" : "ts-node src/index_user.ts",
+    "start -user" : "ts-node src/index.user.ts",
     "build": "tsc",
     "dev": "nodemon",
     "serve": "node dist/index.js"
