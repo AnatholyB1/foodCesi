@@ -1,3 +1,4 @@
+import CustomCard from "./ui/CustomCard";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 
 interface Category {
@@ -23,10 +24,10 @@ export default function CategoriesCarousel() {
             <CarouselContent>
                 {categories.map((category) => (
                     <CarouselItem key={category.id} className="basis-1/5">
-                        <div className="flex flex-col items-center gap-1 bg-white rounded-2xl p-4 shadow-sm">
+                        <CustomCard className="flex flex-col items-center gap-1 rounded-2xl p-4">
                             <img src={category.icon} alt={category.name} />
                             <p className="text-xs text-nowrap">{category.name}</p>
-                        </div>
+                        </CustomCard>
                     </CarouselItem>
                 ))}
             </CarouselContent>
