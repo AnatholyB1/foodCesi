@@ -14,11 +14,12 @@ export const login = withLogging(
 
       const user = await getUserByEmail(email);
 
-      if (!user) return res.status(400).end.json("invalid credentials").end();
+      if (!user) return res.status(400).end.json("invalid credentials").end()
 
       const valid = bcrypt.compareSync(password, user.password);
 
       if (!valid) return res.status(400).json("invalid credentials").end();
+
 
       const accessToken = jwt.sign(
         {
@@ -60,8 +61,7 @@ export const register = withLogging(
     try {
       const { email, password, username, type } = req.body;
 
-      if (!email || !password || !username || !type)
-        return res.sendStatus(400).json("missing fields").end();
+      if (!email || !password || !username || !type) return res.sendStatus(400).json("missing fields").end();
 
       const existingUser = await getUserByEmail(email);
 
@@ -107,7 +107,7 @@ export const refreshToken = withLogging(
     try {
       const { refreshToken } = req.params;
 
-      if (!refreshToken) return res.sendStatus(403).json("no token").end();
+      if (!refreshToken) return res.sendStatus(403);
 
       jwt.verify(
         refreshToken,
@@ -134,7 +134,7 @@ export const refreshToken = withLogging(
           );
 
           const user = await getUserById(decoded.id);
-          if (!user) return res.sendStatus(404).json("no user").end();
+          if (!user) return res.sendStatus(404).end();
 
           user.refreshToken = refreshToken;
 
