@@ -17,10 +17,10 @@ export const getItems = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const items = await getMenuItems();
-      if (!items) return res.status(404).json({message: "no items"}).end();
-      return res.status(200).json(items).end();
+      if (!items) return res.status(404).json({message: "no items"});.end();
+      res.status(200).json(items).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -33,9 +33,9 @@ export const getItemById = withLogging(
       if (!id) return res.status(400).end();
       const item = await getMenuItemById(parseInt(id));
       if (!item) return res.status(404).end();
-      return res.json(item).end();
+      res.json(item).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -48,9 +48,9 @@ export const getItemsByRestaurantId = withLogging(
       if (!restaurant_id) return res.status(400).end();
       const items = await getMenuItemsByRestaurantId(parseInt(restaurant_id));
       if (!items) return res.status(404).end();
-      return res.status(200).json(items).end();
+      res.status(200).json(items).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -63,9 +63,9 @@ export const getItemsByCategoryId = withLogging(
       if (!category_id) return res.status(400).end();
       const items = await getMenuItemsByCategoryId(parseInt(category_id));
       if (!items) return res.status(404).end();
-      return res.status(200).json(items).end();
+      res.status(200).json(items).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -104,9 +104,9 @@ export const createItem = withLogging(
       };
       const item = await createMenuItem(new_item);
       if (!item) return res.status(404).end();
-      return res.status(200).json(item).end();
+      res.status(200).json(item).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -142,9 +142,9 @@ export const updateItem = withLogging(
       };
       const item = await updateMenuItem(parseInt(id), new_item);
       if (!item) return res.status(404).end();
-      return res.status(200).json(item).end();
+      res.status(200).json(item).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -157,9 +157,9 @@ export const deleteItem = withLogging(
       if (!id) return res.status(400).end();
       const item = await deleteMenuItem(parseInt(id));
       if (!item) return res.status(404).end();
-      return res.status(200).json(item).end();
+      res.status(200).json(item).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -173,9 +173,9 @@ export const deleteItemsByRestaurantId = withLogging(
       if (!restaurant_id) return res.status(400).end();
       const items = await deleteMenuItemsByRestaurantId(parseInt(restaurant_id));
       if (!items) return res.status(404).end();
-      return res.status(200).json(items).end();
+      res.status(200).json(items).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
@@ -188,9 +188,9 @@ export const getARestaurantByItemId = withLogging(
       if (!item_id) return res.status(400).end();
       const restaurant = await getRestaurantsByItemId(parseInt(item_id));
       if (!restaurant) return res.status(404).end();
-      return res.status(200).json(restaurant).end();
+      res.status(200).json(restaurant).end();
     } catch (e) {
-      return res.status(500).json(e).end();
+      res.status(500).json(e).end();
     }
   }
 );
