@@ -33,7 +33,7 @@ export const getData = async (endpoint: string) => {
     }
 };
 
-export const postData = async (endpoint: string, data) => {
+export const postData = async (endpoint: string, data: Record<string, number | string | Date>) => {
     try {
         const response = await api.post(endpoint, data);
         return response.data;
