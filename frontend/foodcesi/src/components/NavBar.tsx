@@ -1,3 +1,4 @@
+import useAuth from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { Home, NotepadText, Search, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
