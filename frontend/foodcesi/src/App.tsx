@@ -12,8 +12,9 @@ import Notifications from "./pages/Notifications";
 import Recherche from "./pages/Recherche";
 import Panier from "./pages/Panier";
 import Checkout from "./pages/Checkout";
-import Login from "./pages/Login";
 import Unauthorized from "./pages/Unauthorized";
+import Authentification from "./pages/Authentification";
+import Stats from "./pages/Stats";
 
 function App() {
     return (
@@ -22,12 +23,11 @@ function App() {
                 <Header />
                 <main className="grow overflow-y-auto">
                     <Routes>
-                        <Route path="/connexion" element={<Login />} />
-                        <Route path="/inscription" element={<Login />} />
+                        <Route path="/authentification" element={<Authentification />} />
                         <Route
                             path="/unauthorized"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Unauthorized />
                                 </RequireAuth>
                             }
@@ -35,7 +35,7 @@ function App() {
                         <Route
                             path="/"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Home />
                                 </RequireAuth>
                             }
@@ -43,7 +43,7 @@ function App() {
                         <Route
                             path="/recherche"
                             element={
-                                <RequireAuth allowedRoles={["user"]}>
+                                <RequireAuth allowedTypes={["user"]}>
                                     <Recherche />
                                 </RequireAuth>
                             }
@@ -51,7 +51,7 @@ function App() {
                         <Route
                             path="/commandes"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Commandes />
                                 </RequireAuth>
                             }
@@ -59,7 +59,7 @@ function App() {
                         <Route
                             path="/commandes/:id"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Commande />
                                 </RequireAuth>
                             }
@@ -67,15 +67,23 @@ function App() {
                         <Route
                             path="/restaurant/:id"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Restaurant />
+                                </RequireAuth>
+                            }
+                        />
+                        <Route
+                            path="/statistiques"
+                            element={
+                                <RequireAuth allowedTypes={["restaurant"]}>
+                                    <Stats />
                                 </RequireAuth>
                             }
                         />
                         <Route
                             path="/compte"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Compte />
                                 </RequireAuth>
                             }
@@ -83,7 +91,7 @@ function App() {
                         <Route
                             path="/notifications"
                             element={
-                                <RequireAuth allowedRoles={["user", "restaurant", "delivery"]}>
+                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
                                     <Notifications />
                                 </RequireAuth>
                             }
@@ -91,7 +99,7 @@ function App() {
                         <Route
                             path="/panier"
                             element={
-                                <RequireAuth allowedRoles={["user"]}>
+                                <RequireAuth allowedTypes={["user"]}>
                                     <Panier />
                                 </RequireAuth>
                             }
@@ -99,7 +107,7 @@ function App() {
                         <Route
                             path="/checkout"
                             element={
-                                <RequireAuth allowedRoles={["user"]}>
+                                <RequireAuth allowedTypes={["user"]}>
                                     <Checkout />
                                 </RequireAuth>
                             }
