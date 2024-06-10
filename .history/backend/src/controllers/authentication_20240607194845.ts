@@ -14,11 +14,25 @@ export const login = withLogging(
 
       const user = await getUserByEmail(email);
 
-      if (!user) return res.status(400).end.json("invalid credentials").end();
+      if (!user) return res.status(400).end();
 
       const valid = bcrypt.compareSync(password, user.password);
 
       if (!valid) return res.status(400).json("invalid credentials").end();
+
+      const sessionToken = await req.cookies["auth-session"];
+
+      if (!sessionToken) return res.status(400).end();
+
+      jwt.verify(
+        sessionToken,
+        process.env.ACCESS_JWT_KEY || "secret",
+        (err: any) => {
+          if (err) {
+            return res.status(403).end();
+          }
+        }
+      );
 
       const accessToken = jwt.sign(
         {
@@ -60,12 +74,11 @@ export const register = withLogging(
     try {
       const { email, password, username, type } = req.body;
 
-      if (!email || !password || !username || !type)
-        return res.sendStatus(400).json("missing fields").end();
+      if (!email || !password || !username || !type) return res.sendStatus(400);
 
       const existingUser = await getUserByEmail(email);
 
-      if (existingUser) return res.sendStatus(400).json("invalid email").end();
+      if (existingUser) return res.sendStatus(400);
 
       const saltedPassword = bcrypt.hashSync(password, 10);
       const accessToken = jwt.sign(
@@ -84,7 +97,7 @@ export const register = withLogging(
         refreshToken: refreshToken,
       });
 
-      if (!user) return res.sendStatus(400).json("no user").end();
+      if (!user) return res.sendStatus(500).end();
 
       res.cookie("auth-session", accessToken, {
         domain: process.env.SERVER_NAME,
@@ -107,7 +120,7 @@ export const refreshToken = withLogging(
     try {
       const { refreshToken } = req.params;
 
-      if (!refreshToken) return res.sendStatus(403).json("no token").end();
+      if (!refreshToken) return res.sendStatus(403);
 
       jwt.verify(
         refreshToken,
@@ -134,7 +147,7 @@ export const refreshToken = withLogging(
           );
 
           const user = await getUserById(decoded.id);
-          if (!user) return res.sendStatus(404).json("no user").end();
+          if (!user) return res.sendStatus(404).end();
 
           user.refreshToken = refreshToken;
 
