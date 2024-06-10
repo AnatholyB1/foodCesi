@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenu
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search, Settings2 } from "lucide-react";
 import RestaurantItem from "@/components/RestaurantItem";
+import CustomCard from "@/components/ui/CustomCard";
 
 const orders = ["pertinence", "asc", "desc"];
 
@@ -26,13 +27,17 @@ export default function Recherche() {
     return (
         <div className="flex flex-col items-start gap-4 py-4 px-4">
             <div className="w-full flex gap-4">
-                <label htmlFor="search" className="grow flex items-center gap-2 px-4 py-3 bg-white rounded-md shadow-sm">
-                    <Search size="20" className="text-grey" />
-                    <input type="search" className="bg-transparent outline-none grow" id="search" placeholder="Rechercher un restaurant" />
+                <label htmlFor="search" className="grow">
+                    <CustomCard className="flex items-center gap-2 px-4 py-3">
+                        <Search size="20" className="text-grey" />
+                        <input type="search" className="bg-transparent outline-none grow" id="search" placeholder="Rechercher un restaurant" />
+                    </CustomCard>
                 </label>
-                <Button size="icon" variant="white" className="shadow-sm w-12 h-12 flex items-center justify-center">
-                    <Settings2 />
-                </Button>
+                <CustomCard>
+                    <Button size="icon" variant="white" className="w-12 h-12 flex items-center justify-center">
+                        <Settings2 />
+                    </Button>
+                </CustomCard>
             </div>
             <CategoriesCarousel />
             <DropdownMenu>

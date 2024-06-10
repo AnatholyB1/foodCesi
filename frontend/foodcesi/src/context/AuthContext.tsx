@@ -1,11 +1,11 @@
-// src/context/AuthContext.tsx
+import { postData } from "@/helpers/api";
 import React, { createContext, useState, ReactNode, useContext } from "react";
 
 interface User {
     id: number;
-    username: string;
     email: string;
-    role: string;
+    username: string;
+    type: string;
     refreshToken: string;
 }
 
@@ -13,31 +13,44 @@ interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => void;
     logout: () => void;
+    register: (email: string, password: string, username: string, type: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(() => {
-        const storedUser = localStorage.getItem("user");
+        const storedUser = sessionStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
     });
 
-    const login = (email: string, password: string) => {
-        console.log(email, password);
+    const login = async (email: string, password: string) => {
+        try {
+            const data = await postData("/auth/login", { email, password });
 
-        const data = { id: 1, username: "Antoine Favereau", email: "email", role: "restaurant", refreshToken: "refreshToken" };
-
-        setUser({ ...data });
-        localStorage.setItem("user", JSON.stringify({ ...data }));
+            setUser({ ...data });
+            sessionStorage.setItem("user", JSON.stringify({ ...data }));
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem("user");
+        sessionStorage.removeItem("user");
     };
 
-    return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+    const register = async (email: string, password: string, username: string, type: string) => {
+        try {
+            const data = await postData("/auth/register", { email, password, username, type });
+            setUser({ ...data });
+            sessionStorage.setItem("user", JSON.stringify({ ...data }));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    return <AuthContext.Provider value={{ user, login, logout, register }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
