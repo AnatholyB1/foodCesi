@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserByEmail, createUser, getUserByRefreshToken } from "../db/users";
+import { getUserByEmail, createUser, getUserById } from "../db/users";
 import { withLogging } from "../helpers";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -10,22 +10,19 @@ export const login = withLogging(
     try {
       const { email, password } = req.body;
 
-      if (!email || !password)
-        return res.status(400).json({ message: "missing fields" }).end();
+      if (!email || !password) return res.status(400).json({message:"missing fields"}).end();
 
       const user = await getUserByEmail(email);
 
-      if (!user)
-        return res.status(400).json({ message: "user not found" }).end();
+      if (!user) return res.status(400).json({message:"user not found"}).end();
 
       const valid = bcrypt.compareSync(password, user.password);
 
-      if (!valid)
-        return res.status(400).json({ message: "invalid password" }).end();
+      if (!valid) return res.status(400).json({message:"invalid password"}).end();
 
       const accessToken = jwt.sign(
         {
-          email: user.email,
+          id: user.id,
           exp: Math.floor(Date.now() / 1000) + 360000,
         },
         process.env.ACCESS_JWT_KEY || "secret"
@@ -33,7 +30,7 @@ export const login = withLogging(
 
       const refreshToken = jwt.sign(
         {
-          email: user.email,
+          id: user.id,
           exp: Math.floor(Date.now() / 1000) + 36000000,
         },
         process.env.REFRESH || "secret"
@@ -64,22 +61,23 @@ export const register = withLogging(
       const { email, password, username, type } = req.body;
 
       if (!email || !password || !username || !type) {
-        return res.status(400).json({ message: "missing fields" }).end();
+        return res.status(400).json({message:"missing fields"}).end();
       }
 
       const existingUser = await getUserByEmail(email);
+      
 
       if (existingUser) {
-        return res.status(400).json({ message: "user already exists" }).end();
+        return res.status(400).json({message:"user already exists"}).end();
       }
-
+      
       const saltedPassword = bcrypt.hashSync(password, 10);
       const accessToken = jwt.sign(
-        { email: email, exp: Math.floor(Date.now() / 1000) + 360000 },
+        { username: username, exp: Math.floor(Date.now() / 1000) + 360000 },
         process.env.ACCESS_JWT_KEY || "secret"
       );
       const refreshToken = jwt.sign(
-        { email: email, exp: Math.floor(Date.now() / 1000) + 36000000 },
+        { username: username, exp: Math.floor(Date.now() / 1000) + 36000000 },
         process.env.REFRESH || "secret"
       );
       const user = await createUser({
@@ -91,7 +89,7 @@ export const register = withLogging(
       });
 
       if (!user) {
-        return res.status(400).json({ message: "user not found" }).end();
+        return res.status(400).json({message:"user not found"}).end()
       }
 
       res.cookie("auth-session", accessToken, {
@@ -105,7 +103,7 @@ export const register = withLogging(
     } catch (error) {
       console.log(error);
       return res.status(500);
-    }
+    } 
   }
 );
 
@@ -116,20 +114,19 @@ export const refreshToken = withLogging(
       const { refreshToken } = req.params;
 
       if (!refreshToken) {
-        return res.status(403).json({ message: "no token" }).end();
+        return res.status(403).json({message:"no token"}).end();
       }
-
       jwt.verify(
         refreshToken,
         process.env.REFRESH || "secret",
         async (err: any, decoded: any) => {
           if (err) {
-            return res.status(403).json({ message: "invalid token" }).end();
+            return res.status(403).json({message:"invalid token"}).end();
           }
 
           const accessToken = jwt.sign(
             {
-              email: decoded.email,
+              id: decoded.id,
               exp: Math.floor(Date.now() / 1000) + 360000,
             },
             process.env.ACCESS_JWT_KEY || "secret"
@@ -137,16 +134,16 @@ export const refreshToken = withLogging(
 
           const refreshToken = jwt.sign(
             {
-              email: decoded.email,
+              id: decoded.id,
               exp: Math.floor(Date.now() / 1000) + 36000000,
             },
             process.env.REFRESH || "secret"
           );
 
-          const user = await getUserByEmail(decoded.email);
-          if (!user) {
-            return res.status(404).json({ message: "user not found" }).end();
-          }
+          const user = await getUserById(decoded.id);
+          if (!user){
+            return res.status(404).json({message:"user not found"}).end();
+          } 
 
           user.refreshToken = refreshToken;
 
@@ -163,6 +160,7 @@ export const refreshToken = withLogging(
         }
       );
     } catch (error) {
+      console.log(error);
       return res.status(500).end();
     }
   }
