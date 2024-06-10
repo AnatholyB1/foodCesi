@@ -38,8 +38,8 @@ export default function Commande() {
     // const { id } = useParams();
 
     return (
-        <div className="flex flex-col gap-2 w-full p-4">
-            <div className="flex flex-col gap-1">
+        <div className="w-full flex flex-col gap-2 w-full p-4 md:flex-row">
+            <div className="w-full flex flex-col gap-1">
                 <h2 className="text-lg font-bold">Récapitulatif de la commande</h2>
                 <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={false}>
                     <div className="flex flex-col">
@@ -54,7 +54,7 @@ export default function Commande() {
                     <p>Méthode de paiement : {order.payment_method}</p>
                 </div>
             </div>
-            <div className="flex flex-col p-4">
+            <div className="w-full flex flex-col p-4">
                 {status.map((statusText, i) => (
                     <div key={i} className="relative flex items-center py-4 gap-4 overflow-hidden">
                         {i > 0 && <div className={cn("absolute start-2 bottom-1/2 h-full w-[2px] -translate-x-1/2 bg-grey_light group-last:bottom-1/2", { "bg-primary": order.status >= i })}></div>}
