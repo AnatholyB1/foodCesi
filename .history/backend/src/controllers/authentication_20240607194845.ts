@@ -20,6 +20,20 @@ export const login = withLogging(
 
       if (!valid) return res.status(400).json("invalid credentials").end();
 
+      const sessionToken = await req.cookies["auth-session"];
+
+      if (!sessionToken) return res.status(400).end();
+
+      jwt.verify(
+        sessionToken,
+        process.env.ACCESS_JWT_KEY || "secret",
+        (err: any) => {
+          if (err) {
+            return res.status(403).end();
+          }
+        }
+      );
+
       const accessToken = jwt.sign(
         {
           id: user.id,

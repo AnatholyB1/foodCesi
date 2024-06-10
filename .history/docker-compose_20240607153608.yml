@@ -23,18 +23,18 @@ services:
       - /app/node_modules
       - ./backend:/app
 
-  backend_user:
-    build:
-      context: './backend'
-      dockerfile: Dockerfile.user
-    environment:
-      - DATABASE_URL=mongodb://database:27017/mydb
-    depends_on:
-      - database
-      - database2
-    volumes:
-      - /app/node_modules
-      - ./backend:/app
+    backend_user:
+      build:
+        context: './backend'
+        dockerfile: Dockerfile.user
+      environment:
+        - DATABASE_URL=mongodb://database:27017/mydb
+      depends_on:
+        - database
+        - database2
+      volumes:
+        - /app/node_modules
+        - ./backend:/app
 
 
   database:
