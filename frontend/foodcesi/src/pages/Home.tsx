@@ -1,11 +1,12 @@
+import { useAuth } from "@/context/AuthContext";
 import Delivery from "./home/Delivery";
-import Restaurant from "./home/Restaurant";
 import User from "./home/User";
+import Restaurant from "./Restaurant";
 
 export default function Home() {
-    const site: string = "user";
+    const { user } = useAuth();
 
-    switch (site) {
+    switch (user?.type) {
         case "user":
             return <User />;
 
