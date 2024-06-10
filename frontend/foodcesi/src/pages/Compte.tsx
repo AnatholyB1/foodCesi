@@ -47,7 +47,7 @@ export default function Compte() {
     ];
 
     return (
-        <div className="flex flex-col gap-8 px-4 py-2">
+        <div className="flex flex-col gap-8 px-4 py-2 max-w-lg mx-auto">
             <div className="flex flex-col items-center gap-2 w-full">
                 <div className="relative">
                     <img src={fakeUser.avatar} alt="avatar" className="w-20 h-20 rounded-full" />

@@ -30,7 +30,7 @@ const pastOrders: Order[] = [];
 
 export default function Commandes() {
     return (
-        <Tabs className="w-full p-4 flex flex-col items-center gap-4" defaultValue="progress">
+        <Tabs className="w-full p-4 flex flex-col items-center gap-4 max-w-lg mx-auto" defaultValue="progress">
             <TabsList className="grid grid-cols-2">
                 <TabsTrigger value="progress">En cours</TabsTrigger>
                 <TabsTrigger value="past">Passées</TabsTrigger>

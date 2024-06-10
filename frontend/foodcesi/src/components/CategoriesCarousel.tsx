@@ -23,7 +23,7 @@ export default function CategoriesCarousel() {
         <Carousel className="w-full">
             <CarouselContent>
                 {categories.map((category) => (
-                    <CarouselItem key={category.id} className="basis-1/5">
+                    <CarouselItem key={category.id} className="basis-1/5 md:basis-1/6">
                         <CustomCard className="flex flex-col items-center gap-1 rounded-2xl p-4">
                             <img src={category.icon} alt={category.name} />
                             <p className="text-xs text-nowrap">{category.name}</p>
