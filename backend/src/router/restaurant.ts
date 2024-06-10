@@ -374,37 +374,6 @@ export default (router: express.Router) => {
  *     responses:
  *       200:
  *         description: Restaurant supprimé avec succès
- *         schema:
- *           type: object
- *           properties:
- *             id:
- *               type: integer
- *               description: L'identifiant du restaurant
- *             user_id:
- *               type: integer
- *               description: L'identifiant de l'utilisateur
- *             name:
- *               type: string
- *               description: Le nom du restaurant
- *             address_id:
- *               type: integer
- *               description: L'identifiant de l'adresse
- *             phone_number:
- *               type: string
- *               description: Le numéro de téléphone du restaurant
- *             categories:
- *               type: array
- *               items:
- *                 type: integer
- *               description: Les catégories du restaurant
- *             created_at:
- *               type: string
- *               format: date-time
- *               description: La date de création du restaurant
- *             updated_at:
- *               type: string
- *               format: date-time
- *               description: La date de la dernière mise à jour du restaurant
  *       401:
  *         description: Non autorisé
  *       404:
@@ -429,39 +398,6 @@ export default (router: express.Router) => {
  *     responses:
  *       200:
  *         description: Restaurants supprimés avec succès
- *         schema:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               id:
- *                 type: integer
- *                 description: L'identifiant du restaurant
- *               user_id:
- *                 type: integer
- *                 description: L'identifiant de l'utilisateur
- *               name:
- *                 type: string
- *                 description: Le nom du restaurant
- *               address_id:
- *                 type: integer
- *                 description: L'identifiant de l'adresse
- *               phone_number:
- *                 type: string
- *                 description: Le numéro de téléphone du restaurant
- *               categories:
- *                 type: array
- *                 items:
- *                   type: integer
- *                 description: Les catégories du restaurant
- *               created_at:
- *                 type: string
- *                 format: date-time
- *                 description: La date de création du restaurant
- *               updated_at:
- *                 type: string
- *                 format: date-time
- *                 description: La date de la dernière mise à jour du restaurant
  *       401:
  *         description: Non autorisé
  *       404:
