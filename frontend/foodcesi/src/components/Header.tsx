@@ -1,8 +1,10 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Bell, BellDot, Settings, ShoppingCart } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
+    const { user } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const previousLocationRef = useRef<typeof location | null>(null);
@@ -12,6 +14,10 @@ export default function Header() {
     useEffect(() => {
         previousLocationRef.current = location;
     }, [location]);
+
+    if (!user) {
+        return;
+    }
 
     const title = location.pathname.split("/")[1];
 
@@ -40,9 +46,11 @@ export default function Header() {
             )}
             <div className="flex gap-3">
                 <NavLink to="/notifications">{hasNotification ? <BellDot /> : <Bell />}</NavLink>
-                <NavLink to="/panier">
-                    <ShoppingCart />
-                </NavLink>
+                {user.type === "user" && (
+                    <NavLink to="/panier">
+                        <ShoppingCart />
+                    </NavLink>
+                )}
             </div>
         </header>
     );
