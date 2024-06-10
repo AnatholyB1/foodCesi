@@ -18,7 +18,7 @@ RestaurantCategory.init(
     restaurant_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       references: {
-        model:'Restaurants',
+        model: 'restaurants',
         key: 'id',
       },
       allowNull: false,
@@ -26,7 +26,7 @@ RestaurantCategory.init(
     category_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       references: {
-        model: 'Categories',
+        model: 'categories',
         key: 'id',
       },
       allowNull: false,
@@ -38,40 +38,31 @@ RestaurantCategory.init(
   }
 );
 
-Restaurant.belongsToMany(Category, { through: RestaurantCategory , foreignKey: 'restaurant_id',as: 'categories'});
-Category.belongsToMany(Restaurant, { through: RestaurantCategory,foreignKey: 'category_id',as: 'restaurants'});
+Restaurant.belongsToMany(Category, { through: RestaurantCategory , as: 'categories'});
+Category.belongsToMany(Restaurant, { through: RestaurantCategory, as: 'restaurants' });
 
 
 export default RestaurantCategory;
 export const getRestaurantCategories = () => Category.findAll()
 export const getCategoriesByRestaurant = async (restaurantId: number) => {
-  // Fetch the restaurant with the given ID
   const restaurant = await Restaurant.findByPk(restaurantId);
-  
-  // If the restaurant does not exist, log an error and return null
-  if (!restaurant) {
-    console.error(`Restaurant with ID ${restaurantId} does not exist`);
-    return null;
-  }
-
-  // Fetch the categories associated with the restaurant
-  const categories = await restaurant.getCategories();
-
-  // If the restaurant does not have any associated categories, log a message
-  if (categories.length === 0) {
-    console.log(`Restaurant with ID ${restaurantId} does not have any associated categories`);
-  }
-
-  return categories;
+  return restaurant ? await restaurant.getCategories() : null;
 };
 export const createRestaurantCategory =  (values : Record<string, any>) => Category.create(values)
 export const updateRestaurantCategory =  (id: number, values: Record<string, any>) => Category.update(values, { where: { id } });
 export const deleteRestaurantCategory = (id: number) => Category.destroy({ where: { id } });
-export const addCategoryToRestaurant = async (restaurant : Restaurant, category : Category) => {
-  await RestaurantCategory.create({
-    restaurant_id: restaurant.id,
-    category_id: category.id
-  });
+export const addCategoryToRestaurant = async (
+  restaurantId: number,
+  categoryId: number
+) => {
+  const restaurant = await Restaurant.findByPk(restaurantId);
+  const category = await Category.findByPk(categoryId);
+
+  if (restaurant && category) {
+    return restaurant.addCategory(category);
+  }
+
+  return null;
 };
 
 export const removeCategoryFromRestaurant = async (

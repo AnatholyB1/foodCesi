@@ -38,8 +38,8 @@ RestaurantCategory.init(
   }
 );
 
-Restaurant.belongsToMany(Category, { through: RestaurantCategory , foreignKey: 'restaurant_id',as: 'categories'});
-Category.belongsToMany(Restaurant, { through: RestaurantCategory,foreignKey: 'category_id',as: 'restaurants'});
+Restaurant.belongsToMany(Category, { through: 'restaurant_categories' , foreignKey: 'restaurant_id', as: 'categories'});
+Category.belongsToMany(Restaurant, { through: 'restaurant_categories',foreignKey: 'category_id' , as: 'restaurants'});
 
 
 export default RestaurantCategory;

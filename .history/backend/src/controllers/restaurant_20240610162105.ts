@@ -277,8 +277,8 @@ export const deleteAllRestaurantsByUserId = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { user_id } = req.params;
-      await deleteRestaurantByUserId(Number(user_id));
-      return res.status(200).json({ message: 'Restaurants deleted successfully' });
+      const restaurants = await deleteRestaurantByUserId(Number(user_id));
+      return res.status(200).json(restaurants);
     } catch (error) {
       console.log(error);
       return res.status(500);

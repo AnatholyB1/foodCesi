@@ -90,22 +90,19 @@ export const updateRestaurant = async (
 
 export const deleteRestaurant = (id: number) =>
   Restaurant.destroy({ where: { id } });
-export const deleteRestaurantByUserId = async (user_id: number) => {
-  const userRestaurants = await Restaurant.findAll({
-    where: { user_id: Number(user_id) },
-  });
+export const deleteRestaurantByUserId = async (user_id: number) =>
+  await Restaurant.findAll({ where: { user_id: Number(user_id) } });
 
-  for (let restaurant of userRestaurants) {
-    // Fetch the categories associated with the restaurant
-    const categories = await restaurant.getCategories();
+for (let restaurant of User) {
+  // Fetch the categories associated with the restaurant
+  const categories = await restaurant.getCategories();
 
-    // Remove the association between the categories and the restaurant
-    await restaurant.removeCategory(categories);
+  // Remove the association between the categories and the restaurant
+  await restaurant.removeCategory(categories);
 
-    // Now you can safely delete the restaurant
-    await restaurant.destroy();
-  }
-};
+  // Now you can safely delete the restaurant
+  await restaurant.destroy();
+}
 
 export const getRestaurants = () =>
   Restaurant.findAll({

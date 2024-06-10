@@ -277,7 +277,19 @@ export const deleteAllRestaurantsByUserId = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { user_id } = req.params;
-      await deleteRestaurantByUserId(Number(user_id));
+      const userRestaurants = await Restaurant.findAll({ where: { userId: Number(user_id) } });
+
+      for (let restaurant of userRestaurants) {
+        // Fetch the categories associated with the restaurant
+        const categories = await restaurant.getCategory();
+
+        // Remove the association between the categories and the restaurant
+        await restaurant.removeCategory(categories);
+
+        // Now you can safely delete the restaurant
+        await restaurant.destroy();
+      }
+
       return res.status(200).json({ message: 'Restaurants deleted successfully' });
     } catch (error) {
       console.log(error);

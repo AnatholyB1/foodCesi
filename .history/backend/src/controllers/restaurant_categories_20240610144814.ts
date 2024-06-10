@@ -52,7 +52,7 @@ export const createRestaurantCategoryInfo = withLogging(
       if (!name) {
         return res.status(400).json({message:"body required"}).end();
       }
-      const restaurant_category = await createRestaurantCategory({name});
+      const restaurant_category = await createRestaurantCategory(name);
       if (!restaurant_category) {
         return res.status(404).json({message:"restaurant_category not created"}).end();
       }

@@ -13,8 +13,6 @@ class Category extends Model {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
-        unique: true
       },
       name: {
         type: DataTypes.STRING,

@@ -84,10 +84,12 @@ export const updateAddressInfo = withLogging('updateAddressInfo', async (req: ex
         if (!id ) {
             return res.status(400).end();
         }
+        console.log(values)
         const address = await updateAddress(Number(id), values);
         if(!address){
             return res.status(404).end();
         }
+        console.log(address)
         return res.status(200).json(address).end();
     } catch (error) {
         console.log(error);
