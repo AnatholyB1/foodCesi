@@ -101,6 +101,7 @@ export const getMenuItems = () => MenuItem.findAll(
   {
     include: [{
       model: Category,
+      as: "categories",
       through: { attributes: [] }, // This will skip the join table fields
     },]
   }

@@ -30,9 +30,9 @@ export const getRestaurantCategory = withLogging(
     try {
       const { id } = req.params;
       if (!id) {
-        return res.status(400).json({message:"id missing"}).end();
+        return res.status(400).json(message:"id missing").end();
       }
-      const restaurant_category = await getCategoriesByRestaurant(Number(id));
+      const restaurant_category = await getCategoriesByRestaurant(parseInt(id));
       if (!restaurant_category) {
         return res.status(404).end();
       }
@@ -73,7 +73,7 @@ export const updateRestaurantCategoryInfo = withLogging(
       if (!id || !name) {
         return res.status(400).end();
       }
-      const restaurant_category = await updateRestaurantCategory(Number(id), name);
+      const restaurant_category = await updateRestaurantCategory(parseInt(id), name);
       if (!restaurant_category) {
         return res.status(404).end();
       }

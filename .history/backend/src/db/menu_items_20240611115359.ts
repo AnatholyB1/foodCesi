@@ -34,7 +34,7 @@ MenuCategory.init(
   },
   {
     sequelize,
-    tableName: "menu_categories",
+    tableName: "restaurant_categories",
   }
 );
 
@@ -96,15 +96,7 @@ Category.belongsToMany(MenuItem, { through: MenuCategory, foreignKey: 'category_
 
 
 export default MenuItem;
-export const addCategory = (category_id: number, menu_item_id: number) => MenuCategory.create({ category_id, menu_item_id});
-export const getMenuItems = () => MenuItem.findAll(
-  {
-    include: [{
-      model: Category,
-      through: { attributes: [] }, // This will skip the join table fields
-    },]
-  }
-);
+export const getMenuItems = () => MenuItem.findAll();
 export const getMenuItemById = (id: number) => MenuItem.findByPk(id);
 export const getMenuItemsByRestaurantId = (restaurant_id: number) => MenuItem.findAll({ where: { restaurant_id } });
 export const getMenuItemsByCategoryId = (category_id: number) => MenuItem.findAll({ where: { category_id } });

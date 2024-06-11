@@ -3,42 +3,6 @@ import sequelize  from '../db'; // assuming you have a sequelize instance in dat
 import Restaurant from './restaurants';
 import Category from './category';
 
-class MenuCategory extends Model {
-  public restaurant_id!: number;
-  public category_id!: number;
-}
-
-MenuCategory.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    menu_item_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      references: {
-        model:'Restaurants',
-        key: 'id',
-      },
-      allowNull: false,
-    },
-    category_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      references: {
-        model: 'Categories',
-        key: 'id',
-      },
-      allowNull: false,
-    },
-  },
-  {
-    sequelize,
-    tableName: "menu_categories",
-  }
-);
-
-
 
 class MenuItem extends Model {
   public id!: number;
@@ -46,10 +10,11 @@ class MenuItem extends Model {
   public name!: string;
   public description!: string;
   public price!: number;
+  public category_id!: number;
   public image_url!: string;
   public available!: boolean;
   public Restaurant?: Restaurant | undefined;
-  public addCategory!: Function
+  public addCategory!: (category_id: number) => Promise<void>;
 }
 
 MenuItem.init(
@@ -75,6 +40,10 @@ MenuItem.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
+    category_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
     image_url: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -91,20 +60,12 @@ MenuItem.init(
 );
 
 MenuItem.belongsTo(Restaurant, { foreignKey: 'restaurant_id', as: 'Restaurant' });
-MenuItem.belongsToMany(Category, { through: MenuCategory, foreignKey: 'menu_item_id'});
-Category.belongsToMany(MenuItem, { through: MenuCategory, foreignKey: 'category_id'});
+MenuItem.belongsToMany(Category, { through: 'menu_item_categories', foreignKey: 'category_id', as: 'Categories' });
+Category.belongsToMany(MenuItem, { through: 'menu_item_categories', foreignKey: 'menu_item_id', as: 'MenuItems' });
 
 
 export default MenuItem;
-export const addCategory = (category_id: number, menu_item_id: number) => MenuCategory.create({ category_id, menu_item_id});
-export const getMenuItems = () => MenuItem.findAll(
-  {
-    include: [{
-      model: Category,
-      through: { attributes: [] }, // This will skip the join table fields
-    },]
-  }
-);
+export const getMenuItems = () => MenuItem.findAll();
 export const getMenuItemById = (id: number) => MenuItem.findByPk(id);
 export const getMenuItemsByRestaurantId = (restaurant_id: number) => MenuItem.findAll({ where: { restaurant_id } });
 export const getMenuItemsByCategoryId = (category_id: number) => MenuItem.findAll({ where: { category_id } });

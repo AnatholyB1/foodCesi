@@ -4,7 +4,7 @@ import {get, merge} from 'lodash'
 import { getUserByRefreshToken, getUserById } from '../db/users';
 import { createLog } from '../db/log';
 import jwt from 'jsonwebtoken'
-import { getADevByApiKey } from '../controllers/dev';
+import { getDevByApiKey } from '../controllers/dev';
 
 
 export const isAuthenticated = async (req : express.Request, res : express.Response, next : express.NextFunction) => {
@@ -61,14 +61,14 @@ export const logRequest = (req: express.Request, res: express.Response, next: ex
 }
 
 
-const apiKeyMiddleware = async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+const apiKeyMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const apiKey = req.headers['x-api-key'];
   
     if (!apiKey) {
       return res.status(401).json({ message: 'No API key provided' });
     }
 
-    const dev = await getADevByApiKey(apiKey);
+    const dev = await getDevByApiKey(apiKey);
     if (!dev) {
       return res.status(401).json({ message: 'Invalid API key' });
     }

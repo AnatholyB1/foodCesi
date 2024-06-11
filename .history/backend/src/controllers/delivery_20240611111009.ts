@@ -122,7 +122,7 @@ export const getAllDeliveriesByCity = withLogging( "getAllDeliveriesByCity", asy
 export const getADeliveryByUserIdAndCity = withLogging( "getADeliveryByUserIdAndCity", async (req: express.Request, res: express.Response) => {
   try {
     const { user_id, city } = req.params;
-    const deliveries = await getDeliveryByUserIdAndCity(Number(user_id), city);
+    const deliveries = await getDeliveryByUserIdAndCity(Number(user_id), Number(city));
     if(!deliveries) return res.status(400);
     return res.status(200).json(deliveries);
   } catch (error) {

@@ -73,7 +73,7 @@ export const updateRestaurantCategoryInfo = withLogging(
       if (!id || !name) {
         return res.status(400).end();
       }
-      const restaurant_category = await updateRestaurantCategory(Number(id), name);
+      const restaurant_category = await updateRestaurantCategory(parseInt(id), name);
       if (!restaurant_category) {
         return res.status(404).end();
       }

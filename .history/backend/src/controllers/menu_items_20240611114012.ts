@@ -9,8 +9,7 @@ import {
   updateMenuItem,
   deleteMenuItem,
   deleteMenuItemsByRestaurantId,
-  getRestaurantsByItemId,
-  addCategory
+  getRestaurantsByItemId
 } from "../db/menu_items";
 
 export const getItems = withLogging(
@@ -110,7 +109,7 @@ export const createItem = withLogging(
       const categories: Array<number> = category_id.map((id: string) => Number(id));
       console.log('here')
       await Promise.all(categories.map(async (category_id: number) => {
-        await addCategory(category_id, item.id);
+        await item.addCategory(category_id);
       }));
       return res.status(200).json(item).end();
     } catch (e) {

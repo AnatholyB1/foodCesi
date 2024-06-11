@@ -9,8 +9,7 @@ import {
   updateMenuItem,
   deleteMenuItem,
   deleteMenuItemsByRestaurantId,
-  getRestaurantsByItemId,
-  addCategory
+  getRestaurantsByItemId
 } from "../db/menu_items";
 
 export const getItems = withLogging(
@@ -84,23 +83,22 @@ export const createItem = withLogging(
         image_url,
         available,
       } = req.body;
-
       if (
         !restaurant_id ||
         !name ||
         !description ||
         !price ||
         !category_id ||
-        category_id.length == 0||
+        category_id.length > 0||
         !image_url ||
         !available
       )
-        return res.status(400).json({message:"invalid parameters"}).end();
+        return res.status(400).status({message:"invalid parameters"}).end();
       const new_item = {
         restaurant_id: Number(restaurant_id),
         name: name,
         description: description,
-        price: Number(price),
+        price: new Float32Array(price),
         image_url: image_url,
         available: available,
       };
@@ -108,9 +106,9 @@ export const createItem = withLogging(
       if (!item) return res.status(404).end();
 
       const categories: Array<number> = category_id.map((id: string) => Number(id));
-      console.log('here')
+
       await Promise.all(categories.map(async (category_id: number) => {
-        await addCategory(category_id, item.id);
+        await item.addCategory(category_id);
       }));
       return res.status(200).json(item).end();
     } catch (e) {

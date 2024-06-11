@@ -101,8 +101,9 @@ export const getMenuItems = () => MenuItem.findAll(
   {
     include: [{
       model: Category,
-      through: { attributes: [] }, // This will skip the join table fields
-    },]
+      as: 'Category',
+      required: true
+    }]
   }
 );
 export const getMenuItemById = (id: number) => MenuItem.findByPk(id);

@@ -74,7 +74,7 @@ export const getDeliveriesByCity = (city: string) => Delivery.findAll({
   include: [User ]
 });
 
-export const getDeliveryByUserIdAndCity = (user_id: number, city: string) => Delivery.findAll({ 
+export const getDeliveryByUserIdAndCity = (user_id: number, city: number) => Delivery.findAll({ 
   where: { user_id, city },
   include: [User]
 });
