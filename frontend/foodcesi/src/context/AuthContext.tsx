@@ -12,6 +12,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
+    setUser: (user: User | null) => void;
     login: (email: string, password: string) => void;
     logout: () => void;
     register: (email: string, password: string, username: string, type: string) => void;
@@ -57,7 +58,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
-    return <AuthContext.Provider value={{ user, login, logout, register }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ user, setUser, login, logout, register }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
