@@ -22,97 +22,99 @@ function App() {
             <div className="flex flex-col h-screen bg-light">
                 <Header />
                 <main className="grow overflow-y-auto">
-                    <Routes>
-                        <Route path="/authentification" element={<Authentification />} />
-                        <Route
-                            path="/unauthorized"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Unauthorized />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Home />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/recherche"
-                            element={
-                                <RequireAuth allowedTypes={["user"]}>
-                                    <Recherche />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/commandes"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Commandes />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/commandes/:id"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Commande />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/restaurant/:id"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Restaurant />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/statistiques"
-                            element={
-                                <RequireAuth allowedTypes={["restaurant"]}>
-                                    <Stats />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/compte"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Compte />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/notifications"
-                            element={
-                                <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
-                                    <Notifications />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/panier"
-                            element={
-                                <RequireAuth allowedTypes={["user"]}>
-                                    <Panier />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/checkout"
-                            element={
-                                <RequireAuth allowedTypes={["user"]}>
-                                    <Checkout />
-                                </RequireAuth>
-                            }
-                        />
-                    </Routes>
+                    <div className="mx-auto max-w-6xl">
+                        <Routes>
+                            <Route path="/authentification" element={<Authentification />} />
+                            <Route
+                                path="/unauthorized"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Unauthorized />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Home />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/recherche"
+                                element={
+                                    <RequireAuth allowedTypes={["user"]}>
+                                        <Recherche />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/commandes"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Commandes />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/commandes/:id"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Commande />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/restaurant/:id"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Restaurant />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/statistiques"
+                                element={
+                                    <RequireAuth allowedTypes={["restaurant"]}>
+                                        <Stats />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/compte"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Compte />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/notifications"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                        <Notifications />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/panier"
+                                element={
+                                    <RequireAuth allowedTypes={["user"]}>
+                                        <Panier />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/checkout"
+                                element={
+                                    <RequireAuth allowedTypes={["user"]}>
+                                        <Checkout />
+                                    </RequireAuth>
+                                }
+                            />
+                        </Routes>
+                    </div>
                 </main>
                 <NavBar />
             </div>

@@ -27,7 +27,7 @@ const items = [
 
 export default function Panier() {
     return (
-        <div className="flex flex-col gap-2 w-full min-h-full p-4">
+        <div className="flex flex-col gap-2 w-full min-h-full p-4 max-w-lg mx-auto">
             <div className="grow">
                 <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={true}>
                     <div className="flex flex-col">
