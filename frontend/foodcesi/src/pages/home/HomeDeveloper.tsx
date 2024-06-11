@@ -17,7 +17,7 @@ const droits = [
 
 const cle = "cfvgbhjnk,hjbs";
 
-export default function Developer() {
+export default function HomeDeveloper() {
     const [selectedDroit, setSelectedDroit] = useState(droits[0]);
 
     if (!cle) {

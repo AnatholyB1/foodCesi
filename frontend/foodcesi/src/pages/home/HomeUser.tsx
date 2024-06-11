@@ -19,7 +19,7 @@ const bestRestaurants = [
     { id: 5, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
 ];
 
-export default function User() {
+export default function HomeUser() {
     const [selectedAddress, setSelectedAddress] = useState(addresses[0]);
 
     return (

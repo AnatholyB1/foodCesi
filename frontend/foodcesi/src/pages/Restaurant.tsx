@@ -13,7 +13,7 @@ export default function Restaurant() {
     return (
         <>
             <div className="flex flex-col items-center py-2 px-4">
-                <img className="w-full h-auto rounded-2xl aspect-[3/1] max-h-40 object-cover" src={restaurant.image} width="400" height="400" alt={restaurant.name} />
+                <img className="w-full h-auto rounded-2xl aspect-[3/1] max-h-40 object-cover" src={restaurant.image} width="1200" height="800" alt={restaurant.name} />
                 <div className="flex flex-col items-center -mt-10">
                     <img className="w-20 h-20 rounded-full border-4 border-white md:w-24 md:h-24 lg:w-28 lg:h-28" src={restaurant.avatar} width="72" height="72" alt={restaurant.name} />
                     <h2 className="text-lg font-semibold md:text-xl lg:text-2xl">{restaurant.name}</h2>
