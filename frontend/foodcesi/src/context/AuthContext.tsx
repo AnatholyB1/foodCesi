@@ -1,4 +1,5 @@
-import { postData } from "@/helpers/api";
+import { useToast } from "@/components/ui/use-toast";
+import api, { postData } from "@/helpers/api";
 import React, { createContext, useState, ReactNode, useContext } from "react";
 
 interface User {
@@ -19,6 +20,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const { toast } = useToast();
+
     const [user, setUser] = useState<User | null>(() => {
         const storedUser = sessionStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
@@ -26,12 +29,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const login = async (email: string, password: string) => {
         try {
-            const data = await postData("/auth/login", { email, password });
+            const response = await api.post("/auth/login", { email, password });
 
-            setUser({ ...data });
-            sessionStorage.setItem("user", JSON.stringify({ ...data }));
-        } catch (error) {
+            if (response.status !== 200) {
+                console.log(response);
+            }
+            setUser({ ...response.data });
+            sessionStorage.setItem("user", JSON.stringify({ ...response.data }));
+        } catch (error: any) {
             console.log(error);
+            toast({ description: error.response.data.message });
         }
     };
 
