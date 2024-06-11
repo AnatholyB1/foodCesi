@@ -48,50 +48,29 @@ export const getDev = () => Dev.findAll({
   ]
 });
 export const getDevById = (id: number) => Dev.findByPk(id, {
-  include: [{
-    model: User,
-    required: true
-  }]
+  include: [User]
 });
 
-export const createDev = async (values: Record<string, any>) => {
-  const newDev = await Dev.create(values);
-  return Dev.findByPk(newDev.id, { include: [ 
-    {
-      model: User,
-      required: true
-    }
-  ] });
+export const createDev = async (Dev: Record<string, any>) => {
+  const newDev = await Dev.create(Dev);
+  return Dev.findByPk(newDev.id, { include: [User] });
 };
 
 export const updateDev = async (id: number, values: Record<string, any>) => {
   await Dev.update(values, { where: { id } });
-  return Dev.findByPk(id, { include: [
-    {
-      model: User,
-      required: true
-    }
-  ]});
+  return Dev.findByPk(id, { include: [User] ,required: true});
 };
 
 export const deleteDev = (id: number) => Dev.destroy({ where: { id } });
 
 export const getDevByUserId = (user_id: number) => Dev.findAll({ 
   where: { user_id },
-  include: [{
-    model: User,
-    required: true
-  }]
+  include: [User]
 });
 
 
 export const getDevByApiKey = (apiKey : string) => Dev.findOne({ where: { apiKey },
-  include: [
-    {
-      model: User,
-      required: true
-    }
-  ]});
+  include: [User]});
 
 
 

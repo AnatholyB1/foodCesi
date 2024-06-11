@@ -181,12 +181,12 @@ export const getRestaurantsByItemId = (id: number) =>
   MenuItem.findByPk(id, {
     include: [
       {
-        model: Category,
-        through: { attributes: [] }, // This will skip the join table fields
-      },
-      {
         model: Restaurant,
         required: true,
       },
+      {
+        model: Category,
+        through: { attributes: [] }, // This will skip the join table fields
+      }
     ],
   }).then((item) => item?.Restaurant);

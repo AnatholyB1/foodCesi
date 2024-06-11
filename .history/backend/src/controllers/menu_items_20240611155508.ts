@@ -193,6 +193,7 @@ export const getARestaurantByItemId = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { item_id } = req.params;
+      console.log("here" + item_id)
       if (!item_id) return res.status(400).end();
       
       const item = await getRestaurantsByItemId(Number(item_id));

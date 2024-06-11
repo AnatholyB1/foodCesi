@@ -61,7 +61,7 @@ Restaurant.init(
   }
 );
 
-
+Restaurant.hasMany(MenuItem, { foreignKey: 'restaurant_id' });
 Restaurant.belongsTo(Address, { foreignKey: "address_id" });
 Restaurant.belongsTo(User, { foreignKey: "user_id" });
 export default Restaurant;

@@ -373,7 +373,7 @@ export default (router: express.Router) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-    router.get('/restaurant/menu_item/:item_id', getARestaurantByItemId);
+    router.get('/menu_items/restaurant/:item_id', getARestaurantByItemId);
     /**
  * @swagger
  * /menu_items/restaurant/{item_id}:

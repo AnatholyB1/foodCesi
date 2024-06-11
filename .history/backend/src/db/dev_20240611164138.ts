@@ -48,14 +48,11 @@ export const getDev = () => Dev.findAll({
   ]
 });
 export const getDevById = (id: number) => Dev.findByPk(id, {
-  include: [{
-    model: User,
-    required: true
-  }]
+  include: [User]
 });
 
-export const createDev = async (values: Record<string, any>) => {
-  const newDev = await Dev.create(values);
+export const createDev = async (Dev: Record<string, any>) => {
+  const newDev = await Dev.create(Dev);
   return Dev.findByPk(newDev.id, { include: [ 
     {
       model: User,

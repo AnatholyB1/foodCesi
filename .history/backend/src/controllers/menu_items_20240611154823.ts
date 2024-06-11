@@ -194,10 +194,9 @@ export const getARestaurantByItemId = withLogging(
     try {
       const { item_id } = req.params;
       if (!item_id) return res.status(400).end();
-      
-      const item = await getRestaurantsByItemId(Number(item_id));
+      const item = await getRestaurantsByItemId(parseInt(item_id));
       if (!item) return res.status(404).end();
-      return res.status(200).json(item).end();
+      return res.status(200).json(item.Restaurant).end();
     } catch (e) {
       return res.status(500).json(e).end();
     }

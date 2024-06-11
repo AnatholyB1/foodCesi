@@ -46,13 +46,14 @@ export const createADev = withLogging(
 
       //create an apiKey for dev usage of our endpoints
       const apiKey =
-        Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
 
       if (!user_id || !apiKey || !appName)
         return res.status(400).json({ message: "missing parameters" }).end();
+
       const values = { user_id, apiKey, appName };
       const dev = await createDev(values);
-      if (!dev) return res.status(404).end();
       return res.status(201).json(dev).end();
     } catch (e) {
       return res.status(500).json(e).end();

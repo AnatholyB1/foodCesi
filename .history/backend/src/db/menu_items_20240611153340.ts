@@ -90,8 +90,8 @@ MenuItem.init(
 
 MenuItem.belongsTo(Restaurant, {
   foreignKey: "restaurant_id",
+  as: "Restaurant",
 });
-Restaurant.hasMany(MenuItem, { foreignKey: 'restaurant_id' });
 MenuItem.belongsToMany(Category, {
   through: MenuCategory,
   foreignKey: "menu_item_id",
@@ -111,10 +111,6 @@ export const getMenuItems = () =>
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
       },
-      {
-        model: Restaurant,
-        required: true,
-      },
     ],
   });
 export const getMenuItemById = (id: number) =>
@@ -123,10 +119,6 @@ export const getMenuItemById = (id: number) =>
       {
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
-      },
-      {
-        model: Restaurant,
-        required: true,
       },
     ],
   });
@@ -138,36 +130,24 @@ export const getMenuItemsByRestaurantId = (restaurant_id: number) =>
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
       },
+    ],
+  });
+export const getMenuItemsByCategoryId = (category_id: number) =>
+  MenuItem.findAll({
+    where: { category_id },
+    include: [
       {
-        model: Restaurant,
-        required: true,
+        model: Category,
+        through: { attributes: [] }, // This will skip the join table fields
       },
     ],
   });
-  export const getMenuItemsByCategoryId = (category_id: number) =>
-    MenuItem.findAll({
-      include: [
-        {
-          model: Category,
-          where: { id: category_id }, // Look for the category_id in the Category table
-          through: { attributes: [] }, // This will skip the join table fields
-        },
-        {
-          model: Restaurant,
-          required: true,
-        },
-      ],
-    });
 export const createMenuItem = (menuItem: Record<string, any>) =>
   MenuItem.create(menuItem, {
     include: [
       {
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
-      },
-      {
-        model: Restaurant,
-        required: true,
       },
     ],
   });
@@ -177,15 +157,12 @@ export const deleteMenuItem = (id: number) =>
   MenuItem.destroy({ where: { id } });
 export const deleteMenuItemsByRestaurantId = (restaurant_id: number) =>
   MenuItem.destroy({ where: { restaurant_id } });
-export const getRestaurantsByItemId = (id: number) =>
-  MenuItem.findByPk(id, {
+export const getRestaurantsByItemId = (item_id: number) =>
+  MenuItem.findByPk(item_id, {
     include: [
       {
-        model: Category,
-        through: { attributes: [] }, // This will skip the join table fields
-      },
-      {
         model: Restaurant,
+        as: "Restaurant",
         required: true,
       },
     ],

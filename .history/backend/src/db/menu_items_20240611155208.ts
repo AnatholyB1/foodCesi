@@ -189,4 +189,4 @@ export const getRestaurantsByItemId = (id: number) =>
         required: true,
       },
     ],
-  }).then((item) => item?.Restaurant);
+  });

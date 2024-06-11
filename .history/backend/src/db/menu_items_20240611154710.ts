@@ -177,16 +177,12 @@ export const deleteMenuItem = (id: number) =>
   MenuItem.destroy({ where: { id } });
 export const deleteMenuItemsByRestaurantId = (restaurant_id: number) =>
   MenuItem.destroy({ where: { restaurant_id } });
-export const getRestaurantsByItemId = (id: number) =>
-  MenuItem.findByPk(id, {
+export const getRestaurantsByItemId = (item_id: number) =>
+  MenuItem.findByPk(item_id, {
     include: [
-      {
-        model: Category,
-        through: { attributes: [] }, // This will skip the join table fields
-      },
       {
         model: Restaurant,
         required: true,
       },
     ],
-  }).then((item) => item?.Restaurant);
+  })

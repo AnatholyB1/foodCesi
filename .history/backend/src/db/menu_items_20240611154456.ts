@@ -113,7 +113,7 @@ export const getMenuItems = () =>
       },
       {
         model: Restaurant,
-        required: true,
+        through: { attributes: [] },
       },
     ],
   });
@@ -123,10 +123,6 @@ export const getMenuItemById = (id: number) =>
       {
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
-      },
-      {
-        model: Restaurant,
-        required: true,
       },
     ],
   });
@@ -138,10 +134,6 @@ export const getMenuItemsByRestaurantId = (restaurant_id: number) =>
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
       },
-      {
-        model: Restaurant,
-        required: true,
-      },
     ],
   });
   export const getMenuItemsByCategoryId = (category_id: number) =>
@@ -152,10 +144,6 @@ export const getMenuItemsByRestaurantId = (restaurant_id: number) =>
           where: { id: category_id }, // Look for the category_id in the Category table
           through: { attributes: [] }, // This will skip the join table fields
         },
-        {
-          model: Restaurant,
-          required: true,
-        },
       ],
     });
 export const createMenuItem = (menuItem: Record<string, any>) =>
@@ -165,10 +153,6 @@ export const createMenuItem = (menuItem: Record<string, any>) =>
         model: Category,
         through: { attributes: [] }, // This will skip the join table fields
       },
-      {
-        model: Restaurant,
-        required: true,
-      },
     ],
   });
 export const updateMenuItem = (id: number, values: Record<string, any>) =>
@@ -177,15 +161,12 @@ export const deleteMenuItem = (id: number) =>
   MenuItem.destroy({ where: { id } });
 export const deleteMenuItemsByRestaurantId = (restaurant_id: number) =>
   MenuItem.destroy({ where: { restaurant_id } });
-export const getRestaurantsByItemId = (id: number) =>
-  MenuItem.findByPk(id, {
+export const getRestaurantsByItemId = (item_id: number) =>
+  MenuItem.findByPk(item_id, {
     include: [
       {
-        model: Category,
-        through: { attributes: [] }, // This will skip the join table fields
-      },
-      {
         model: Restaurant,
+        as: "Restaurant",
         required: true,
       },
     ],
