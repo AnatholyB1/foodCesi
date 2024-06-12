@@ -133,8 +133,6 @@ export const createAnOrder = withLogging(
         console.log("WebSocket error: ", event);
         return res.status(500).end();
       });
-
-      
     } catch (error) {
       console.log(error);
       return res.status(500);

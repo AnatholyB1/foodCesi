@@ -80,7 +80,7 @@ OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
 
 export default Order;
 export const getOrders = () => Order.findAll({include:[Address,User,Delivery,Restaurant,OrderItem]});
-export const getOrderById = (id: number) => Order.findByPk(id,{include:[Address,User,Delivery,Restaurant,OrderItem]});
+export const getOrderById = (id: number) => Order.findByPk(id);
 export const getOrdersByUserId = (user_id: number) => Order.findAll({ where: { user_id } });
 export const getOrdersByDeliveryId = (delivery_id: number) => Order.findAll({ where: { delivery_id } });
 export const getOrdersByRestaurantId = (restaurant_id: number) => Order.findAll({ where: { restaurant_id } });

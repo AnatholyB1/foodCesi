@@ -5,7 +5,6 @@ import User from './users'; // Import User to establish association
 import Delivery from './delivery';
 import Restaurant from './restaurants';
 import { Op } from 'sequelize';
-import OrderItem from './orders_items';
 
 class Order extends Model {
   public id!: number;
@@ -32,6 +31,7 @@ Order.init(
     },
     delivery_id:{
       type: DataTypes.INTEGER.UNSIGNED,
+      defaultValue: 0,
       allowNull: true,
     },
     address_id: {
@@ -73,14 +73,10 @@ Order.belongsTo(Address, { foreignKey: 'address_id' });
 Order.belongsTo(User, { foreignKey: 'user_id' });
 Order.belongsTo(Delivery, { foreignKey: 'delivery_id' });
 Order.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
-Order.hasMany(OrderItem, { foreignKey: 'order_id' });
-OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
-
-
 
 export default Order;
-export const getOrders = () => Order.findAll({include:[Address,User,Delivery,Restaurant,OrderItem]});
-export const getOrderById = (id: number) => Order.findByPk(id,{include:[Address,User,Delivery,Restaurant,OrderItem]});
+export const getOrders = () => Order.findAll();
+export const getOrderById = (id: number) => Order.findByPk(id);
 export const getOrdersByUserId = (user_id: number) => Order.findAll({ where: { user_id } });
 export const getOrdersByDeliveryId = (delivery_id: number) => Order.findAll({ where: { delivery_id } });
 export const getOrdersByRestaurantId = (restaurant_id: number) => Order.findAll({ where: { restaurant_id } });

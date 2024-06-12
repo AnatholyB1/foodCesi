@@ -73,14 +73,10 @@ Order.belongsTo(Address, { foreignKey: 'address_id' });
 Order.belongsTo(User, { foreignKey: 'user_id' });
 Order.belongsTo(Delivery, { foreignKey: 'delivery_id' });
 Order.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
-Order.hasMany(OrderItem, { foreignKey: 'order_id' });
-OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
-
-
 
 export default Order;
-export const getOrders = () => Order.findAll({include:[Address,User,Delivery,Restaurant,OrderItem]});
-export const getOrderById = (id: number) => Order.findByPk(id,{include:[Address,User,Delivery,Restaurant,OrderItem]});
+export const getOrders = () => Order.findAll({include:[Address]});
+export const getOrderById = (id: number) => Order.findByPk(id);
 export const getOrdersByUserId = (user_id: number) => Order.findAll({ where: { user_id } });
 export const getOrdersByDeliveryId = (delivery_id: number) => Order.findAll({ where: { delivery_id } });
 export const getOrdersByRestaurantId = (restaurant_id: number) => Order.findAll({ where: { restaurant_id } });

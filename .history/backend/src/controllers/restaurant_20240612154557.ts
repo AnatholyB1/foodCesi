@@ -16,7 +16,7 @@ import {
 import { createAddress, getAddressById, updateAddress } from "../db/addresses";
 import { withLogging } from "../helpers";
 import Category from "../db/category";
-import { getUserById } from "../db/users";
+import { getUserById } from "db/users";
 
 export const getAllRestaurants = withLogging(
   "getAllRestaurants",

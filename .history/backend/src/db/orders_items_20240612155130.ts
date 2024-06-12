@@ -46,8 +46,8 @@ OrderItem.init(
   }
 );
 
-
 OrderItem.belongsTo(MenuItem, { foreignKey: 'menu_item_id' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id'})
 
 export default OrderItem;
 export const getOrderItems = () => OrderItem.findAll();
