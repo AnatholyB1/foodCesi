@@ -18,29 +18,19 @@ const Authentification = () => {
 
     if (user) navigate(from, { replace: true });
 
-    const [email, setEmail] = useState("user@gmail.com");
-    const [password, setPassword] = useState("1234");
-    const [username, setUsername] = useState("User");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
     const [type, setType] = useState("user");
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        try {
-            login(email, password);
-        } catch (error) {
-            console.log(error);
-        }
+        login(email, password);
     };
 
     const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        try {
-            register(email, password, username, type);
-        } catch (error) {
-            console.log(error);
-        }
+        register(email, password, username, type);
     };
 
     return (
@@ -61,13 +51,13 @@ const Authentification = () => {
                                 <Label htmlFor="email" className="text-grey">
                                     Email
                                 </Label>
-                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="password" className="text-grey">
-                                    Password
+                                    Mot de passe
                                 </Label>
-                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="mot de passe" />
                             </div>
                             <Button type="submit">Connexion</Button>
                         </form>
@@ -86,23 +76,23 @@ const Authentification = () => {
                                 <Label htmlFor="email" className="text-grey">
                                     Email
                                 </Label>
-                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="password" className="text-grey">
-                                    Password
+                                    Mot de passe
                                 </Label>
-                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="mot de passe" />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="username" className="text-grey">
-                                    Username
+                                    Nom d'utilisateur
                                 </Label>
-                                <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Nom d'utilisateur" />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="type" className="text-grey">
-                                    Type
+                                    Rôle
                                 </Label>
                                 <Select value={type} onValueChange={(value) => setType(value)}>
                                     <SelectTrigger>
