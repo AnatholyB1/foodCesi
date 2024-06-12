@@ -10,6 +10,10 @@ import router from "./router/index";
 
 
 
+import path from 'path';
+
+
+
 
 const app = express();
 const server = http.createServer(app);
@@ -40,7 +44,7 @@ async function startServer() {
     console.log(`Server is running on port ${port}`);
   });
 
-  app.use(express.static('uploads'))   
+  app.use(express.static(path.join(__dirname, '/uploads'))); 
 }
 
 sequelize.authenticate().then(() => {

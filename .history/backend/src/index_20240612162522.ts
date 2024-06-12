@@ -10,6 +10,10 @@ import router from "./router/index";
 
 
 
+import path from 'path';
+
+
+
 
 const app = express();
 const server = http.createServer(app);
@@ -39,8 +43,6 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
-
-  app.use(express.static('uploads'))   
 }
 
 sequelize.authenticate().then(() => {
@@ -60,6 +62,8 @@ app.use(bodyParser.json());
 app.use("/", router());
 
 
+// Serve static files from the uploads directory
+server.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 import WebSocket from "ws";
 import { createNotification } from "./db/notifications";
@@ -234,6 +238,3 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-
-

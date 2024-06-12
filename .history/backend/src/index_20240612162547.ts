@@ -10,6 +10,10 @@ import router from "./router/index";
 
 
 
+import path from 'path';
+
+
+
 
 const app = express();
 const server = http.createServer(app);
@@ -39,8 +43,6 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
-
-  app.use(express.static('uploads'))   
 }
 
 sequelize.authenticate().then(() => {
@@ -237,3 +239,5 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
