@@ -5,7 +5,7 @@ const sequelize = new Sequelize(
     'root',
     'root',
      {
-       host: process.env.DB_HOST ||  'database2',
+       host: process.env.DB_HOST ||  'database2'
        dialect: 'mysql'
      }
    );

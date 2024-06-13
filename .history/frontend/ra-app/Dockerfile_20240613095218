@@ -1,4 +1,4 @@
-# Stage 1: Build the frontend
+#Stage build
 FROM node:18 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -6,9 +6,9 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve the frontend with a lightweight web server
+#Stage production
 FROM nginx:stable-alpine
-EXPOSE 3000
+EXPOSE 3050
 COPY /nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]

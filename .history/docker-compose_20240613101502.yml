@@ -16,7 +16,7 @@ services:
       context: ./frontend/ra-app
       dockerfile: Dockerfile
     ports:
-      - '5000:3050'  
+      - '3050:3050'  
     volumes:
       - /app/node_modules
       - ./frontend:/app    
