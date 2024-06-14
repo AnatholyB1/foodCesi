@@ -18,7 +18,6 @@ import { withLogging } from "../helpers";
 import Category from "../db/category";
 import { getUserById } from "../db/users";
 import { getMenuItemsByRestaurantId } from "../db/menu_items";
-import { deleteOrderItemsByMenuItemId } from "../db/orders_items";
 
 export const getAllRestaurants = withLogging(
   "getAllRestaurants",

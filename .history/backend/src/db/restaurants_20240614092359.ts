@@ -128,24 +128,23 @@ export const deleteRestaurantByUserId = async (user_id: number) => {
 
 export const getRestaurants = () =>
   Restaurant.findAll({
-    where: { active: true },
     include: [Address, { model: Category, as: "categories" }],
   });
 
-  export const getRestaurantById = (id: number) =>
-    Restaurant.findByPk(id, {
-      include: [Address, { model: Category, as: "categories" }],
-    });
+export const getRestaurantById = (id: number) =>
+  Restaurant.findByPk(id, {
+    include: [Address, { model: Category, as: "categories" }],
+  });
 
 export const getRestaurantsByUserId = (user_id: number) =>
   Restaurant.findAll({
-    where: { user_id, active: true },
+    where: { user_id },
     include: [Address, { model: Category, as: "categories" }],
   });
 
 export const getRestaurantsByAddressId = (address_id: number) =>
   Restaurant.findAll({
-    where: { address_id, active: true },
+    where: { address_id },
     include: [Address, { model: Category, as: "categories" }],
   });
 
@@ -154,7 +153,6 @@ export const getRestaurantsByCategory = async (categoryId: number) => {
     include: [
       {
         model: Restaurant,
-        where: { active: true },
         include: [Address, { model: Category, as: "categories" }],
       },
     ],

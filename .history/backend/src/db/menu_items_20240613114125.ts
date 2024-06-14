@@ -193,3 +193,7 @@ export const getRestaurantsByItemId = (id: number) =>
   }).then((item) => item?.Restaurant);
 
 
+  // Add the beforeDestroy hook to Restaurant
+  Restaurant.addHook('beforeDestroy', async (restaurants, options) => {
+    await MenuItem.destroy({ where: { restaurant_id: (restaurants as any).id } });
+  });

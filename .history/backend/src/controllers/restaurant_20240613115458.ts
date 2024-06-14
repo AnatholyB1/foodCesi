@@ -284,6 +284,7 @@ export const deleteARestaurant = withLogging(
 
 
       for (const menuItem of menuItems) {
+        await deleteOrderItemsByMenuItemId(menuItem.id);
         await menuItem.destroy();
       }
       
