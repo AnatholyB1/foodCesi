@@ -117,10 +117,6 @@ export const createARestaurant = withLogging(
         return res.status(404).json({ message: "no user found"})
       }
 
-      if(user.type !== "restaurant"){
-        return res.status(400).json({ message: "User is not a restaurant" }).end();
-      }
-
 
       const already_restaurant = await getRestaurantsByUserId(Number(user_id));
       if (already_restaurant.length > 0) {
