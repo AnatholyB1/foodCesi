@@ -18,7 +18,6 @@ import { withLogging } from "../helpers";
 import Category from "../db/category";
 import { getUserById } from "../db/users";
 import { getMenuItemsByRestaurantId } from "../db/menu_items";
-import { deleteOrderItemsByMenuItemId } from "../db/orders_items";
 
 export const getAllRestaurants = withLogging(
   "getAllRestaurants",
@@ -279,13 +278,25 @@ export const deleteARestaurant = withLogging(
       if(!id) {
         return res.status(404).json({message: "no Id found"}).end()
       }
+
+      const menuItems = await getMenuItemsByRestaurantId(Number(id));
+
+
+      for (const menuItem of menuItems) {
+        await menuItem.destroy();
+      }
       
 
       const restaurant = await Restaurant.findByPk(id);
       if(!restaurant) {
         return res.status(404).json({message: "no restaurant found"}).end()
       }
-
+      const categories = restaurant.getCategories()
+      if(categories.length > 0) {
+        categories.forEach(async(category : any) => {
+          await removeCategoryFromRestaurant(restaurant.id,category.id)
+        });
+      }
 
       const nb_restaurant = await deleteRestaurant(Number(id));
       return res.status(200).json(nb_restaurant).end();

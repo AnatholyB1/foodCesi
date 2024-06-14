@@ -59,5 +59,4 @@ export const updateOrderItem = (id: number, values: Record<string, any>) => Orde
 export const updateOrderItemsByOrderId = (order_id: number, values: Record<string, any>) => OrderItem.update(values, { where: { order_id } });
 export const deleteOrderItem = (id: number) => OrderItem.destroy({ where: { id } });
 export const deleteOrderItemsByOrderId = (order_id: number) => OrderItem.destroy({ where: { order_id } });
-export const deleteOrderItemsByMenuItemId = (menu_item_id: number) => OrderItem.destroy({ where: { menu_item_id } });
 
