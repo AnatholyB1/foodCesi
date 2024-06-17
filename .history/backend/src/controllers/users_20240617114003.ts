@@ -73,18 +73,4 @@ export const updateUser = withLogging(
   }
 );
 
-export const getAUserById = async (
-  req: express.Request,
-  res: express.Response
-) => {
-  try {
-    const { id } = req.params;
-    if (!id) return res.status(400).json({ message: " id not found" }).end();
-    const user = await getUserById(Number(id));
-    if (!user) return res.status(404).json({ message: "user not found" }).end();
-    return res.status(200).json(user);
-  } catch (error) {
-    console.log(error);
-    return res.status(500);
-  }
-};
+
