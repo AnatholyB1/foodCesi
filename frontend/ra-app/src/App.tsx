@@ -1,14 +1,16 @@
-import "./App.css";
 import { Admin, Resource } from "react-admin";
-import restProvider from "ra-data-simple-rest";
-import PostList from "./components/PostList";
-import UserList from "./components/User/userList";
+import {UserList, UserEdit} from "./components/userList";
+import dataProvider from "./dataProvider";
+import { LogEdit, LogList } from "./components/logList";
 
 function App() {
     return (
-        <Admin dataProvider={restProvider("http://localhost:5173/api/")}>
-            <Resource name="posts" list={PostList} />
-            <Resource name="users" list={UserList} />
+        <Admin dataProvider={dataProvider}>
+            {/* <Resource name="posts" list={PostList} /> */}
+            <Resource name="users" list={UserList} edit={UserEdit}/>
+            <Resource name="restaurants" list={UserList} edit={UserEdit}/>
+            <Resource name="order" list={UserList} edit={UserEdit}/>
+            <Resource name="log" list={LogList} edit={LogEdit}/>
         </Admin>
     );
 }

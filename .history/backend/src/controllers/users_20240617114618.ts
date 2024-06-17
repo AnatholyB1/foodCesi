@@ -63,10 +63,9 @@ export const updateUser = withLogging(
 
       const values = { username, type };
 
-      await updateUserById(Number(id), values);
-      const updatedUser = await getUserById(Number(id));
+      const updated = await updateUserById(id, values);
 
-      return res.status(200).json(updatedUser).end();
+      return res.status(200).json(updated).end();
     } catch (error) {
       console.log(error);
       return res.status(500);

@@ -15,7 +15,6 @@ export const getAllLogs = withLogging(
   "getAllLogs",
   async (req: express.Request, res: express.Response) => {
     try {
-        console.log(req.query)
       // Filtering
       let filter = {};
       if (typeof req.query.filter === "string") {
@@ -44,11 +43,12 @@ export const getAllLogs = withLogging(
         .limit(range[1] - range[0] + 1);
 
       // Set headers and send response
-      res.setHeader("Content-Range", `log ${range[0]}-${range[1]}/${total}`);
+      res.setHeader("Content-Range", `logs ${range[0]}-${range[1]}/${total}`);
       res.setHeader("Access-Control-Expose-Headers", "Content-Range");
 
+      const response = await getLogs();
 
-      return res.status(200).json(logs).end();
+      return res.status(200).json(response).end();
     } catch (error) {
       console.log(error);
       return res.status(500);

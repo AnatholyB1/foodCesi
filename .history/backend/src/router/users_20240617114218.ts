@@ -77,11 +77,11 @@ export default (router: express.Router) => {
  *       500:
  *         description: Erreur interne du serveur
  */
-    router.put('/users/:id', updateUser)
+    router.patch('/users/:id', updateUser)
 /**
  * @swagger
  * /users/{id}:
- *   put:
+ *   patch:
  *     tags: [User]
  *     description: Met à jour un utilisateur par ID
  *     parameters:

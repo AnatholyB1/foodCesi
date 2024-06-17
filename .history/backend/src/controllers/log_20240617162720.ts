@@ -44,7 +44,7 @@ export const getAllLogs = withLogging(
         .limit(range[1] - range[0] + 1);
 
       // Set headers and send response
-      res.setHeader("Content-Range", `log ${range[0]}-${range[1]}/${total}`);
+      res.setHeader("Content-Range", `logs ${range[0]}-${range[1]}/${total}`);
       res.setHeader("Access-Control-Expose-Headers", "Content-Range");
 
 
