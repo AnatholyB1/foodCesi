@@ -47,8 +47,9 @@ export const getAllLogs = withLogging(
       res.setHeader("Content-Range", `logs ${range[0]}-${range[1]}/${total}`);
       res.setHeader("Access-Control-Expose-Headers", "Content-Range");
 
+      const response = await getLogs();
 
-      return res.status(200).json(logs).end();
+      return res.status(200).json(response).end();
     } catch (error) {
       console.log(error);
       return res.status(500);
