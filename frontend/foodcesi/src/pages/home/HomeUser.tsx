@@ -1,26 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import CategoriesCarousel from "@/components/CategoriesCarousel";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import RestaurantsList from "@/components/RestaurantsList";
+import api from "@/helpers/api";
+import { toast } from "@/components/ui/use-toast";
 
 const addresses = [
     { id: 1, name: "Maison" },
     { id: 2, name: "Travail" },
 ];
 
-const bestRestaurants = [
-    { id: 1, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-    { id: 2, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-    { id: 3, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-    { id: 4, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-    { id: 5, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-];
-
 export default function HomeUser() {
     const [selectedAddress, setSelectedAddress] = useState(addresses[0]);
+    const [bestRestaurants, setBestRestaurants] = useState<Restaurant[]>([]);
+
+    useEffect(() => {
+        const fetchRestaurants = async () => {
+            try {
+                const response = await api.get(`restaurants`);
+
+                const data = response.data;
+                if (data.length > 0) {
+                    data.map((restaurant: Restaurant) => {
+                        restaurant.image = "/restaurantImages/mcdonalds.jpg";
+                        restaurant.banner = "/restaurantImages/mcdonalds.jpg";
+                        restaurant.logo = "/avatars/mcdonalds.jpg";
+                    });
+                    setBestRestaurants(data);
+                }
+            } catch (error: any) {
+                console.error(error);
+                toast({ description: error.response.data.message });
+            }
+        };
+        fetchRestaurants();
+    }, []);
 
     return (
         <div className="flex flex-col items-center gap-4 py-4 px-4">

@@ -6,18 +6,14 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import Restaurant from "../Restaurant";
-
-interface RestaurantType {
-    id: number;
-    name: string;
-    image: string;
-    avatar: string;
-    items: any[];
-}
+import RestaurantPage from "@/components/RestaurantPage";
+import Loading from "@/components/ui/Loading";
+import { logError } from "@/helpers/utils";
 
 interface NewRestaurantType {
     name: string;
+    banner: string;
+    logo: string;
     street: string;
     city: string;
     state: string;
@@ -29,6 +25,8 @@ interface NewRestaurantType {
 
 const defaultNewRestaurant: NewRestaurantType = {
     name: "name",
+    banner: "",
+    logo: "",
     street: "street",
     city: "city",
     state: "state",
@@ -40,7 +38,7 @@ const defaultNewRestaurant: NewRestaurantType = {
 
 const HomeRestaurant = () => {
     const { user } = useAuth();
-    const [restaurant, setRestaurant] = useState<RestaurantType | null>(null);
+    const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [newRestaurant, setNewRestaurant] = useState<NewRestaurantType>(defaultNewRestaurant);
 
@@ -55,8 +53,7 @@ const HomeRestaurant = () => {
                 }
                 setIsLoaded(true);
             } catch (error: any) {
-                console.error(error);
-                toast({ description: error.response.data.message });
+                logError(error);
             }
         };
         fetchRestaurant();
@@ -70,8 +67,43 @@ const HomeRestaurant = () => {
             setRestaurant(response.data);
             toast({ description: "Restaurant ajouté" });
         } catch (error: any) {
-            console.log(error);
-            toast({ description: error.response.data.message });
+            logError(error);
+        }
+    };
+
+    const handleDelete = async () => {
+        console.log("delete");
+
+        try {
+            const response = await api.delete(`/restaurants/${restaurant?.id}`);
+            console.log(response);
+
+            setRestaurant(null);
+            toast({ description: "Restaurant supprimé" });
+        } catch (error: any) {
+            logError(error);
+        }
+    };
+
+    const addImage = async (e: React.ChangeEvent<HTMLInputElement>, callback: (value: string) => void) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file); // 'image' is the field name expected by your API
+
+        try {
+            const response = await api.post(`/upload`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            callback(response.data.file.path);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -79,7 +111,12 @@ const HomeRestaurant = () => {
         <>
             {isLoaded ? (
                 restaurant ? (
-                    <Restaurant />
+                    <div className="flex flex-col gap-2 items-center">
+                        <RestaurantPage restaurant={restaurant} user_id={user?.id} />
+                        <Button variant="link" onClick={handleDelete}>
+                            Supprimer le restaurant
+                        </Button>
+                    </div>
                 ) : (
                     <div className="h-full flex flex-col gap-4 justify-center items-center">
                         <p>Vous n'avez pas encore de restaurant</p>
@@ -94,11 +131,35 @@ const HomeRestaurant = () => {
                                         <DialogDescription>Ajouter un nouveau restaurant.</DialogDescription>
                                     </DialogHeader>
                                     <div className="grid gap-4 py-4">
+                                        {newRestaurant.banner && (
+                                            <div className="w-full flex flex-col items-center py-2 px-4">
+                                                <Label htmlFor="banner">
+                                                    <img className="w-full h-auto rounded-2xl aspect-[3/1] max-h-40 object-cover" src={newRestaurant.banner} width="1200" height="800" alt="banière" />
+                                                </Label>
+                                                <div className="flex flex-col items-center -mt-10">
+                                                    <Label htmlFor="logo">
+                                                        <img className="w-20 h-20 rounded-full border-4 border-white md:w-24 md:h-24 lg:w-28 lg:h-28" src={newRestaurant.logo} width="72" height="72" alt="logo" />
+                                                    </Label>
+                                                </div>
+                                            </div>
+                                        )}
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right" htmlFor="name">
                                                 Nom
                                             </Label>
                                             <Input id="name" type="text" className="col-span-3" placeholder="Nom" value={newRestaurant.name} onChange={(e) => setNewRestaurant({ ...newRestaurant, name: e.target.value })} required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label className="text-right" htmlFor="banner">
+                                                Image de banière
+                                            </Label>
+                                            <Input id="banner" type="file" className="col-span-3" onChange={(e: React.ChangeEvent<HTMLInputElement>) => addImage(e, (value) => setNewRestaurant({ ...newRestaurant, banner: value }))} />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label className="text-right" htmlFor="logo">
+                                                Logo
+                                            </Label>
+                                            <Input id="logo" type="file" className="col-span-3" onChange={(e: React.ChangeEvent<HTMLInputElement>) => addImage(e, (value) => setNewRestaurant({ ...newRestaurant, logo: value }))} />
                                         </div>
                                         <div className="grid grid-cols-4 items-center gap-4">
                                             <Label className="text-right" htmlFor="street">
@@ -149,7 +210,7 @@ const HomeRestaurant = () => {
                     </div>
                 )
             ) : (
-                <p>Loading...</p>
+                <Loading />
             )}
         </>
     );

@@ -1,28 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CategoriesCarousel from "@/components/CategoriesCarousel";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Search, Settings2 } from "lucide-react";
 import RestaurantItem from "@/components/RestaurantItem";
 import CustomCard from "@/components/ui/CustomCard";
+import api from "@/helpers/api";
+import { toast } from "@/components/ui/use-toast";
 
 const orders = ["pertinence", "asc", "desc"];
 
-interface Restaurant {
-    id: number;
-    name: string;
-    image: string;
-    categories: string[];
-}
-
-const restaurants: Restaurant[] = [
-    { id: 1, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-    { id: 2, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-    { id: 3, name: "McDonald's", image: "/restaurantImages/mcdonalds.jpg", categories: ["Burger", "Pizza"] },
-];
-
 export default function Recherche() {
     const [order, setOrder] = useState("pertinence");
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+
+    useEffect(() => {
+        const fetchRestaurants = async () => {
+            try {
+                const response = await api.get(`restaurants`);
+
+                const data = response.data;
+                if (data.length > 0) {
+                    data.map((restaurant: Restaurant) => {
+                        restaurant.image = "/restaurantImages/mcdonalds.jpg";
+                        restaurant.banner = "/restaurantImages/mcdonalds.jpg";
+                        restaurant.logo = "/avatars/mcdonalds.jpg";
+                    });
+                    setRestaurants(data);
+                }
+            } catch (error: any) {
+                console.error(error);
+                toast({ description: error.response.data.message });
+            }
+        };
+        fetchRestaurants();
+    }, []);
 
     return (
         <div className="flex flex-col items-start gap-4 py-4 px-4">
@@ -59,7 +71,7 @@ export default function Recherche() {
             </DropdownMenu>
             <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {restaurants.map((restaurant, index) => (
-                    <RestaurantItem key={index} {...restaurant} />
+                    <RestaurantItem key={index} restaurant={restaurant} />
                 ))}
             </div>
         </div>
