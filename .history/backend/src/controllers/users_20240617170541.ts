@@ -7,42 +7,12 @@ import {
   updateUserById,
 } from "../db/users";
 import { withLogging } from "../helpers";
-import User from '../db/users';
 
 export const getAllUsers = withLogging(
   "getAllUsers",
   async (req: express.Request, res: express.Response) => {
     try {
-         // Filtering
-         let filter = {};
-         if (typeof req.query.filter === "string") {
-           filter = JSON.parse(req.query.filter);
-         }
-   
-         // Sorting
-         let sort: [string, string][] = [];
-         if (typeof req.query.sort === "string") {
-           const [sortField, sortOrder] = JSON.parse(req.query.sort);
-           sort = [[sortField, sortOrder === "ASC" ? 'ASC' : 'DESC']];
-         }
-   
-         // Pagination
-         let range = [0, 9]; // Default range
-         if (typeof req.query.range === "string") {
-           range = JSON.parse(req.query.range);
-         }
-
-
-         const { count: total, rows: users } = await User.findAndCountAll({
-          where: filter,
-          order: sort,
-          offset: range[0],
-          limit: range[1] - range[0] + 1
-        });
-
-         res.setHeader("Content-Range", `users ${range[0]}-${range[1]}/${total}`);
-         res.setHeader("Access-Control-Expose-Headers", "Content-Range");
-      
+      const users = await getUsers();
       return res.status(200).json(users);
     } catch (error) {
       console.log(error);
@@ -84,6 +54,8 @@ export const updateUser = withLogging(
   "updateUser",
   async (req: express.Request, res: express.Response) => {
     try {
+
+   
 
 
       const { id } = req.params;
