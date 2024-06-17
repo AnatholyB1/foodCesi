@@ -29,7 +29,7 @@ function App() {
                             <Route
                                 path="/unauthorized"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
                                         <Unauthorized />
                                     </RequireAuth>
                                 }
@@ -37,7 +37,7 @@ function App() {
                             <Route
                                 path="/"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
                                         <Home />
                                     </RequireAuth>
                                 }
@@ -85,7 +85,7 @@ function App() {
                             <Route
                                 path="/compte"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
                                         <Compte />
                                     </RequireAuth>
                                 }

@@ -6,27 +6,67 @@ import {
     DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { BarChart } from "@mui/x-charts/BarChart";
 
-const droits = [
-    { id: 1, name: "rggsegsge" },
-    { id: 2, name: "Travail" },
-];
-
-const cle = "cfvgbhjnk,hjbs";
+// const droits = [
+//     { id: 1, name: "rggsegsge" },
+//     { id: 2, name: "Travail" },
+// ];
 
 export default function Developer() {
-    const [selectedDroit, setSelectedDroit] = useState(droits[0]);
+    const { user } = useAuth();
 
-    if (!cle) {
+    const [key, setKey] = useState(null);
+    const [idKey, setIdKey] = useState(null);
+
+    useEffect(() => {
+        axios.get(`/api/devs/user/${user?.id}`).then((res) => {
+            console.log(res)
+            const cle = res?.data[0]?.apiKey;
+            const id = res?.data[0]?.id;
+            setKey(cle);
+            setIdKey(id);
+        });
+    }, [key]);
+
+    const onClickCreateKey = () => {
+        axios
+            .post("/api/devs", { user_id: user?.id, appName: user?.username })
+            .then((res) => {
+                const cle = res?.data?.apiKey;
+                const id = res?.data?.id;
+                setKey(cle);
+                setIdKey(id);
+                
+            });
+
+        return undefined;
+    };
+
+    const onClickDeleteKey = () => {
+        axios
+            .delete(`/api/devs/${idKey}`)
+            .then(() => {
+                setKey(null);
+                setIdKey(null);
+            });
+
+        return undefined;
+    }
+
+    // const [selectedDroit, setSelectedDroit] = useState(droits[0]);
+
+    if (!key) {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
                 <h1 className="text-lg font-semibold text-nowrap">
                     Vous n'avez pas encore de clé de sécurité ?
                 </h1>
-                Sélectionner vos droits :
+                {/* Sélectionner vos droits :
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -58,15 +98,18 @@ export default function Developer() {
                             ))}
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
-                </DropdownMenu>
-                <Button>Faire la demande</Button>
+                </DropdownMenu> */}
+                <Button onClick={onClickCreateKey}>Faire la demande</Button>
             </div>
         );
     } else {
         return (
             <div className="flex flex-col items-center justify-center gap-2">
-                <h2>Autorisation : Admin</h2>
-                <h2>Clé : {cle} </h2>
+                {/* <h2>Autorisation : Admin</h2> */}
+                <h2>Clé : {key} </h2>
+                <Button variant="link" className="underline" onClick={onClickDeleteKey}>
+                    Supprimer la clé
+                </Button>
                 <Button>Consulter la documentation</Button>
                 <h2>Utilisation ces derniers mois :</h2>
                 {/* <BarChart
