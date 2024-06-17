@@ -1,5 +1,5 @@
 const dataProvider = {
-    getList: (resource : string,) => {
+    getList: async (resource : string,) => {
         return fetch(`http://localhost:8000/${resource}`)
             .then(response => response.json())
             .then(({ data }) => ({
@@ -7,14 +7,14 @@ const dataProvider = {
                 total: data.length,
             }));
     },
-    getOne: (resource : string, params : any) => {
+    getOne: async (resource : string, params : any) => {
         return fetch(`http://localhost:8000/${resource}/${params.id}`)
             .then(response => response.json())
             .then(({ data }) => ({
                 data,
             }));
     },
-    getMany: (resource : string, params : any) => {
+    getMany: async (resource : string, params : any) => {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
         };
@@ -24,7 +24,7 @@ const dataProvider = {
                 data,
             }));
     },
-    getManyReference: (resource : string, params : any) => {
+    getManyReference: async (resource : string, params : any) => {
         const query = {
             filter: JSON.stringify({ ...params.filter, [params.target]: params.id }),
         };
@@ -35,7 +35,7 @@ const dataProvider = {
                 total: data.length,
             }));
     },
-    update: (resource : string, params : any) =>
+    update: async (resource : string, params : any) =>
         fetch(`http://localhost:8000/${resource}/${params.id}`, {
             method: 'PUT',
             body: JSON.stringify(params.data),
@@ -44,7 +44,7 @@ const dataProvider = {
             .then(({ data }) => ({
                 data,
             })),
-    updateMany: (resource : string, params : any) => {
+    updateMany: async (resource : string, params : any) => {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
         };
@@ -57,7 +57,7 @@ const dataProvider = {
                 data,
             }));
     },
-    create: (resource : string, params : any) =>
+    create: async (resource : string, params : any) =>
         fetch(`http://localhost:8000/${resource}`, {
             method: 'POST',
             body: JSON.stringify(params.data),
@@ -66,7 +66,7 @@ const dataProvider = {
             .then(({ data }) => ({
                 data,
             })),
-    delete: (resource : string, params : any) =>
+    delete: async (resource : string, params : any) =>
         fetch(`http://localhost:8000/${resource}/${params.id}`, {
             method: 'DELETE',
         })
@@ -74,7 +74,7 @@ const dataProvider = {
             .then(({ data }) => ({
                 data,
             })),
-    deleteMany: (resource : string, params : any) => {
+    deleteMany: async (resource : string, params : any) => {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
         };
