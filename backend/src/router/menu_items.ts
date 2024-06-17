@@ -8,8 +8,6 @@ export default (router: express.Router) => {
      *   name: Menu Items
      *   description: Operations about menu items
      */
-
-   router.get('/menu_items/categories/restaurant/:restaurant_id', getAllCategoriesWithMenuItemsByRestaurantId); 
    router.get('/menu_items', getItems);
    /**
  * @swagger
@@ -53,6 +51,54 @@ export default (router: express.Router) => {
  *         description: Aucun élément de menu trouvé
  *       500:
  *         description: Erreur interne du serveur
+ */
+   router.get('/menu_items/categories/restaurant/:restaurant_id', getAllCategoriesWithMenuItemsByRestaurantId);
+   /**
+ * @swagger
+ * /menu_items/categories/restaurant/{restaurant_id}:
+ *   get:
+ *     tags: [Menu Items]
+ *     parameters:
+ *       - in: path
+ *         name: restaurant_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the restaurant
+ *     responses:
+ *       200:
+ *         description: A list of categories with their menu items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   category_id:
+ *                     type: integer
+ *                   restaurant_id:
+ *                     type: integer
+ *                   menu_items:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         item_id:
+ *                           type: integer
+ *                         name:
+ *                           type: string
+ *                         description:
+ *                           type: string
+ *                         price:
+ *                           type: number
+ *                           format: float
+ *       400:
+ *         description: Aucun élément de menu trouvé
+ *       404:
+ *         description: Pas de menus trouvé pour ce restaurant
+ *       500:
+ *         description: Erreur intern du serveur.
  */
     router.get('/menu_items/:id', getItemById);
     /**
