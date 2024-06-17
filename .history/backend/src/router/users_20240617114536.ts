@@ -81,7 +81,7 @@ export default (router: express.Router) => {
 /**
  * @swagger
  * /users/{id}:
- *   put:
+ *   patch:
  *     tags: [User]
  *     description: Met à jour un utilisateur par ID
  *     parameters:
