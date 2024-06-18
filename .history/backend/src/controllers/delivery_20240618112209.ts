@@ -29,8 +29,8 @@ export const getAvailableDeliveriesByCity = async (address_id: number) => {
 export const getAllDeliveries = withLogging( "getAllDeliveries", async (req: express.Request, res: express.Response) => {
   try {
     const deliveries = await getDeliveries();
-    if(!deliveries) return res.status(404).end();
-    return res.status(200).json(deliveries).end();
+    if(!deliveries) return res.status(400);
+    return res.status(200).json(deliveries);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error }).end();
@@ -41,7 +41,7 @@ export const getADeliveryById = withLogging( "getADeliveryById", async (req: exp
   try {
     const { id } = req.params;
     const delivery = await getDeliveryById(Number(id));
-    if(!delivery) return res.status(404).end();
+    if(!delivery) return res.status(400);
     return res.status(200).json(delivery);
   } catch (error) {
     console.log(error);
@@ -99,7 +99,7 @@ export const getAllDeliveriesByUserId = withLogging( "getAllDeliveriesByUserId",
   try {
     const { user_id } = req.params;
     const deliveries = await getDeliveriesByUserId(Number(user_id));
-    if(!deliveries) return res.status(404).end();
+    if(!deliveries) return res.status(400);
     return res.status(200).json(deliveries);
   } catch (error) {
     console.log(error);

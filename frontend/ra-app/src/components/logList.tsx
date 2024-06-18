@@ -1,18 +1,19 @@
-import { FunctionComponent } from "react";
 import {
     List,
     Datagrid,
     TextField,
-    Edit,
-    SimpleForm,
     TextInput,
-    SelectInput,
 } from "react-admin";
 
+const filters = [
+<TextInput label="Message" source="message" alwaysOn />,
+<TextInput label="Id" source="id"  />,
+<TextInput label="Log_connexion" source="message" defaultValue="result login: 200 OK"/>
+];
 
 export const LogList = (props: any) => {
     return (
-        <List  {...props}>
+        <List filters={filters} {...props}>
             <Datagrid>
                 <TextField source="_id" />
                 <TextField source="message" />
@@ -22,14 +23,3 @@ export const LogList = (props: any) => {
         </List>
     );
 };
-
-export const LogEdit :FunctionComponent<any> = (props: any) => 
-    <Edit title="oui" {...props}>
-        <SimpleForm>
-            <TextInput disabled source="id" />
-            <TextInput source="email" type={"email"}/>
-
-            <TextInput source="username" />
-            <SelectInput source="type" choices={[{id:"user", name:"user"}, {id:"delivery", name:"delivery"}, {id:"restaurant", name:"restaurant"}, {id:"developer", name:"developer"}]} />
-        </SimpleForm>
-    </Edit>;

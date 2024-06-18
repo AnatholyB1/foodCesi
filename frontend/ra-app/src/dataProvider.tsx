@@ -22,7 +22,7 @@ const dataProvider: DataProvider = {
         return fetch(`api/${resource}?${new URLSearchParams(query)}`)
         .then(response => {
             const contentRange = response.headers.get('Content-Range');
-            const total = contentRange ? parseInt(contentRange.split('/')[1], 10) : 0;
+            const total = contentRange ? parseInt(contentRange.split('/')[1], 10) : 0;            
             return response.json().then(data => ({
               data: transformData(data),
               total,

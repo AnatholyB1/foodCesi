@@ -25,7 +25,7 @@ export const getAddress = withLogging('getAddress', async (req: express.Request,
         return res.status(200).json(address).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -40,7 +40,7 @@ export const getAddressesByUser = withLogging('getAddressesByUser', async (req: 
         return res.status(200).json(addresses).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -65,7 +65,7 @@ export const createNewAddress = withLogging('createNewAddress', async (req: expr
         return res.status(201).json(address).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -91,7 +91,7 @@ export const updateAddressInfo = withLogging('updateAddressInfo', async (req: ex
         return res.status(200).json(address).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -104,7 +104,7 @@ export const deleteAddressInfo = withLogging('deleteAddressInfo', async (req: ex
         return res.status(204).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -117,7 +117,7 @@ export const deleteAddressesByUser = withLogging('deleteAddressesByUser', async 
         return res.status(204).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -130,7 +130,7 @@ export const getUserByCityInfo = withLogging('getUserByCityInfo', async (req: ex
         return res.status(200).json(user).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -143,7 +143,7 @@ export const getUserByStateInfo = withLogging('getUserByStateInfo', async (req: 
         return res.status(200).json(user).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -157,7 +157,7 @@ export const getUserByCountryInfo = withLogging('getUserByCountryInfo', async (r
         return res.status(200).json(user).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -171,7 +171,7 @@ export const getUserByZipCodeInfo = withLogging('getUserByZipCodeInfo', async (r
         return res.status(200).json(user).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
 
@@ -184,6 +184,6 @@ export const getUserByStreetInfo = withLogging('getUserByStreetInfo', async (req
         return res.status(200).json(user).end();
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:error}).end();
+        return res.status(500);
     }
 });
