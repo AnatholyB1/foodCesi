@@ -44,7 +44,7 @@ export const getAllRestaurants = withLogging(
         await Restaurant.findAndCountAll({
           where: {
             ...filter,
-            active: true,
+            isActive: true,
           },
           order: sort,
           offset: range[0],
