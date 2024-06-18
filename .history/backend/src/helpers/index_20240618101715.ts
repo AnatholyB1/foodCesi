@@ -17,8 +17,13 @@ export const createAndConsoleLogs = async (message : string, level : string = 'i
 export const withLogging = (name : string,fn: Function) => {
     return async (...args: any[]) => {
         createAndConsoleLogs(`Start ${name}`);
+        try {
             const result = await fn(...args);
             await createAndConsoleLogs(`result ${name}: ${result?.statusCode + ' ' + result?.statusMessage}`);
             return result;
+        } catch (error) {
+            await createAndConsoleLogs(`Error ${name}: ${error}`, 'error');
+            return error;
+        }
     }
 }
