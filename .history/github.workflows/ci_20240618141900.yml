@@ -1,12 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - test
-  pull_request:
-    branches:
-      - test
+on: [push, pull_request]
 
 jobs:
   build:
@@ -24,6 +18,8 @@ jobs:
     - name: Install dependencies
       run: npm run install
 
-    - name: Run tests
-      run: npm run test
+    - name: Run ESLint
+      run: npm run lint
 
+    - name: Run tests
+      run: npm test

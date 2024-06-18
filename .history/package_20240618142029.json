@@ -4,7 +4,7 @@
   "description": "school project to mimic Uber eats",
   "main": "index.js",
   "scripts": {
-    "test": "concurrently \"cd backend && npm test\" \"cd frontend/foodcesi && npm run lint\" \"cd frontend/ra-app && npm run lint\"",
+    "test": "concurrently \"cd backend && npm test\" \"cd frontend/foodcesi && npm test\" \"cd frontend/ra-app && npm test\"",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend/foodcesi && npm run dev\" \"cd frontend/ra-app && npm run dev\"  ",
     "install" : "concurrently \"cd backend && npm install\" \"cd frontend/foodcesi && npm install\" \"cd frontend/ra-app && npm install\""
   },
