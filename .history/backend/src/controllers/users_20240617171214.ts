@@ -40,7 +40,7 @@ export const getAllUsers = withLogging(
           limit: range[1] - range[0] + 1
         });
 
-         res.setHeader("Content-Range", `users ${range[0]}-${range[1]}/${total}`);
+         res.setHeader("Content-Range", `log ${range[0]}-${range[1]}/${total}`);
          res.setHeader("Access-Control-Expose-Headers", "Content-Range");
       
       return res.status(200).json(users);
