@@ -2,7 +2,7 @@ export {};
 
 declare global {
     interface Restaurant {
-        id: number;
+        id?: number;
         name: string;
         image: string;
         banner: string;
@@ -12,22 +12,36 @@ declare global {
     }
 
     interface RestaurantCategory {
-        id: number;
+        id?: number;
         name: string;
     }
 
     interface RestaurantItemsCategory {
-        id: number;
+        id?: number;
         name: string;
         MenuItems: MenuItem[];
     }
 
     interface MenuItem {
-        id: number;
-        restaurant_id: number;
+        id?: number;
+        restaurant_id?: number;
         name: string;
         description: string;
         price: string;
         image_url: string;
+        MenuCategory: {
+            category_id: number;
+        };
+    }
+
+    interface NewMenuItem {
+        id?: number;
+        restaurant_id?: number;
+        name: string;
+        description: string;
+        price: string;
+        image_url: string;
+        category_id: number[];
+        available: boolean;
     }
 }

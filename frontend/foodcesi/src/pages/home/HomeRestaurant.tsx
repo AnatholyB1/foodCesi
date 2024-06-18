@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import RestaurantPage from "@/components/RestaurantPage";
 import Loading from "@/components/ui/Loading";
 import { logError } from "@/helpers/utils";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface NewRestaurantType {
     name: string;
@@ -92,7 +93,7 @@ const HomeRestaurant = () => {
         }
 
         const formData = new FormData();
-        formData.append("file", file); // 'image' is the field name expected by your API
+        formData.append("file", file);
 
         try {
             const response = await api.post(`/upload`, formData, {
@@ -112,10 +113,22 @@ const HomeRestaurant = () => {
             {isLoaded ? (
                 restaurant ? (
                     <div className="flex flex-col gap-2 items-center">
-                        <RestaurantPage restaurant={restaurant} user_id={user?.id} />
-                        <Button variant="link" onClick={handleDelete}>
-                            Supprimer le restaurant
-                        </Button>
+                        <RestaurantPage restaurant={restaurant} restaurant_id={user?.id} />
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="link">Supprimer le restaurant</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Etes vous sûr ?</AlertDialogTitle>
+                                    <AlertDialogDescription>Cette action est définitive. Voulez vous vraiment supprimer votre restaurant ?</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleDelete}>Confirmer</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 ) : (
                     <div className="h-full flex flex-col gap-4 justify-center items-center">
@@ -138,7 +151,7 @@ const HomeRestaurant = () => {
                                                 </Label>
                                                 <div className="flex flex-col items-center -mt-10">
                                                     <Label htmlFor="logo">
-                                                        <img className="w-20 h-20 rounded-full border-4 border-white md:w-24 md:h-24 lg:w-28 lg:h-28" src={newRestaurant.logo} width="72" height="72" alt="logo" />
+                                                        <img className="w-20 h-20 rounded-full border-4 bg-white border-white md:w-24 md:h-24 lg:w-28 lg:h-28" src={newRestaurant.logo} width="72" height="72" alt="logo" />
                                                     </Label>
                                                 </div>
                                             </div>
