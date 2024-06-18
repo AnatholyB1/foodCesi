@@ -10,6 +10,7 @@ import { logError } from "@/helpers/utils";
 import Loading from "@/components/ui/Loading";
 import CustomCard from "@/components/ui/CustomCard";
 import { Pencil, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const defaultNewAddress: Address = {
     name: "",
@@ -103,9 +104,23 @@ const Addresses = () => {
                                                 <Button variant="link" size="icon" className="w-6 h-6" onClick={() => console.log("Edit: " + address.id)}>
                                                     <Pencil size="20" className="text-primary" />
                                                 </Button>
-                                                <Button variant="link" size="icon" className="w-6 h-6" onClick={() => handleDeleteAddress(address)}>
-                                                    <Trash2 size="20" className="text-primary" />
-                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="link" size="icon" className="w-6 h-6">
+                                                            <Trash2 size="20" className="text-primary" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Etes vous sûr ?</AlertDialogTitle>
+                                                            <AlertDialogDescription>Cette action est définitive. Voulez vous vraiment supprimer cet item ?</AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => handleDeleteAddress(address)}>Confirmer</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
                                             </div>
                                         </div>
                                         <p>{`${address.street}, ${address.zip_code}, ${address.city}, ${address.country}`}</p>
