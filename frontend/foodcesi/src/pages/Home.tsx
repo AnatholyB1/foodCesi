@@ -1,24 +1,24 @@
 import { useAuth } from "@/context/AuthContext";
-import Delivery from "./home/Delivery";
-import User from "./home/User";
-import Restaurant from "./Restaurant";
-import Developer from "./home/Developer";
+import HomeUser from "./home/HomeUser";
+import HomeRestaurant from "./home/HomeRestaurant";
+import HomeDelivery from "./home/HomeDelivery";
+import HomeDeveloper from "./home/HomeDeveloper";
 
 export default function Home() {
     const { user } = useAuth();
 
     switch (user?.type) {
         case "user":
-            return <User />;
+            return <HomeUser />;
 
         case "restaurant":
-            return <Restaurant />;
+            return <HomeRestaurant />;
 
         case "delivery":
-            return <Delivery />;
+            return <HomeDelivery />;
 
         case "developer":
-            return <Developer />
+            return <HomeDeveloper />;
 
         default:
             break;

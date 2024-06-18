@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Bitcoin, CreditCard, Pencil } from "lucide-react";
 import Dropdown from "@/components/ui/Dropdown";
-import FoodItem from "@/components/ui/FoodItem";
+import MenuItem from "@/components/ui/MenuItem";
 import { NavLink } from "react-router-dom";
 
 interface Address {
@@ -29,18 +29,22 @@ const restaurant = {
 
 const items = [
     {
-        icon: "/dishes/frites.png",
-        title: "Frites moyennes",
+        name: "Frites moyennes",
         description: "Moyenne portion de bâtonnets de pommes de terre frites.",
-        price: 4.45,
-        quantity: 1,
+        image_url: "/dishes/frites.png",
+        price: "4.45",
+        MenuCategory: {
+            category_id: 1,
+        },
     },
     {
-        icon: "/dishes/potatoes.png",
-        title: "Potatoes moyennes",
+        name: "Potatoes moyennes",
         description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
-        price: 4.45,
-        quantity: 1,
+        image_url: "/dishes/potatoes.png",
+        price: "4.45",
+        MenuCategory: {
+            category_id: 1,
+        },
     },
 ];
 
@@ -67,18 +71,22 @@ const order = {
     status: 1,
     items: [
         {
-            icon: "/dishes/frites.png",
-            title: "Frites moyennes",
+            name: "Frites moyennes",
             description: "Moyenne portion de bâtonnets de pommes de terre frites.",
-            price: 4.45,
-            quantity: 1,
+            image_url: "/dishes/frites.png",
+            price: "4.45",
+            MenuCategory: {
+                category_id: 1,
+            },
         },
         {
-            icon: "/dishes/potatoes.png",
-            title: "Potatoes moyennes",
+            name: "Potatoes moyennes",
             description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
-            price: 4.45,
-            quantity: 1,
+            image_url: "/dishes/potatoes.png",
+            price: "4.45",
+            MenuCategory: {
+                category_id: 1,
+            },
         },
     ],
 };
@@ -115,8 +123,8 @@ export default function Checkout() {
                     </div>
                     <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={false}>
                         <div className="flex flex-col">
-                            {items.map((item, i) => (
-                                <FoodItem key={i} {...item} editable />
+                            {items.map((item, index) => (
+                                <MenuItem key={index} item={item} quantity={1} editable />
                             ))}
                         </div>
                     </Dropdown>

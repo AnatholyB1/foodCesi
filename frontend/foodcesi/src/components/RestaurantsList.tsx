@@ -7,12 +7,7 @@ import RestaurantItem from "./RestaurantItem";
 interface Props {
     title: string;
     link: string;
-    restaurants: {
-        id: number;
-        name: string;
-        image: string;
-        categories: string[];
-    }[];
+    restaurants: Restaurant[];
 }
 
 const RestaurantsList = ({ title, link, restaurants }: Props) => {
@@ -31,7 +26,7 @@ const RestaurantsList = ({ title, link, restaurants }: Props) => {
                 <CarouselContent>
                     {restaurants.map((restaurant, index) => (
                         <CarouselItem key={index} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
-                            <RestaurantItem {...restaurant} />
+                            <RestaurantItem restaurant={restaurant} />
                         </CarouselItem>
                     ))}
                 </CarouselContent>

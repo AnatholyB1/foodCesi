@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//     DropdownMenu,
+//     DropdownMenuContent,
+//     DropdownMenuRadioGroup,
+//     DropdownMenuRadioItem,
+//     DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { ChevronDown } from "lucide-react";
+// import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 // import { BarChart } from "@mui/x-charts/BarChart";
 
@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 //     { id: 2, name: "Travail" },
 // ];
 
-export default function Developer() {
+export default function HomeDeveloper() {
     const { user } = useAuth();
 
     const [key, setKey] = useState(null);
