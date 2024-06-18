@@ -1,5 +1,5 @@
 import Dropdown from "@/components/ui/Dropdown";
-import FoodItem from "@/components/ui/FoodItem";
+import MenuItem from "@/components/ui/MenuItem";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "react-router-dom";
 
@@ -8,20 +8,24 @@ const restaurant = {
     title: "McDonald's",
 };
 
-const items = [
+const items: MenuItem[] = [
     {
-        icon: "/dishes/frites.png",
-        title: "Frites moyennes",
+        name: "Frites moyennes",
         description: "Moyenne portion de bâtonnets de pommes de terre frites.",
-        price: 4.45,
-        quantity: 1,
+        image_url: "/dishes/frites.png",
+        price: "4.45",
+        MenuCategory: {
+            category_id: 1,
+        },
     },
     {
-        icon: "/dishes/potatoes.png",
-        title: "Potatoes moyennes",
+        name: "Potatoes moyennes",
         description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
-        price: 4.45,
-        quantity: 1,
+        image_url: "/dishes/potatoes.png",
+        price: "4.45",
+        MenuCategory: {
+            category_id: 1,
+        },
     },
 ];
 
@@ -32,7 +36,7 @@ export default function Panier() {
                 <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={true}>
                     <div className="flex flex-col">
                         {items.map((item, i) => (
-                            <FoodItem key={i} {...item} editable />
+                            <MenuItem key={i} item={item} quantity={1} editable />
                         ))}
                     </div>
                 </Dropdown>
