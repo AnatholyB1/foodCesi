@@ -1,4 +1,5 @@
-import api, { postData } from "@/helpers/api";
+import { toast } from "@/components/ui/use-toast";
+import api from "@/helpers/api";
 import { logError } from "@/helpers/utils";
 import React, { createContext, useState, ReactNode, useContext } from "react";
 
@@ -39,7 +40,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const register = async (email: string, password: string, username: string, type: string) => {
         try {
-            const data = await postData("/auth/register", { email, password, username, type });
+            const response = await api.post("/auth/register", { email, password, username, type });
+
+            const data = response.data;
+            if (!data) {
+                toast({ description: "Echec de l'inscription" });
+                return;
+            }
             setUser({ ...data });
             sessionStorage.setItem("user", JSON.stringify({ ...data }));
         } catch (error) {

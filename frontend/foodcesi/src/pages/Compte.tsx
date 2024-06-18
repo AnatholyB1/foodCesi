@@ -1,28 +1,40 @@
 import Informations from "@/components/accountItems/Informations";
 import Logout from "@/components/accountItems/Logout";
+import Sponsor from "@/components/accountItems/Sponsor";
 import AccountItem from "@/components/ui/AccountItem";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { Handshake, MapPin, Pencil } from "lucide-react";
+import { MapPin, Pencil } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Item {
-    icon: JSX.Element;
-    title: string;
-    variant?: "default" | "primary";
-    action?: () => void;
+    item: JSX.Element;
+    types: string[];
 }
 
-export default function Compte() {
+const Compte = () => {
     const { user } = useAuth();
 
     const items: Item[] = [
         {
-            icon: <MapPin />,
-            title: "Vos adresses",
+            item: <Informations />,
+            types: ["user", "restaurant", "delivery", "developer"],
         },
         {
-            icon: <Handshake />,
-            title: "Parrainer un ami",
+            item: (
+                <Link to="/addresses" className="contents">
+                    <AccountItem title="Vos adresses" icon={<MapPin />} />
+                </Link>
+            ),
+            types: ["user"],
+        },
+        {
+            item: <Sponsor />,
+            types: ["user", "restaurant", "delivery"],
+        },
+        {
+            item: <Logout />,
+            types: ["user", "restaurant", "delivery", "developer"],
         },
     ];
 
@@ -38,15 +50,17 @@ export default function Compte() {
                 <p className="text-lg font-semibold">{user?.username}</p>
             </div>
             <div className="flex flex-col items-center gap-2">
-                <Informations />
                 {items.map((item, index) => (
-                    <AccountItem key={index} {...item} />
+                    <div key={index} className="contents">
+                        {item.item}
+                    </div>
                 ))}
-                <Logout />
                 <Button variant="link" className="underline text-sm">
                     Supprimer le compte
                 </Button>
             </div>
         </div>
     );
-}
+};
+
+export default Compte;

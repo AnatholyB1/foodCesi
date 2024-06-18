@@ -61,4 +61,15 @@ declare global {
             }[];
         }[];
     }
+
+    interface Address {
+        id?: number;
+        user_id?: number;
+        name: string;
+        street: string;
+        zip_code: string;
+        city: string;
+        state: string;
+        country: string;
+    }
 }

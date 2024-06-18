@@ -2,14 +2,14 @@ import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import CustomCard from "./CustomCard";
 
-interface Props {
+interface AccountItemProps {
     icon: JSX.Element;
     title: string;
     variant?: "default" | "primary";
     action?: () => void;
 }
 
-export default function AccountItem({ variant, icon, title, action }: Props) {
+const AccountItem = ({ variant, icon, title, action }: AccountItemProps) => {
     return (
         <CustomCard className={cn("w-full", { "bg-primary": variant === "primary" })}>
             <button type="button" className={cn("w-full flex items-center gap-4 p-4 text-primary", { "text-white": variant === "primary" })} onClick={action}>
@@ -19,4 +19,6 @@ export default function AccountItem({ variant, icon, title, action }: Props) {
             </button>
         </CustomCard>
     );
-}
+};
+
+export default AccountItem;

@@ -16,6 +16,7 @@ import Unauthorized from "./pages/Unauthorized";
 import Authentification from "./pages/Authentification";
 import Stats from "./pages/Stats";
 import { Toaster } from "./components/ui/toaster";
+import Addresses from "./pages/Addresses";
 
 function App() {
     return (
@@ -87,6 +88,14 @@ function App() {
                                 element={
                                     <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
                                         <Compte />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/addresses"
+                                element={
+                                    <RequireAuth allowedTypes={["user"]}>
+                                        <Addresses />
                                     </RequireAuth>
                                 }
                             />

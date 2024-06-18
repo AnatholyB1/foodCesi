@@ -1,27 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Bitcoin, CreditCard, Pencil } from "lucide-react";
 import Dropdown from "@/components/ui/Dropdown";
 import MenuItem from "@/components/ui/MenuItem";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-
-interface Address {
-    name: string;
-    address: string;
-}
-
-const addresses: Address[] = [
-    {
-        name: "Maison",
-        address: "1 rue de la Maison 45000 Orléans",
-    },
-    {
-        name: "CESI",
-        address: "1 all. du Titane 45100 Orléans",
-    },
-];
+import api from "@/helpers/api";
+import { useAuth } from "@/context/AuthContext";
+import { logError } from "@/helpers/utils";
 
 interface PaymentMethod {
     icon: JSX.Element;
@@ -67,10 +54,28 @@ const order = {
 };
 
 export default function Checkout() {
+    const { user } = useAuth();
     const { cart } = useCart();
 
+    const [addresses, setAddresses] = useState<Address[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<Address>(addresses[0]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(paymentMethods[0]);
+
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            try {
+                const response = await api.get(`addresses/user/${user?.id}`);
+
+                const data = response.data;
+                if (data.length > 0) {
+                    setAddresses(data);
+                }
+            } catch (error: any) {
+                logError(error);
+            }
+        };
+        fetchAddresses();
+    }, [user]);
 
     return cart.restaurants.length > 0 ? (
         <div className="flex flex-col gap-6 w-full min-h-full p-4">
@@ -78,15 +83,17 @@ export default function Checkout() {
                 <div className="flex flex-col">
                     <div className="flex justify-between items-center">
                         <h2 className="text-md font-bold">Adresse de livraison</h2>
-                        <Button size="icon" variant="ghost">
-                            <Pencil size="16" />
-                        </Button>
+                        <Link to="/addresses">
+                            <Button size="icon" variant="ghost">
+                                <Pencil size="16" />
+                            </Button>
+                        </Link>
                     </div>
                     <div className="flex flex-col gap-2">
                         {addresses.map((address, index) => (
                             <div key={index} className={cn("flex flex-col px-6 py-3 bg-white rounded-md shadow-sm border-black", { "border-2": address === selectedAddress })} onClick={() => setSelectedAddress(address)}>
                                 <h3 className="font-bold">{address.name}</h3>
-                                <p>{address.address}</p>
+                                <p>{`${address.street}, ${address.zip_code}, ${address.city}, ${address.country}`}</p>
                             </div>
                         ))}
                     </div>
