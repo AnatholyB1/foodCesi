@@ -4,11 +4,13 @@ import {
   getAllAddresses,
   getAddress,
   getAddressesByUser,
+  createNewAddress,
 } from "../address";
 import {
   getAddresses,
   getAddressById,
   getAddressesByUserId,
+  createAddress,
 } from "../../db/addresses";
 
 jest.mock("../../db/addresses");
@@ -132,3 +134,54 @@ describe("getAddressesByUser", () => {
   });
 });
 
+describe("createNewAddress", () => {
+  it("should return 201 and the new address when the address is created", async () => {
+    const mockAddress = { id: 1, street: "123 Main St" };
+    (createAddress as jest.Mock).mockResolvedValue(mockAddress);
+
+    const app = express();
+    app.post("/addresses", createNewAddress);
+
+    const res = await request(app)
+      .post("/addresses")
+      .send({ user_id: 1, street: "123 Main St" });
+
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toEqual(mockAddress);
+  });
+
+  it("should return 400 when missing required fields", async () => {
+    const app = express();
+    app.post("/addresses", createNewAddress);
+
+    const res = await request(app).post("/addresses").send({});
+
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("should return 404 when the address is not created", async () => {
+    (createAddress as jest.Mock).mockResolvedValue(null);
+
+    const app = express();
+    app.post("/addresses", createNewAddress);
+
+    const res = await request(app)
+      .post("/addresses")
+      .send({ user_id: 1, street: "123 Main St" });
+
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it("should return 500 when an error occurs", async () => {
+    (createAddress as jest.Mock).mockRejectedValue(new Error("Test error"));
+
+    const app = express();
+    app.post("/addresses", createNewAddress);
+
+    const res = await request(app)
+      .post("/addresses")
+      .send({ user_id: 1, street: "123 Main St" });
+
+    expect(res.statusCode).toEqual(500);
+  });
+});

@@ -1,10 +1,6 @@
 import request from "supertest";
 import express from "express";
-import {
-  getAllAddresses,
-  getAddress,
-  getAddressesByUser,
-} from "../address";
+import { getAllAddresses, getAddress, getAddressesByUser } from "../address";
 import {
   getAddresses,
   getAddressById,
@@ -131,4 +127,3 @@ describe("getAddressesByUser", () => {
     expect(res.statusCode).toEqual(500);
   });
 });
-
