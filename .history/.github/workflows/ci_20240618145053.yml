@@ -9,7 +9,7 @@ on:
       - test
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,12 +22,8 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: cd backend && npm install
-      run: cd frontend/foodcesi && npm install
-      run: cd frontend/ra-app && npm install
+      run: npm run install
 
     - name: Run tests
-      run: cd backend && npm test
-      run: cd frontend/foodcesi && npm run lint
-      run: cd frontend/ra-app && npm run lint
+      run: npm run test
 
