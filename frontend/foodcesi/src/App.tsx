@@ -23,7 +23,7 @@ function App() {
             <div className="flex flex-col h-screen bg-light">
                 <Header />
                 <main className="grow overflow-y-auto">
-                    <div className="mx-auto max-w-6xl">
+                    <div className="h-full mx-auto max-w-6xl">
                         <Routes>
                             <Route path="/authentification" element={<Authentification />} />
                             <Route
