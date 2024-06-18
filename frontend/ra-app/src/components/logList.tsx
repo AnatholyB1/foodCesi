@@ -3,14 +3,10 @@ import {
     List,
     Datagrid,
     TextField,
-    DateField,
-    EditButton,
-    DeleteButton,
     Edit,
     SimpleForm,
     TextInput,
     SelectInput,
-    Pagination,
 } from "react-admin";
 
 

@@ -205,7 +205,7 @@ const RestaurantPage = ({ restaurant, restaurant_id }: RestaurantPageProps) => {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-2">
                                     {category.MenuItems.map((menuItem, index) => (
-                                        <CustomCard key={index}>{restaurant_id ? <MenuItem item={menuItem} quantity={0} editItem={editItem} deleteItem={deleteItem} /> : <MenuItem item={menuItem} quantity={0} editable />}</CustomCard>
+                                        <CustomCard key={index}>{restaurant_id ? <MenuItem restaurant={restaurant} item={menuItem} editItem={editItem} deleteItem={deleteItem} /> : <MenuItem restaurant={restaurant} item={menuItem} editable />}</CustomCard>
                                     ))}
                                 </div>
                                 {restaurant_id && (

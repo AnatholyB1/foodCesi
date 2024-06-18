@@ -33,9 +33,67 @@ const order = {
 
 const status = ["En attente de validation restaurateur", "En préparation", "En attente de livreur", "En cours de livraison", "Livré"];
 
-const restaurant = {
-    icon: "/avatars/mcdonalds.jpg",
-    title: "McDonald's",
+const restaurant: Restaurant = {
+    id: 1,
+    name: "McDonald's",
+    banner: "/restaurantImages/mcdonalds.jpg",
+    logo: "/avatars/mcdonalds.jpg",
+    categories: [
+        {
+            id: 1,
+            name: "Frites",
+        },
+        {
+            id: 2,
+            name: "Burgers",
+        },
+        {
+            id: 3,
+            name: "Boissons",
+        },
+    ],
+    items: [
+        {
+            id: 1,
+            name: "Frites moyennes",
+            description: "Moyenne portion de bâtonnets de pommes de terre frites.",
+            price: "4.45",
+            image_url: "/dishes/frites.png",
+            MenuCategory: {
+                category_id: 1,
+            },
+        },
+        {
+            id: 2,
+            name: "Potatoes moyennes",
+            description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
+            price: "4.45",
+            image_url: "/dishes/potatoes.png",
+            MenuCategory: {
+                category_id: 1,
+            },
+        },
+        {
+            id: 3,
+            name: "Big Mac",
+            description: "Double steak haché, sauce spéciale, laitue, fromage, cornichons, oignons, dans un pain de sésame.",
+            price: "5.90",
+            image_url: "/dishes/bigmac.png",
+            MenuCategory: {
+                category_id: 2,
+            },
+        },
+        {
+            id: 4,
+            name: "Coca-Cola",
+            description: "Boisson gazeuse sucrée.",
+            price: "2.00",
+            image_url: "/dishes/coca-cola.png",
+            MenuCategory: {
+                category_id: 3,
+            },
+        },
+    ],
 };
 
 export default function Commande() {
@@ -45,10 +103,10 @@ export default function Commande() {
         <div className="w-full flex flex-col gap-2 w-full p-4 md:flex-row">
             <div className="w-full flex flex-col gap-1">
                 <h2 className="text-lg font-bold">Récapitulatif de la commande</h2>
-                <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={false}>
+                <Dropdown icon={restaurant.logo} title={restaurant.name} defaultOpen={false}>
                     <div className="flex flex-col">
                         {order.items.map((item, index) => (
-                            <MenuItem key={index} item={item} quantity={1} editable={false} />
+                            <MenuItem key={index} restaurant={restaurant} item={item} quantity={1} editable={false} />
                         ))}
                     </div>
                 </Dropdown>
