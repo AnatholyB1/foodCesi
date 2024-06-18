@@ -10,18 +10,38 @@ import {
     SimpleForm,
     TextInput,
     SelectInput,
+    CheckboxGroupInput,
 } from "react-admin";
 
-// const filters = [
-//   <SearchInput label="Rechercher" source="q" alwaysOn />,
-//   <TextInput label="Type" source="type" defaultValue="user" />,
-//   <TextInput label="username" source="username" defaultValue="test" />
-// ];
+const filters = [
+    <TextInput label="Username" source="username" alwaysOn />,
+    <SelectInput
+        label="Type"
+        source="type"
+        choices={[
+            { id: "user", name: "user" },
+            { id: "delivery", name: "delivery" },
+            { id: "restaurant", name: "restaurant" },
+            { id: "developer", name: "developer" },
+        ]}
+        alwaysOn
+    />,
+    <SelectInput
+        source="active"
+        choices={[
+            { id: "true", name: "true" },
+            { id: "false", name: "false" },
+        ]}
+        alwaysOn
+    />,
 
+    <TextInput label="Id" source="id" />,
+    <TextInput label="Email" source="email" />,
+];
 
 export const UserList = (props: any) => {
     return (
-        <List  {...props}>
+        <List filters={filters} {...props}>
             <Datagrid>
                 <TextField source="id" />
                 <TextField source="email" />
@@ -29,6 +49,7 @@ export const UserList = (props: any) => {
                 <TextField source="type" />
                 <DateField source="createdAt" />
                 <DateField source="updatedAt" />
+                <TextField source="active" />
 
                 <EditButton />
                 <DeleteButton />
@@ -37,13 +58,29 @@ export const UserList = (props: any) => {
     );
 };
 
-export const UserEdit :FunctionComponent<any> = (props: any) => 
-    <Edit title="oui" {...props}>
+export const UserEdit: FunctionComponent<any> = (props: any) => (
+    <Edit title="Edit" {...props}>
         <SimpleForm>
             <TextInput disabled source="id" />
-            <TextInput source="email" type={"email"}/>
+            <TextInput source="email" type={"email"} />
 
             <TextInput source="username" />
-            <SelectInput source="type" choices={[{id:"user", name:"user"}, {id:"delivery", name:"delivery"}, {id:"restaurant", name:"restaurant"}, {id:"developer", name:"developer"}]} />
+            <SelectInput
+                source="type"
+                choices={[
+                    { id: "user", name: "user" },
+                    { id: "delivery", name: "delivery" },
+                    { id: "restaurant", name: "restaurant" },
+                    { id: "developer", name: "developer" },
+                ]}
+            />
+            <SelectInput
+                source="active"
+                choices={[
+                    { id: "true", name: "true" },
+                    { id: "false", name: "false" },
+                ]}
+            />
         </SimpleForm>
-    </Edit>;
+    </Edit>
+);

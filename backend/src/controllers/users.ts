@@ -87,13 +87,13 @@ export const updateUser = withLogging(
 
 
       const { id } = req.params;
-      const { username, type } = req.body;
+      const { username, type, active } = req.body;
 
       const user = await getUserById(Number(id));
 
       if (!user) return res.status(400);
 
-      const values = { username, type };
+      const values = { username, type, active };
 
       await updateUserById(Number(id), values);
       const updatedUser = await getUserById(Number(id));
