@@ -10,47 +10,21 @@ import Restaurant, {
 } from "../db/restaurants";
 import {
   addCategoryToRestaurant,
+  removeCategoryFromRestaurant,
   getCategoriesByRestaurant,
 } from "../db/restaurants_categories";
 import { createAddress, getAddressById, updateAddress } from "../db/addresses";
 import { withLogging } from "../helpers";
 import Category from "../db/category";
 import { getUserById } from "../db/users";
+import { getMenuItemsByRestaurantId } from "../db/menu_items";
+import { deleteOrderItemsByMenuItemId } from "../db/orders_items";
 
 export const getAllRestaurants = withLogging(
   "getAllRestaurants",
   async (req: express.Request, res: express.Response) => {
     try {
-      // Filtering
-      let filter = {};
-      if (typeof req.query.filter === "string") {
-        filter = JSON.parse(req.query.filter);
-      }
-
-      // Sorting
-      let sort: [string, string][] = [];
-      if (typeof req.query.sort === "string") {
-        const [sortField, sortOrder] = JSON.parse(req.query.sort);
-        sort = [[sortField, sortOrder === "ASC" ? "ASC" : "DESC"]];
-      }
-
-      // Pagination
-      let range = [0, 9]; // Default range
-      if (typeof req.query.range === "string") {
-        range = JSON.parse(req.query.range);
-      }
-
-      const { count: total, rows: restaurants } =
-        await Restaurant.findAndCountAll({
-          where: filter,
-          order: sort,
-          offset: range[0],
-          limit: range[1] - range[0] + 1,
-        });
-
-      res.setHeader("Content-Range", `restaurants ${range[0]}-${range[1]}/${total}`);
-      res.setHeader("Access-Control-Expose-Headers", "Content-Range");
-
+      const restaurants = await getRestaurants();
       return res.status(200).json(restaurants);
     } catch (error) {
       console.log(error);
@@ -64,8 +38,8 @@ export const getARestaurantById = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { id } = req.params;
-      if (!id) {
-        return res.status(404).json({ message: "no Id found" }).end();
+      if(!id) {
+        return res.status(404).json({message: "no Id found"}).end()
       }
       const restaurant = await getRestaurantById(Number(id));
       if (!restaurant) {
@@ -139,24 +113,21 @@ export const createARestaurant = withLogging(
 
       const user = await getUserById(Number(user_id));
 
-      if (!user) {
-        return res.status(404).json({ message: "no user found" });
+      if(!user){
+        return res.status(404).json({ message: "no user found"})
       }
 
-      if (user.type !== "restaurant") {
-        return res
-          .status(400)
-          .json({ message: "User is not a restaurant" })
-          .end();
+      if(user.type !== "restaurant"){
+        return res.status(400).json({ message: "User is not a restaurant" }).end();
       }
+
 
       const already_restaurant = await getRestaurantsByUserId(Number(user_id));
       if (already_restaurant.length > 0) {
-        return res
-          .status(400)
-          .json({ message: "User already has a restaurant" })
-          .end();
+        return res.status(400).json({ message: "User already has a restaurant" }).end();
       }
+
+      
 
       const new_address = await createAddress(address);
 
@@ -175,10 +146,7 @@ export const createARestaurant = withLogging(
 
       const newRestaurant = await createRestaurant(restaurant);
       if (!newRestaurant) {
-        return res
-          .status(400)
-          .json({ message: "Restaurant not created" })
-          .end();
+        return res.status(400).json({ message: "Restaurant not created" }).end();
       }
 
       categories.forEach(async (id: string) => {
@@ -191,15 +159,13 @@ export const createARestaurant = withLogging(
         await addCategoryToRestaurant(newRestaurant, category);
       });
 
-      const categories_names = await getCategoriesByRestaurant(
-        newRestaurant.id
-      );
-      console.log(categories_names);
+      const categories_names = await getCategoriesByRestaurant(newRestaurant.id);
+      console.log(categories_names)
 
       const result = {
         ...newRestaurant.toJSON(),
         categories: categories_names,
-      };
+      }
 
       return res.status(200).json(result);
     } catch (error) {
@@ -279,8 +245,8 @@ export const updateARestaurant = withLogging(
       // Get the restaurant
       const restaurant = await Restaurant.findByPk(id);
 
-      if (!restaurant) {
-        return res.status(404).json({ message: "no restaurant found" });
+      if(!restaurant) {
+        return res.status(404).json({ message: "no restaurant found"})
       }
 
       // Add the new categories
@@ -320,14 +286,16 @@ export const deleteARestaurant = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { id } = req.params;
-      if (!id) {
-        return res.status(404).json({ message: "no Id found" }).end();
+      if(!id) {
+        return res.status(404).json({message: "no Id found"}).end()
       }
+      
 
       const restaurant = await Restaurant.findByPk(id);
-      if (!restaurant) {
-        return res.status(404).json({ message: "no restaurant found" }).end();
+      if(!restaurant) {
+        return res.status(404).json({message: "no restaurant found"}).end()
       }
+
 
       const nb_restaurant = await deleteRestaurant(Number(id));
       return res.status(200).json(nb_restaurant).end();
@@ -344,9 +312,7 @@ export const deleteAllRestaurantsByUserId = withLogging(
     try {
       const { user_id } = req.params;
       await deleteRestaurantByUserId(Number(user_id));
-      return res
-        .status(200)
-        .json({ message: "Restaurants deleted successfully" });
+      return res.status(200).json({ message: 'Restaurants deleted successfully' });
     } catch (error) {
       console.log(error);
       return res.status(500);
