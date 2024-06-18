@@ -9,16 +9,21 @@ export const authentication = (salt: string, password: string) => {
     return crypto.createHmac('sha256', [salt, password].join('/')).update(SECRET).digest('hex')
 }
 
-export const createAndConsoleLogs = async (message : string, level : string = 'info') => {
+export const createAndConsoleLogs = (message : string, level : string = 'info') => {
     console.log(level + ': ' +message)
-    await createLog({message: message, level: level})
+    createLog({message: message, level: level})
 }
 
 export const withLogging = (name : string,fn: Function) => {
     return async (...args: any[]) => {
         createAndConsoleLogs(`Start ${name}`);
+        try {
             const result = await fn(...args);
-            await createAndConsoleLogs(`result ${name}: ${result?.statusCode + ' ' + result?.statusMessage}`);
+            createAndConsoleLogs(`result ${name}: ${result?.statusCode + ' ' + result?.statusMessage}`);
             return result;
+        } catch (error) {
+            createAndConsoleLogs(`Error ${name}: ${error}`, 'error');
+            return error;
+        }
     }
 }

@@ -3,6 +3,20 @@ import express from 'express';
 import { getAllAddresses } from '../address';
 import { getAddresses } from '../../db/addresses';
 
+import http from 'http';
+// other imports...
+
+let server: http.Server;
+
+beforeEach(() => {
+  const app = express();
+  app.get('/addresses', getAllAddresses);
+  server = http.createServer(app);
+});
+
+afterEach((done) => {
+  server.close(done);
+});
 
 jest.mock('../../db/addresses');
 

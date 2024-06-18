@@ -3,7 +3,6 @@ import express from 'express';
 import { getAllAddresses } from '../address';
 import { getAddresses } from '../../db/addresses';
 
-
 jest.mock('../../db/addresses');
 
 describe('getAllAddresses', () => {
@@ -40,5 +39,5 @@ describe('getAllAddresses', () => {
         const res = await request(app).get('/addresses');
       
         expect(res.statusCode).toEqual(500);
-      });
+      }, 20000);
   });

@@ -3,7 +3,6 @@ import express from 'express';
 import { getAllAddresses } from '../address';
 import { getAddresses } from '../../db/addresses';
 
-
 jest.mock('../../db/addresses');
 
 describe('getAllAddresses', () => {

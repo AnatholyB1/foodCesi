@@ -3,7 +3,6 @@ import express from 'express';
 import { getAllAddresses } from '../address';
 import { getAddresses } from '../../db/addresses';
 
-
 jest.mock('../../db/addresses');
 
 describe('getAllAddresses', () => {
@@ -32,13 +31,13 @@ describe('getAllAddresses', () => {
     });
   
     it('should return 500 when an error occurs', async () => {
-        (getAddresses as jest.Mock).mockRejectedValue(new Error('Test error'));
-      
-        const app = express();
-        app.get('/addresses', getAllAddresses);
-      
-        const res = await request(app).get('/addresses');
-      
-        expect(res.statusCode).toEqual(500);
-      });
+      (getAddresses as jest.Mock).mockRejectedValue(new Error('Test error'));
+  
+      const app = express();
+      app.get('/addresses', getAllAddresses);
+  
+      const res = await request(app).get('/addresses');
+  
+      expect(res.statusCode).toEqual(500);
+    });
   });
