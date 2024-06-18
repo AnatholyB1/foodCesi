@@ -31,7 +31,7 @@ export default function HomeDeveloper() {
             setKey(cle);
             setIdKey(id);
         });
-    }, [key, user?.id]);
+    }, [key]);
 
     const onClickCreateKey = () => {
         axios
