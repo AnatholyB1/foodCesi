@@ -73,15 +73,14 @@ export const createNewAddress = withLogging('createNewAddress', async (req: expr
 export const updateAddressInfo = withLogging('updateAddressInfo', async (req: express.Request, res: express.Response) => {
     try {
         const {id} = req.params
-        const { user_id, street, city, state,zip_code,country,name } = req.body;
+        const { user_id, street, city, state,zip_code,country } = req.body;
         const values = {
             user_id,
             street,
             city,
             state,
             zip_code,
-            country,
-            name
+            country
         }
         if (!id ) {
             return res.status(400).end();
