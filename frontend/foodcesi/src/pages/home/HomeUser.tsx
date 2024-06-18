@@ -24,11 +24,6 @@ export default function HomeUser() {
 
                 const data = response.data;
                 if (data.length > 0) {
-                    data.map((restaurant: Restaurant) => {
-                        restaurant.image = "/restaurantImages/mcdonalds.jpg";
-                        restaurant.banner = "/restaurantImages/mcdonalds.jpg";
-                        restaurant.logo = "/avatars/mcdonalds.jpg";
-                    });
                     setBestRestaurants(data);
                 }
             } catch (error: any) {

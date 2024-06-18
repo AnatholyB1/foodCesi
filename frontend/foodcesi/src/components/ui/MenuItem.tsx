@@ -2,17 +2,22 @@ import { Pencil, Trash2 } from "lucide-react";
 import CustomNumberInput from "./CustomNumberInput";
 import { Button } from "./button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./alert-dialog";
+import { useCart } from "@/context/CartContext";
 
 interface Props {
+    restaurant: Restaurant;
     item: MenuItem;
     editable?: boolean;
-    quantity: number;
-    changeQuantity?: (value: number) => void;
+    quantity?: number;
     editItem?: (item: MenuItem) => void;
     deleteItem?: (item: MenuItem) => void;
 }
 
-export default function MenuItem({ item, editable, quantity, changeQuantity, editItem, deleteItem }: Props) {
+export default function MenuItem({ restaurant, item, editable, quantity, editItem, deleteItem }: Props) {
+    const { getQuantity, updateCart } = useCart();
+
+    const itemQuantity = editable ? getQuantity(restaurant, item) : quantity || 0;
+
     return (
         <div className="flex w-full bg-white p-4 gap-3 border-t-2 border-light rounded-lg">
             <img className="w-12 h-12 shrink-0" src={item.image_url} alt="logo" width="50" height="50" />
@@ -46,7 +51,7 @@ export default function MenuItem({ item, editable, quantity, changeQuantity, edi
                         </AlertDialog>
                     </div>
                 ) : (
-                    <CustomNumberInput value={quantity} editable={editable} valueChange={changeQuantity || (() => {})} />
+                    <CustomNumberInput quantity={itemQuantity} quantityChange={editable ? (quantity) => updateCart(restaurant, item, quantity) : undefined} />
                 )}
             </div>
         </div>

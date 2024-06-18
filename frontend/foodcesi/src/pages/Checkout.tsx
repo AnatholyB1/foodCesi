@@ -5,6 +5,7 @@ import { Bitcoin, CreditCard, Pencil } from "lucide-react";
 import Dropdown from "@/components/ui/Dropdown";
 import MenuItem from "@/components/ui/MenuItem";
 import { NavLink } from "react-router-dom";
+import { useCart } from "@/context/CartContext";
 
 interface Address {
     name: string;
@@ -19,32 +20,6 @@ const addresses: Address[] = [
     {
         name: "CESI",
         address: "1 all. du Titane 45100 Orléans",
-    },
-];
-
-const restaurant = {
-    icon: "/avatars/mcdonalds.jpg",
-    title: "McDonald's",
-};
-
-const items = [
-    {
-        name: "Frites moyennes",
-        description: "Moyenne portion de bâtonnets de pommes de terre frites.",
-        image_url: "/dishes/frites.png",
-        price: "4.45",
-        MenuCategory: {
-            category_id: 1,
-        },
-    },
-    {
-        name: "Potatoes moyennes",
-        description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
-        image_url: "/dishes/potatoes.png",
-        price: "4.45",
-        MenuCategory: {
-            category_id: 1,
-        },
     },
 ];
 
@@ -92,10 +67,12 @@ const order = {
 };
 
 export default function Checkout() {
+    const { cart } = useCart();
+
     const [selectedAddress, setSelectedAddress] = useState<Address>(addresses[0]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(paymentMethods[0]);
 
-    return (
+    return cart.restaurants.length > 0 ? (
         <div className="flex flex-col gap-6 w-full min-h-full p-4">
             <div className="grow">
                 <div className="flex flex-col">
@@ -117,17 +94,23 @@ export default function Checkout() {
                 <div className="flex flex-col">
                     <div className="flex justify-between items-center">
                         <h2 className="text-md font-bold">Récapitulatif de la commande</h2>
-                        <Button size="icon" variant="ghost">
-                            <Pencil size="16" />
-                        </Button>
+                        <NavLink to="/panier">
+                            <Button size="icon" variant="ghost">
+                                <Pencil size="16" />
+                            </Button>
+                        </NavLink>
                     </div>
-                    <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={false}>
-                        <div className="flex flex-col">
-                            {items.map((item, index) => (
-                                <MenuItem key={index} item={item} quantity={1} editable />
-                            ))}
-                        </div>
-                    </Dropdown>
+                    <div className="flex flex-col gap-4">
+                        {cart.restaurants.map((restaurant, index) => (
+                            <Dropdown key={index} icon={restaurant.restaurant.logo} title={restaurant.restaurant.name} defaultOpen={false}>
+                                <div className="contents">
+                                    {restaurant.items.map((item, index) => (
+                                        <MenuItem key={index} restaurant={restaurant.restaurant} item={item.item} quantity={item.quantity} />
+                                    ))}
+                                </div>
+                            </Dropdown>
+                        ))}
+                    </div>
                 </div>
                 <div className="flex flex-col">
                     <div className="flex justify-between items-center">
@@ -148,6 +131,13 @@ export default function Checkout() {
             </div>
             <NavLink to="/checkout" className="w-full">
                 <Button className="w-full text-lg font-normal">Payer {order.price.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</Button>
+            </NavLink>
+        </div>
+    ) : (
+        <div className="w-full min-h-full flex flex-col justify-center items-center gap-2">
+            <p>Votre panier est vide.</p>
+            <NavLink to="/">
+                <Button>Retourner à l'accueil</Button>
             </NavLink>
         </div>
     );
