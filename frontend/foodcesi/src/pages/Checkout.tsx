@@ -9,6 +9,7 @@ import { useCart } from "@/context/CartContext";
 import api from "@/helpers/api";
 import { useAuth } from "@/context/AuthContext";
 import { logError } from "@/helpers/utils";
+import { toast } from "@/components/ui/use-toast";
 
 interface PaymentMethod {
     icon: JSX.Element;
@@ -26,39 +27,12 @@ const paymentMethods: PaymentMethod[] = [
     },
 ];
 
-const order = {
-    price: 8.9,
-    address: "1 all. du Titane, 45100 Orléans",
-    payment_method: "Carte bancaire",
-    status: 1,
-    items: [
-        {
-            name: "Frites moyennes",
-            description: "Moyenne portion de bâtonnets de pommes de terre frites.",
-            image_url: "/dishes/frites.png",
-            price: "4.45",
-            MenuCategory: {
-                category_id: 1,
-            },
-        },
-        {
-            name: "Potatoes moyennes",
-            description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
-            image_url: "/dishes/potatoes.png",
-            price: "4.45",
-            MenuCategory: {
-                category_id: 1,
-            },
-        },
-    ],
-};
-
 export default function Checkout() {
     const { user } = useAuth();
     const { cart } = useCart();
 
     const [addresses, setAddresses] = useState<Address[]>([]);
-    const [selectedAddress, setSelectedAddress] = useState<Address>(addresses[0]);
+    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(paymentMethods[0]);
 
     useEffect(() => {
@@ -69,6 +43,7 @@ export default function Checkout() {
                 const data = response.data;
                 if (data.length > 0) {
                     setAddresses(data);
+                    setSelectedAddress(data[0]);
                 }
             } catch (error: any) {
                 logError(error);
@@ -77,9 +52,35 @@ export default function Checkout() {
         fetchAddresses();
     }, [user]);
 
+    const restaurant = cart.restaurants[0];
+    const pricesSum = restaurant.items.reduce((acc, item) => acc + Number(item.item.price) * item.quantity, 0);
+    const totalDiscount = 0;
+    const total = pricesSum - totalDiscount;
+
+    const submitOrder = async () => {
+        try {
+            const response = await api.post("/order", {
+                restaurant_id: restaurant.restaurant.id,
+                user_id: user?.id,
+                address_id: selectedAddress?.id,
+                items: restaurant.items.map((item) => ({
+                    menu_item_id: item.item.id,
+                    quantity: item.quantity,
+                    price: item.item.price,
+                })),
+            });
+
+            if (response.status === 201) {
+                toast({ description: "Commande passée avec succès !" });
+            }
+        } catch (error: any) {
+            logError(error);
+        }
+    };
+
     return cart.restaurants.length > 0 ? (
         <div className="flex flex-col gap-6 w-full min-h-full p-4">
-            <div className="grow">
+            <div className="grow flex flex-col gap-6">
                 <div className="flex flex-col">
                     <div className="flex justify-between items-center">
                         <h2 className="text-md font-bold">Adresse de livraison</h2>
@@ -107,16 +108,26 @@ export default function Checkout() {
                             </Button>
                         </NavLink>
                     </div>
-                    <div className="flex flex-col gap-4">
-                        {cart.restaurants.map((restaurant, index) => (
-                            <Dropdown key={index} icon={restaurant.restaurant.logo} title={restaurant.restaurant.name} defaultOpen={false}>
-                                <div className="contents">
-                                    {restaurant.items.map((item, index) => (
-                                        <MenuItem key={index} restaurant={restaurant.restaurant} item={item.item} quantity={item.quantity} />
-                                    ))}
-                                </div>
-                            </Dropdown>
-                        ))}
+                    <div className="flex flex-col gap-1">
+                        <Dropdown icon={restaurant.restaurant.logo} title={restaurant.restaurant.name} defaultOpen={false}>
+                            <div className="contents">
+                                {restaurant.items.map((item, index) => (
+                                    <MenuItem key={index} restaurant={restaurant.restaurant} item={item.item} quantity={item.quantity} />
+                                ))}
+                            </div>
+                        </Dropdown>
+                        <div className="flex justify-between items-center">
+                            <p>Produits</p>
+                            <p>{pricesSum.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <p>Réductions</p>
+                            <p>{totalDiscount.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
+                        </div>
+                        <div className="flex justify-between items-center font-bold">
+                            <p>Total</p>
+                            <p>{total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>
+                        </div>
                     </div>
                 </div>
                 <div className="flex flex-col">
@@ -136,9 +147,9 @@ export default function Checkout() {
                     </div>
                 </div>
             </div>
-            <NavLink to="/checkout" className="w-full">
-                <Button className="w-full text-lg font-normal">Payer {order.price.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</Button>
-            </NavLink>
+            <Button className="w-full text-lg font-normal" onClick={submitOrder}>
+                Payer {total.toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
+            </Button>
         </div>
     ) : (
         <div className="w-full min-h-full flex flex-col justify-center items-center gap-2">
