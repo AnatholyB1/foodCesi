@@ -9,6 +9,8 @@ import {
     Edit,
     SimpleForm,
     TextInput,
+    SelectInput,
+    SelectField,
 } from "react-admin";
 
 const filters = [

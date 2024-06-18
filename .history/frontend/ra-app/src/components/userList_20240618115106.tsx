@@ -10,6 +10,7 @@ import {
     SimpleForm,
     TextInput,
     SelectInput,
+    CheckboxGroupInput,
 } from "react-admin";
 
 const filters = [
