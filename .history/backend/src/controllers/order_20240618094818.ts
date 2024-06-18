@@ -10,46 +10,49 @@ import Order, {
   deleteOrdersByUserId,
 } from "../db/orders";
 import { withLogging } from "../helpers";
-import Restaurant, { getRestaurantById } from "../db/restaurants";
-import User, { getUserById } from "../db/users";
-import Address, { getAddressById } from "../db/addresses";
+import { getRestaurantById } from "../db/restaurants";
+import { getUserById } from "../db/users";
+import { getAddressById } from "../db/addresses";
 import OrderItem, { createOrderItem } from "../db/orders_items";
 import WebSocket from "ws";
-import Delivery from "../db/delivery";
 
 export const getAllOrders = withLogging(
   "getAllOrders",
   async (req: express.Request, res: express.Response) => {
     try {
-      // Filtering
-      let filter = {};
-      if (typeof req.query.filter === "string") {
-        filter = JSON.parse(req.query.filter);
-      }
 
-      // Sorting
-      let sort: [string, string][] = [];
-      if (typeof req.query.sort === "string") {
-        const [sortField, sortOrder] = JSON.parse(req.query.sort);
-        sort = [[sortField, sortOrder === "ASC" ? "ASC" : "DESC"]];
-      }
-
-      // Pagination
-      let range = [0, 9]; // Default range
-      if (typeof req.query.range === "string") {
-        range = JSON.parse(req.query.range);
-      }
-
-      const { count: total, rows: orders } = await Order.findAndCountAll({
-        where: filter,
-        order: sort,
-        offset: range[0],
-        limit: range[1] - range[0] + 1,
-        include:[Address,User,Delivery,Restaurant,OrderItem]
-      });
-
-      res.setHeader("Content-Range", `orders ${range[0]}-${range[1]}/${total}`);
-      res.setHeader("Access-Control-Expose-Headers", "Content-Range");
+            // Filtering
+            let filter = {};
+            if (typeof req.query.filter === "string") {
+              filter = JSON.parse(req.query.filter);
+            }
+      
+            // Sorting
+            let sort: [string, string][] = [];
+            if (typeof req.query.sort === "string") {
+              const [sortField, sortOrder] = JSON.parse(req.query.sort);
+              sort = [[sortField, sortOrder === "ASC" ? "ASC" : "DESC"]];
+            }
+      
+            // Pagination
+            let range = [0, 9]; // Default range
+            if (typeof req.query.range === "string") {
+              range = JSON.parse(req.query.range);
+            }
+      
+            const { count: total, rows: orders } =
+              await Order.findAndCountAll({
+                where: {
+                  ...filter,
+                  active: true,
+                },
+                order: sort,
+                offset: range[0],
+                limit: range[1] - range[0] + 1,
+              });
+      
+            res.setHeader("Content-Range", `orders ${range[0]}-${range[1]}/${total}`);
+            res.setHeader("Access-Control-Expose-Headers", "Content-Range");
 
       return res.status(200).json(orders);
     } catch (error) {
@@ -116,7 +119,7 @@ export const createAnOrder = withLogging(
       }
 
       const total_price = items.reduce(
-        (acc: any, item: any) => acc + item.total_price,
+        (acc : any, item : any) => acc + item.total_price,
         0
       );
 
@@ -125,10 +128,10 @@ export const createAnOrder = withLogging(
         address_id,
         status: "pending",
         restaurant_id,
-        total_price: total_price,
+        total_price : total_price,
       };
 
-      const newOrder = await createOrder(order);
+      const newOrder = await createOrder(order)
 
       if (!newOrder) {
         return res.status(400).json({ message: "Order not created" });
@@ -143,17 +146,17 @@ export const createAnOrder = withLogging(
         return newItem;
       });
 
+
+
+
       const socket = new WebSocket("ws://localhost:8000");
 
       socket.addEventListener("open", function (event) {
         const orderRequestMessage = {
           type: "orderRequest",
           data: {
-            restaurant_id,
-            address,
-            order_items,
-            user,
-          },
+            restaurant_id, address, order_items, user 
+          }
         };
         socket.send(JSON.stringify(orderRequestMessage));
         return res.status(200).end();
@@ -163,6 +166,8 @@ export const createAnOrder = withLogging(
         console.log("WebSocket error: ", event);
         return res.status(500).end();
       });
+
+      
     } catch (error) {
       console.log(error);
       return res.status(500);

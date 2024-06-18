@@ -15,7 +15,7 @@ import User, { getUserById } from "../db/users";
 import Address, { getAddressById } from "../db/addresses";
 import OrderItem, { createOrderItem } from "../db/orders_items";
 import WebSocket from "ws";
-import Delivery from "../db/delivery";
+import Delivery from "db/delivery";
 
 export const getAllOrders = withLogging(
   "getAllOrders",
