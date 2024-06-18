@@ -8,6 +8,7 @@ class User extends Model {
   public password!: string;
   public type!: string;
   public refreshToken!: string;
+  public active!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   // Include any other properties here
@@ -40,6 +41,11 @@ User.init(
       type: new DataTypes.STRING(200),
       allowNull: false,
     },
+    active: {
+      type: new DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
     createdAt: {
       type: new DataTypes.DATE(),
       allowNull: false,
@@ -57,16 +63,16 @@ User.init(
 
 
 export default User;
-export const getUsers = () => User.findAll();
+export const getUsers = () => User.findAll({where: {active:true}});
 export const getUserByEmail = (email: string) =>
-  User.findOne({ where: { email } });
+  User.findOne({ where: { email, active:true} });
 export const getUserByRefreshToken = (refreshToken: string) =>
-  User.findOne({ where: { refreshToken } });
+  User.findOne({ where: { refreshToken, active:true } });
 export const getUserById = (id: number) => User.findByPk(id);
 export const createUser = (values: Record<string, any>) => User.create(values);
-export const deleteUserById = (id: string) => User.destroy({ where: { id } });
+export const deleteUserById = (id: string) => User.update({ active: false }, { where: { id: id } }) //.destroy({ where: { id } });
 export const deleteAllUsers = () => User.destroy({ where: {} });
 export const updateUserById = (id: number, values: Record<string, any>) =>
   User.update(values, { where: { id } });
 export const getUserByUserType = (userType: string) =>
-  User.findAll({ where: { type: userType } });
+  User.findAll({ where: { type: userType, active:true } });
