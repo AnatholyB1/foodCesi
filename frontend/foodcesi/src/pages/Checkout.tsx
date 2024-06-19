@@ -29,11 +29,16 @@ const paymentMethods: PaymentMethod[] = [
 
 export default function Checkout() {
     const { user } = useAuth();
-    const { cart } = useCart();
+    const { cart, resetCart } = useCart();
 
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>(paymentMethods[0]);
+
+    const restaurant = cart.restaurants[0];
+    const pricesSum = restaurant?.items.reduce((acc, item) => acc + Number(item.item.price) * item.quantity, 0);
+    const totalDiscount = 0;
+    const total = pricesSum - totalDiscount;
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -52,11 +57,6 @@ export default function Checkout() {
         fetchAddresses();
     }, [user]);
 
-    const restaurant = cart.restaurants[0];
-    const pricesSum = restaurant.items.reduce((acc, item) => acc + Number(item.item.price) * item.quantity, 0);
-    const totalDiscount = 0;
-    const total = pricesSum - totalDiscount;
-
     const submitOrder = async () => {
         try {
             const response = await api.post("/order", {
@@ -67,11 +67,13 @@ export default function Checkout() {
                     menu_item_id: item.item.id,
                     quantity: item.quantity,
                     price: item.item.price,
+                    total_price: item.quantity * Number(item.item.price),
                 })),
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 toast({ description: "Commande passée avec succès !" });
+                resetCart();
             }
         } catch (error: any) {
             logError(error);
