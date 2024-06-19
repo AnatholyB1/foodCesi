@@ -1,4 +1,4 @@
-import { getAllUsers } from "controllers/users";
+import { getAllUsers } from "../users";
 import express from "express";
 import request from "supertest";
 
