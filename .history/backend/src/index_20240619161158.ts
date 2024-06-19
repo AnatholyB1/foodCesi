@@ -31,14 +31,20 @@ async function connectMongoDB() {
 }
 
 const wss = new WebSocket.Server({ server });
-let clients: WebSocket[] = [];
-wss.on("connection", async (ws) => {
-  clients.push(ws);
 
-  ws.on('close', () => {
-    // Remove the closed client from the clients array
-    clients = clients.filter(client => client !== ws);
-  });
+wss.on("connection", async (ws) => {
+ 
+      //connection is up, let's add a simple simple event
+      ws.on('message', (message) => {
+
+        //log the received message and send it back to the client
+        console.log('received: %s', message);
+        ws.send(`Hello, you sent -> ${message}`);
+    });
+
+    //send immediatly a feedback to the incoming connection    
+    ws.send('Hi there, I am a WebSocket server');
+
 
   ws.on("message", async (message: string) => {
     const { type, data } = JSON.parse(message);
@@ -70,11 +76,7 @@ wss.on("connection", async (ws) => {
         };
 
         const response2 = JSON.stringify({ message: "va te faire foutre" });
-        for (let client of clients) {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(response2);
-          }
-        }
+        
 
         break;
       }
@@ -260,6 +262,7 @@ setTimeout(() => {
 
   ws.onopen = () => {
     console.log('ws opened on browser')
+    ws.send('hello world')
   }
   
   ws.onmessage = (message) => {

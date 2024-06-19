@@ -31,13 +31,14 @@ async function connectMongoDB() {
 }
 
 const wss = new WebSocket.Server({ server });
-let clients: WebSocket[] = [];
-wss.on("connection", async (ws) => {
-  clients.push(ws);
 
-  ws.on('close', () => {
-    // Remove the closed client from the clients array
-    clients = clients.filter(client => client !== ws);
+wss.on("connection", async (ws) => {
+
+  console.log("WebSocket is connected" + ws.OPEN);
+
+  
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
   });
 
   ws.on("message", async (message: string) => {
@@ -55,7 +56,7 @@ wss.on("connection", async (ws) => {
           address,
           order_items,
         };
-
+        
         const restaurant_notification = await createNotification({
           userId: restaurant_id,
           message: JSON.stringify(restaurant_message),
@@ -69,13 +70,12 @@ wss.on("connection", async (ws) => {
           notification: restaurant_notification,
         };
 
-        const response2 = JSON.stringify({ message: "va te faire foutre" });
-        for (let client of clients) {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(response2);
-          }
-        }
-
+        try {
+          ws.send(JSON.stringify({message : "va te faire foutre"}));
+      } catch (error) {
+          console.error("Error sending message: ", error);
+      }
+        console.log(JSON.stringify(response));
         break;
       }
       case "orderResponse": {
@@ -85,7 +85,7 @@ wss.on("connection", async (ws) => {
         if (response == "ok") {
           order.status = "validated";
           await order.save();
-        }
+        } 
         break;
       }
       case "deliveryResponse": {
@@ -236,6 +236,7 @@ app.use("/", router());
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { setTimeout } from "timers";
+import { Json } from "sequelize/lib/utils";
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -259,15 +260,19 @@ setTimeout(() => {
   const ws = new WebSocket("ws://localhost:8000");
 
   ws.onopen = () => {
-    console.log('ws opened on browser')
-  }
-  
-  ws.onmessage = (message) => {
-    console.log(`message received`, message.data)
-  }
+    console.log("WebSocket is connected front");
+  };
 
   ws.onerror = (error) => {
     console.log("WebSocket error: ", error);
+  };
+
+  ws.onmessage = (event) => {
+    console.log("Received notification: ", event.data);
+    const message = event.data;
+    const data = JSON.parse(message.toString());
+
+    console.log("Received restaurant notification: ", data);
   };
 
   ws.onclose = (event) => {

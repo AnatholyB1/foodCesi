@@ -31,14 +31,10 @@ async function connectMongoDB() {
 }
 
 const wss = new WebSocket.Server({ server });
-let clients: WebSocket[] = [];
+let clients = [];
 wss.on("connection", async (ws) => {
   clients.push(ws);
 
-  ws.on('close', () => {
-    // Remove the closed client from the clients array
-    clients = clients.filter(client => client !== ws);
-  });
 
   ws.on("message", async (message: string) => {
     const { type, data } = JSON.parse(message);
@@ -260,6 +256,7 @@ setTimeout(() => {
 
   ws.onopen = () => {
     console.log('ws opened on browser')
+    ws.send(JSON.stringify('hello world'))
   }
   
   ws.onmessage = (message) => {
