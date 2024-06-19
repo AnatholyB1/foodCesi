@@ -66,32 +66,30 @@ import { createNotification } from "./db/notifications";
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", async (ws) => {
-  ws.on("message", async (message: string) => {
-    const { type, data } = JSON.parse(message);
-    
-    if (type === 'orderRequest') {
-      const { restaurant_id, address, order_items, user } = data;
-  
-      const restaurant_message = {
-        type: "order",
-        restaurant_id,
-        username: user.username,
-        user_id: user.id,
-        address,
-        order_items,
-      };
-      console.log('restaurant order request')
-      const restaurant_notification = await createNotification({
-        userId: restaurant_id,
-        message: JSON.stringify(restaurant_message),
-      });
-      if (!restaurant_notification) {
-        console.error("Notification not created");
-        return null;
-      }
-  
-      ws.send(JSON.stringify(restaurant_notification));
+  console.log("connected")
+  ws.on("orderRequest", async (message: string) => {
+    const { restaurant_id, address, order_items, user } =
+      JSON.parse(message);
+
+    const restaurant_message = {
+      type: "order",
+      restaurant_id,
+      username: user.username,
+      user_id: user.id,
+      address,
+      order_items,
+    };
+    console.log('restaurant order request')
+    const restaurant_notification = await createNotification({
+      user_id: restaurant_id,
+      message: JSON.stringify(restaurant_message),
+    });
+    if (!restaurant_notification) {
+      console.error("Notification not created");
+      return null;
     }
+
+    ws.send(JSON.stringify(restaurant_notification));
   });
 
   ws.on("orderResponse", async (message: string) => {

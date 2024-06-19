@@ -178,6 +178,7 @@ export const createAnOrder = withLogging(
           },
         };
         ws.send(JSON.stringify(orderRequestMessage));
+        console.log("Order request sent");
         return res.status(200).end();
       };
 

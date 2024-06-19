@@ -164,10 +164,9 @@ export const createAnOrder = withLogging(
         return newItem;
       });
 
-      const ws = new WebSocket("ws://localhost:8000");
+      const socket = new WebSocket("ws://localhost:8000");
 
-      ws.onopen = () => {
-
+      socket.addEventListener("open", function (event) {
         const orderRequestMessage = {
           type: "orderRequest",
           data: {
@@ -177,11 +176,11 @@ export const createAnOrder = withLogging(
             user,
           },
         };
-        ws.send(JSON.stringify(orderRequestMessage));
+        socket.send(JSON.stringify(orderRequestMessage));
         return res.status(200).end();
-      };
+      });
 
-      ws.addEventListener("error", function (event) {
+      socket.addEventListener("error", function (event) {
         console.log("WebSocket error: ", event);
         return res.status(500).end();
       });

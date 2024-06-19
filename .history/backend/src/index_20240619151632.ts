@@ -82,7 +82,7 @@ wss.on("connection", async (ws) => {
       };
       console.log('restaurant order request')
       const restaurant_notification = await createNotification({
-        userId: restaurant_id,
+        user_id: restaurant_id,
         message: JSON.stringify(restaurant_message),
       });
       if (!restaurant_notification) {

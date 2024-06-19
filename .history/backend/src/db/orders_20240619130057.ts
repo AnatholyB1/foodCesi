@@ -130,8 +130,8 @@ export const getOrdersByUserId = (user_id: number) =>
 export const getOrdersByDeliveryId = (delivery_id: number) =>
   Order.findAll({ where: { delivery_id } });
 export const getOrdersByRestaurantId = (restaurant_id: number) =>
-  Order.findAll({
-    where: { restaurant_id },
+  Order.findAll({ where: { restaurant_id }
+    ,
     include: [
       Address,
       User,
@@ -141,8 +141,7 @@ export const getOrdersByRestaurantId = (restaurant_id: number) =>
         model: OrderItem,
         include: [MenuItem],
       },
-    ],
-  });
+    ], });
 export const getOrdersByPriceRange = (min: number, max: number) =>
   Order.findAll({ where: { total_price: { [Op.between]: [min, max] } } });
 export const getOrdersByStatus = (status: string) =>
