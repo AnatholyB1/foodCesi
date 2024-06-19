@@ -35,7 +35,18 @@ const wss = new WebSocket.Server({ server });
 wss.on("connection", async (ws) => {
 
   console.log("WebSocket is connected" + ws.OPEN);
-   ws.send(JSON.stringify({message : "va te faire foutre"}));
+
+  ws.on("open", () => {
+    console.log("WebSocket is connected");
+  });
+
+  ws.on("error", (error) => {
+    console.log("WebSocket error: ", error);
+  });
+
+  ws.on("close", (event) => {
+    console.log("WebSocket is closed. Reason: ", event);
+  });
 
   ws.on("message", async (message: string) => {
     const { type, data } = JSON.parse(message);
@@ -228,7 +239,6 @@ app.use("/", router());
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { setTimeout } from "timers";
-import { Json } from "sequelize/lib/utils";
 
 const swaggerOptions = {
   swaggerDefinition: {
