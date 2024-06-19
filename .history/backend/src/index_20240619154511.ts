@@ -10,10 +10,15 @@ import router from "./router/index";
 import WebSocket from "ws";
 import { createNotification } from "./db/notifications";
 
+
+
+
 const app = express();
 const server = http.createServer(app);
 dotenv.config();
 app.use(express.urlencoded({ extended: true }));
+
+
 
 const port = process.env.PORT || 8000;
 
@@ -33,17 +38,25 @@ async function connectMongoDB() {
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", async (ws) => {
+  ws.on("open", () => {
+    console.log("WebSocket is connected");
+  } );
 
-  console.log("WebSocket is connected" + ws.OPEN);
-   ws.send(JSON.stringify({message : "va te faire foutre"}));
+  ws.on("error", (error) => {
+    console.log("WebSocket error: ", error);
+  });
+
+  ws.on("close", (event) => {
+    console.log("WebSocket is closed. Reason: ", event);
+  } );
 
   ws.on("message", async (message: string) => {
     const { type, data } = JSON.parse(message);
 
     switch (type) {
-      case "orderRequest": {
+      case 'orderRequest': {
         const { restaurant_id, address, order_items, user } = data;
-
+  
         const restaurant_message = {
           type: "order",
           restaurant_id,
@@ -52,7 +65,7 @@ wss.on("connection", async (ws) => {
           address,
           order_items,
         };
-        
+        console.log('restaurant order request')
         const restaurant_notification = await createNotification({
           userId: restaurant_id,
           message: JSON.stringify(restaurant_message),
@@ -64,23 +77,25 @@ wss.on("connection", async (ws) => {
         const response = {
           type: "orderRequest",
           notification: restaurant_notification,
-        };
-
-        ws.send(JSON.stringify(response))
-        console.log("restaurant order request");
+        }
+    
+        ws.send(JSON.stringify(restaurant_notification));
         break;
       }
-      case "orderResponse": {
+      case 'orderResponse': {
         const { order, response, notification } = JSON.parse(message);
         notification.read = true;
         await notification.save();
         if (response == "ok") {
           order.status = "validated";
           await order.save();
-        } 
+          return true;
+        } else {
+          return null;
+        }
         break;
       }
-      case "deliveryResponse": {
+      case 'deliveryResponse': {
         const {
           delivery,
           response,
@@ -91,7 +106,7 @@ wss.on("connection", async (ws) => {
           client,
           notification,
         } = JSON.parse(message);
-
+    
         const user_message = {
           type: "delivery",
           order_id: order.id,
@@ -105,10 +120,13 @@ wss.on("connection", async (ws) => {
         if (response == "ok") {
           delivery.status = "pending";
           await delivery.save();
+          return true;
+        } else {
+          return null;
         }
         break;
       }
-      case "restaurantReady": {
+      case 'restaurantReady': {
         const {
           order,
           restaurant,
@@ -118,7 +136,7 @@ wss.on("connection", async (ws) => {
           delivery,
           notification,
         } = JSON.parse(message);
-
+    
         const user_message = {
           type: "delivery",
           order_id: order.id,
@@ -129,12 +147,12 @@ wss.on("connection", async (ws) => {
         };
         notification.read = true;
         await notification.save();
-
+    
         delivery.status = "pending";
         await delivery.save();
         break;
       }
-      case "deliveryDeparture": {
+      case 'deliveryDeparture': {
         const {
           delivery,
           order,
@@ -144,7 +162,7 @@ wss.on("connection", async (ws) => {
           client,
           notification,
         } = JSON.parse(message);
-
+    
         const user_message = {
           type: "delivery",
           order_id: order.id,
@@ -155,12 +173,12 @@ wss.on("connection", async (ws) => {
         };
         notification.read = true;
         await notification.save();
-
+    
         delivery.status = "on the way";
         await delivery.save();
         break;
       }
-      case "deliveryArrival": {
+      case 'deliveryArrival': {
         const {
           delivery,
           order,
@@ -170,7 +188,7 @@ wss.on("connection", async (ws) => {
           client,
           notification,
         } = JSON.parse(message);
-
+    
         const user_message = {
           type: "delivery",
           order_id: order.id,
@@ -181,7 +199,7 @@ wss.on("connection", async (ws) => {
         };
         notification.read = true;
         await notification.save();
-
+    
         delivery.status = "delivered";
         await delivery.save();
         break;
@@ -191,6 +209,12 @@ wss.on("connection", async (ws) => {
       }
     }
   });
+
+
+
+ 
+
+
 });
 
 async function startServer() {
@@ -200,35 +224,32 @@ async function startServer() {
     console.log(`Server is running on port ${port}`);
   });
 
-  app.use(express.static("uploads"));
+  app.use(express.static('uploads'))   
 }
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection has been established successfully.");
-  })
-  .catch((error) => {
-    console.error("Unable to connect to the database: ", error);
-  });
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("db synced successfully.");
-  })
-  .catch((error) => {
-    console.error("Unable to create table : ", error);
-  });
+sequelize.authenticate().then(() => {
+  console.log('Connection has been established successfully.');
+}).catch((error) => {
+  console.error('Unable to connect to the database: ', error);
+});
+sequelize.sync({force:false}).then(() => {
+  console.log('db synced successfully.');
+}).catch((error) => {
+  console.error('Unable to create table : ', error);
+});
 startServer();
 
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use("/", router());
 
+
+
+
+
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { setTimeout } from "timers";
-import { Json } from "sequelize/lib/utils";
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -252,22 +273,23 @@ setTimeout(() => {
   const ws = new WebSocket("ws://localhost:8000");
 
   ws.onopen = () => {
-    console.log("WebSocket is connected front");
+    console.log('WebSocket is connected');
   };
 
   ws.onerror = (error) => {
-    console.log("WebSocket error: ", error);
+    console.log('WebSocket error: ', error);
   };
 
   ws.onmessage = (event) => {
-    console.log("Received notification: ", event.data);
     const message = event.data;
     const data = JSON.parse(message.toString());
+    
 
-    console.log("Received restaurant notification: ", data);
+      console.log('Received restaurant notification: ', data);
+    
   };
 
   ws.onclose = (event) => {
-    console.log("WebSocket is closed. Reason: ", event.reason);
+    console.log('WebSocket is closed. Reason: ', event.reason);
   };
-}, 1000);
+} , 1000);
