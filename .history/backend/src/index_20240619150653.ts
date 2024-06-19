@@ -66,7 +66,6 @@ import { createNotification } from "./db/notifications";
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", async (ws) => {
-  console.log("connected")
   ws.on("orderRequest", async (message: string) => {
     const { restaurant_id, address, order_items, user } =
       JSON.parse(message);
