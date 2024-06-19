@@ -270,12 +270,9 @@ export const updateARestaurant = withLogging(
         return res.status(400).json({ message: "Restaurant not updated" });
       }
 
+      console.log(updatedRestaurant);
 
-      if(!categories)
-      {
-        return res.status(200).json(updatedRestaurant).end();
-      }
-      const current_categories = updatedRestaurant.getCategories()
+      const current_categories = await getCategoriesByRestaurant(id);
 
       // Find the categories to add and the categories to remove
       const categoriesToAdd = categories.filter(
@@ -285,6 +282,12 @@ export const updateARestaurant = withLogging(
         (category: any) => !categories.includes(category)
       );
 
+      // Get the restaurant
+      const restaurant = await Restaurant.findByPk(id);
+
+      if (!restaurant) {
+        return res.status(404).json({ message: "no restaurant found" });
+      }
 
       // Add the new categories
       for (const categoryName of categoriesToAdd) {
@@ -292,7 +295,7 @@ export const updateARestaurant = withLogging(
           where: { name: categoryName },
         });
         if (category) {
-          await updatedRestaurant.addCategory(category);
+          await restaurant.addCategory(category);
         }
       }
 
@@ -302,12 +305,15 @@ export const updateARestaurant = withLogging(
           where: { name: categoryName },
         });
         if (category) {
-          await updatedRestaurant.removeCategory(category);
+          await restaurant.removeCategory(category);
         }
       }
-      updatedRestaurant.save();
 
-      return res.status(200).json(updatedRestaurant);
+      const return_info = {
+        ...updatedRestaurant.toJSON(),
+        categories: categories,
+      };
+      return res.status(200).json(return_info);
     } catch (error) {
       console.log(error);
       return res.status(500);
