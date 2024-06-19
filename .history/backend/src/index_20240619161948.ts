@@ -31,7 +31,7 @@ async function connectMongoDB() {
 }
 
 const wss = new WebSocket.Server({ server });
-let clients: WebSocket[] = [];
+let clients = [];
 wss.on("connection", async (ws) => {
   clients.push(ws);
 

@@ -31,14 +31,11 @@ async function connectMongoDB() {
 }
 
 const wss = new WebSocket.Server({ server });
-let clients: WebSocket[] = [];
-wss.on("connection", async (ws) => {
-  clients.push(ws);
 
-  ws.on('close', () => {
-    // Remove the closed client from the clients array
-    clients = clients.filter(client => client !== ws);
-  });
+wss.on("connection", async (ws) => {
+ 
+
+
 
   ws.on("message", async (message: string) => {
     const { type, data } = JSON.parse(message);
@@ -70,11 +67,7 @@ wss.on("connection", async (ws) => {
         };
 
         const response2 = JSON.stringify({ message: "va te faire foutre" });
-        for (let client of clients) {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(response2);
-          }
-        }
+        
 
         break;
       }
@@ -236,6 +229,7 @@ app.use("/", router());
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { setTimeout } from "timers";
+import { Json } from "sequelize/lib/utils";
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -260,6 +254,7 @@ setTimeout(() => {
 
   ws.onopen = () => {
     console.log('ws opened on browser')
+    ws.send('hello world')
   }
   
   ws.onmessage = (message) => {
