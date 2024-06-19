@@ -8,7 +8,7 @@ function getValueByVariableName(
     return variable ? variable.Value : undefined;
 }
 
-export const StatMongoDbList = (props: any) => {
+export const StatMongoDbList = () => {
     const [mongoStats, setMongoStats]: any = useState(null);
     const [mysqlStats, setMysqlStats]: any = useState(null);
     const [dockerStats, setDockerStats]: any = useState(null);
