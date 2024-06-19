@@ -1,7 +1,6 @@
 import express from "express";
 import {
   deleteUserById,
-  getUsers,
   getUserById,
   deleteAllUsers,
   updateUserById,
