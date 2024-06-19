@@ -8,7 +8,7 @@ export default (router: express.Router) => {
      *   name: Orders
      *   description: Operations about orders
      */
-    router.get('/order/restaurant/:restaurant_id', getAllOrdersByRestaurantId);
+    router.get('/orders/restaurant/:restaurant_id', getAllOrdersByRestaurantId);
     router.get('/order', getAllOrders);
 /**
  * @swagger
