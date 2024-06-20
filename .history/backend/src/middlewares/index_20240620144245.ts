@@ -72,3 +72,18 @@ export const logRequest = (req: express.Request, res: express.Response, next: ex
     next();
 }
 
+
+export const apiKeyMiddleware = async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const apiKey = req.headers['x-api-key'];
+  
+    if (!apiKey) {
+      return res.status(401).json({ message: 'No API key provided' });
+    }
+
+    const dev = await getADevByApiKey(apiKey);
+    if (!dev) {
+      return res.status(401).json({ message: 'Invalid API key' });
+    }
+  
+    next();
+  };

@@ -9,18 +9,6 @@ import { getADevByApiKey } from '../controllers/dev';
 
 export const isAuthenticated = async (req : express.Request, res : express.Response, next : express.NextFunction) => {
     try{
-        const apiKey = req.headers['x-api-key'];
-
-        if(apiKey){
-           
-            const dev = await getADevByApiKey(apiKey);
-            if (!dev) {
-              return res.status(401).json({ message: 'Invalid API key' });
-            }
-          
-            next();
-        }
-
         const sessionToken = await req.cookies['auth-session'];
 
         if(!sessionToken) return res.status(400)
@@ -72,3 +60,18 @@ export const logRequest = (req: express.Request, res: express.Response, next: ex
     next();
 }
 
+
+export const apiKeyMiddleware = async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const apiKey = req.headers['x-api-key'];
+  
+    if (!apiKey) {
+      return res.status(401).json({ message: 'No API key provided' });
+    }
+
+    const dev = await getADevByApiKey(apiKey);
+    if (!dev) {
+      return res.status(401).json({ message: 'Invalid API key' });
+    }
+  
+    next();
+  };

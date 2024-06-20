@@ -1,6 +1,6 @@
 import express from 'express'
 import {getAllRestaurants,getARestaurantById,getRestaurantsByUser,createARestaurant ,updateARestaurant,deleteARestaurant,deleteAllRestaurantsByUserId } from '../controllers/restaurant'
-import {isAuthenticated} from '../middlewares'
+import {apiKeyMiddleware} from '../middlewares'
 
 export default (router: express.Router) => {
     /**
@@ -9,7 +9,7 @@ export default (router: express.Router) => {
      *   name: Restaurants
      *   description: Operations about restaurants
      */
-    router.get('/restaurants',isAuthenticated, getAllRestaurants);
+    router.get('/restaurants', getAllRestaurants);
 /**
  * @swagger
  * /restaurants:
