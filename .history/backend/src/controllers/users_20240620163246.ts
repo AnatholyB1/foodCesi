@@ -100,7 +100,7 @@ export const sponsorUser = withLogging(
 
       if (!owner) return res.status(400).json({message: "owner not found"}).end();
 
-      if(user.sponsor == true) return res.status(403).json({message: "user already sponsor"}).end();
+      if(user.sponsor == true) return res.status(403).json({message: "owner already sponsor"}).end();
 
 
       user.sponsor = true;
