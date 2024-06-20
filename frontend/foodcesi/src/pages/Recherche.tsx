@@ -21,11 +21,6 @@ export default function Recherche() {
 
                 const data = response.data;
                 if (data.length > 0) {
-                    data.map((restaurant: Restaurant) => {
-                        restaurant.image = "/restaurantImages/mcdonalds.jpg";
-                        restaurant.banner = "/restaurantImages/mcdonalds.jpg";
-                        restaurant.logo = "/avatars/mcdonalds.jpg";
-                    });
                     setRestaurants(data);
                 }
             } catch (error: any) {

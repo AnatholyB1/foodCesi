@@ -1,10 +1,16 @@
 export {};
 
 declare global {
+    interface User {
+        id: number;
+        email: string;
+        username: string;
+        type: string;
+        refreshToken: string;
+    }
     interface Restaurant {
         id?: number;
         name: string;
-        image: string;
         banner: string;
         logo: string;
         categories: RestaurantCategory[];
@@ -43,5 +49,16 @@ declare global {
         image_url: string;
         category_id: number[];
         available: boolean;
+    }
+
+    interface Cart {
+        user_id: number;
+        restaurants: {
+            restaurant: Restaurant;
+            items: {
+                item: MenuItem;
+                quantity: number;
+            }[];
+        }[];
     }
 }

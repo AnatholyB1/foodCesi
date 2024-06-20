@@ -1,48 +1,36 @@
 import Dropdown from "@/components/ui/Dropdown";
 import MenuItem from "@/components/ui/MenuItem";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/CartContext";
 import { NavLink } from "react-router-dom";
 
-const restaurant = {
-    icon: "/avatars/mcdonalds.jpg",
-    title: "McDonald's",
-};
-
-const items: MenuItem[] = [
-    {
-        name: "Frites moyennes",
-        description: "Moyenne portion de bâtonnets de pommes de terre frites.",
-        image_url: "/dishes/frites.png",
-        price: "4.45",
-        MenuCategory: {
-            category_id: 1,
-        },
-    },
-    {
-        name: "Potatoes moyennes",
-        description: "Moyenne portion de quartiers de pommes avec leur peau, épices, frits.",
-        image_url: "/dishes/potatoes.png",
-        price: "4.45",
-        MenuCategory: {
-            category_id: 1,
-        },
-    },
-];
-
 export default function Panier() {
-    return (
+    const { cart } = useCart();
+
+    return cart.restaurants.length > 0 ? (
         <div className="flex flex-col gap-2 w-full min-h-full p-4 max-w-lg mx-auto">
-            <div className="grow">
-                <Dropdown icon={restaurant.icon} title={restaurant.title} defaultOpen={true}>
-                    <div className="flex flex-col">
-                        {items.map((item, i) => (
-                            <MenuItem key={i} item={item} quantity={1} editable />
-                        ))}
-                    </div>
-                </Dropdown>
+            <div className="grow flex flex-col">
+                <div className="flex flex-col gap-4">
+                    {cart.restaurants.map((restaurant, index) => (
+                        <Dropdown key={index} icon={restaurant.restaurant.logo} title={restaurant.restaurant.name} defaultOpen={true}>
+                            <div className="contents">
+                                {restaurant.items.map((item, index) => (
+                                    <MenuItem key={index} restaurant={restaurant.restaurant} item={item.item} editable />
+                                ))}
+                            </div>
+                        </Dropdown>
+                    ))}
+                </div>
             </div>
             <NavLink to="/checkout" className="w-full">
                 <Button className="w-full text-lg font-normal">Passer la commande</Button>
+            </NavLink>
+        </div>
+    ) : (
+        <div className="w-full min-h-full flex flex-col justify-center items-center gap-2">
+            <p>Votre panier est vide.</p>
+            <NavLink to="/">
+                <Button>Retourner à l'accueil</Button>
             </NavLink>
         </div>
     );

@@ -1,0 +1,57 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker-compose build
+          docker-compose push
+
+  create_release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            ./backend
+            ./frontend/foodcesi
+            ./frontend/ra-app
+
+  deploy_to_production:
+    runs-on: ubuntu-latest
+    needs: create_release
+
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # Here you can put the commands to apply the blue/green deployment
+            # For example:
+            # docker pull your-dockerhub-username/your-repo-name:latest
+            # docker stop current_container
+            # docker run -d --name new_container your-dockerhub-username/your-repo-name:latest
