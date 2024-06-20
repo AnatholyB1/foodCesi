@@ -34,14 +34,16 @@ const defaultNewRestaurant: NewRestaurantType = {
     zip_code: "zip_code",
     country: "country",
     phone_number: "phone_number",
-    categories: ["1"],
+    categories: [],
 };
 
 const HomeRestaurant = () => {
     const { user } = useAuth();
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+    const [categories, setCategories] = useState<RestaurantCategory[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [newRestaurant, setNewRestaurant] = useState<NewRestaurantType>(defaultNewRestaurant);
+    const [newRestaurantCategories, setNewRestaurantCategories] = useState<string>("");
 
     useEffect(() => {
         const fetchRestaurant = async () => {
@@ -60,11 +62,33 @@ const HomeRestaurant = () => {
         fetchRestaurant();
     }, [user?.id]);
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.get(`/restaurant_categories`);
+
+                if (!response.data) {
+                    throw new Error("No data");
+                }
+
+                setCategories(response.data);
+            } catch (error: any) {
+                logError(error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const newRestaurantCategoriesArray = newRestaurantCategories
+            .split(",")
+            .map((category) => categories.find((c) => c.name === category.trim())?.id?.toString())
+            .filter((item) => item !== undefined);
+
         try {
-            const response = await api.post(`/restaurants`, { user_id: user?.id, ...newRestaurant });
+            const response = await api.post(`/restaurants`, { user_id: user?.id, ...newRestaurant, categories: newRestaurantCategoriesArray });
             setRestaurant(response.data);
             toast({ description: "Restaurant ajouté" });
         } catch (error: any) {
@@ -209,6 +233,12 @@ const HomeRestaurant = () => {
                                                 Téléphone
                                             </Label>
                                             <Input id="phone_number" type="text" className="col-span-3" placeholder="Téléphone" value={newRestaurant.phone_number} onChange={(e) => setNewRestaurant({ ...newRestaurant, phone_number: e.target.value })} required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label className="text-right" htmlFor="categories">
+                                                Catégories
+                                            </Label>
+                                            <Input id="categories" type="text" className="col-span-3" placeholder="Catégories" value={newRestaurantCategories} onChange={(e) => setNewRestaurantCategories(e.target.value)} />
                                         </div>
                                     </div>
                                     <DialogFooter>
