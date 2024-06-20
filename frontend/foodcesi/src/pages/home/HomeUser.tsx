@@ -47,7 +47,7 @@ export default function HomeUser() {
             }
         };
         fetchAddresses();
-    }, []);
+    }, [user]);
 
     return (
         <div className="flex flex-col items-center gap-4 py-4 px-4">
