@@ -99,8 +99,9 @@ export const sponsorUser = withLogging(
       const owner = await getUserById(Number(identityId));
 
       if (!owner) return res.status(400).json({message: "owner not found"}).end();
+      console.log(user.sponsor == true);
 
-      if(user.sponsor == true) return res.status(403).json({message: "user already sponsor"}).end();
+      if(user.sponsor === true) return res.status(403).json({message: "owner already sponsor"}).end();
 
 
       user.sponsor = true;
