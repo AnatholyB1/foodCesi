@@ -13,7 +13,6 @@ import swaggerUi from "swagger-ui-express";
 import { setTimeout } from "timers";
 import { getOrderById } from "./db/orders";
 import { createNotification, getNotificationById } from "./db/notifications";
-import { getAvailableDeliveriesByCity } from "./controllers/delivery";
 
 const app = express();
 const server = http.createServer(app);
@@ -38,13 +37,14 @@ async function connectMongoDB() {
 const wss = new WebSocket.Server({ server });
 let clients: {
   type: string;
-  ws: WebSocket;
+  ws : WebSocket;
   id: string;
 }[] = [];
 wss.on("connection", async (ws) => {
-  ws.on("close", () => {
+
+  ws.on('close', () => {
     // Remove the closed client from the clients array
-    clients = clients.filter((client) => client.ws !== ws);
+    clients = clients.filter(client => client.ws !== ws);
   });
 
   ws.on("message", async (message: string) => {
@@ -64,10 +64,8 @@ wss.on("connection", async (ws) => {
 
       case "orderRequest": {
         const { restaurant_id, address, order_items, user, order_id } = data;
-        const ws_restaurant = clients.find(
-          (client) =>
-            client.type === "restaurant" && client.id === restaurant_id
-        )?.ws;
+        
+        const ws_restaurant = clients.find(client => client.type === "restaurant"  && client.id === restaurant_id)?.ws;
         if (!ws_restaurant) {
           console.error("No restaurant connected");
           break;
@@ -86,7 +84,7 @@ wss.on("connection", async (ws) => {
         const restaurant_notification = await createNotification({
           userId: restaurant_id,
           message: JSON.stringify(restaurant_message),
-          from: "user",
+          from: "user"
         });
         if (!restaurant_notification) {
           console.error("Notification not created");
@@ -105,9 +103,13 @@ wss.on("connection", async (ws) => {
       case "orderResponse": {
         const { order_id, response, notification_id } = data;
 
-        const previous_notification = await getNotificationById(
-          notification_id
-        );
+        const ws_user = clients.find(client => client.type === "user")?.ws;
+        if (!ws_user) {
+          console.error("No restaurant connected");
+          break;
+        }
+
+        const previous_notification = await getNotificationById(notification_id)
         if (!previous_notification) {
           console.error("Notification not found");
           break;
@@ -115,6 +117,7 @@ wss.on("connection", async (ws) => {
 
         previous_notification.read = true;
         await previous_notification.save();
+        
 
         const order = await getOrderById(order_id);
         if (!order) {
@@ -122,47 +125,21 @@ wss.on("connection", async (ws) => {
           break;
         }
 
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
-        )?.ws;
-        if (!ws_user) {
-          console.error("No restaurant connected");
-          break;
-        }
-
-        const deliveries = await getAvailableDeliveriesByCity(order.address_id);
-        if (!deliveries || deliveries.length == 0) {
-          console.error("No delivery available");
-          break;
-        }
-
-        const deliveries_id = deliveries.map((delivery) => delivery.id);
-
-        const ws_delivery = clients
-        .filter(client => client.type === "delivery" && client.ws && deliveries_id.includes(Number(client.id)))
-        .map(client => client.ws);
-
-        if (!ws_delivery || ws_delivery.length == 0) {
-          console.error("No delivery connected");
-          break;
-        }
-
-        if (response === "ok") {
+        if(response === "ok") {
           order.status = "validated";
-        } else {
+        }else{
           order.status = "cancelled";
         }
 
         await order.save();
 
         const new_notification = await createNotification({
-          userId: order.user_id,
+          userId: order.delivery_id,
           message: JSON.stringify({
             type: "restaurantResponse",
             order,
           }),
-          from: "restaurant",
+          from: "restaurant"
         });
 
         if (!new_notification) {
@@ -171,27 +148,7 @@ wss.on("connection", async (ws) => {
         }
 
 
-        const user_message = {
-          type: "restaurantResponse",
-          data: {
-            order : order,
-            response,
-          },
-        };
 
-        ws_user.send(JSON.stringify(user_message));
-
-        if(response !== "ok") {
-          break;
-        }
-
-        const delivery_message = {
-          type: "delivery",
-          data: {
-            order},
-        };
-
-        ws_delivery.forEach(ws => ws.send(JSON.stringify(delivery_message)));
         break;
       }
       case "deliveryResponse": {
@@ -286,7 +243,7 @@ wss.on("connection", async (ws) => {
         } = JSON.parse(message);
 
         const user_message = {
-          type: "deliveryRequest",
+          type: "delivery",
           order_id: order.id,
           restaurant: restaurant.name,
           restaurant_address: restaurant_address,
@@ -339,6 +296,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use("/", router());
 
+
+
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
@@ -362,69 +321,68 @@ setTimeout(() => {
 
   wsUser.onopen = () => {
     const message = {
-      type: "connectionType",
+      type: 'connectionType',
       data: {
-        type: "user",
-        id: "1",
-      },
+        type: 'user',
+        id: 1
+      }
     };
-
+  
     wsUser.send(JSON.stringify(message));
-  };
+  }
 
   wsUser.onmessage = (event) => {
     console.log(event.data);
-  };
+  }
+
+
 
   const wsRestaurant = new WebSocket("ws://localhost:8000");
 
   wsRestaurant.onopen = () => {
     const message = {
-      type: "connectionType",
+      type: 'connectionType',
       data: {
-        type: "restaurant",
-        id: "1",
-      },
+        type: 'restaurant',
+        id: 1
+      }
     };
-
+  
     wsRestaurant.send(JSON.stringify(message));
-  };
+  }
 
-  wsRestaurant.onmessage = (event) => {
+
+  wsRestaurant.onmessage = (event) => { 
     //parse a buffer
     const dataResponse = JSON.parse(event.data.toString());
-    const info = JSON.parse(dataResponse.notification.message);
-    console.log(dataResponse);
+    const info = JSON.parse(dataResponse.notification.message)
     console.log(info);
 
     const message = {
-      type: "orderResponse",
-      data: {
+      type: 'orderResponse',
+      data:  {
         order_id: info.order_id,
-        response: "ok",
-        notification_id: dataResponse.notification._id,
-      },
+        response: 'ok',
+        notification_id: info.notification_id
+      }
     };
 
     wsRestaurant.send(JSON.stringify(message));
-  };
+  }
 
   const wsDelivery = new WebSocket("ws://localhost:8000");
 
   wsDelivery.onopen = () => {
     const message = {
-      type: "connectionType",
-      data: {
-        type: "delivery",
-        id: "1",
-      },
+      type: 'connectionType',
+      data: 
+        {
+          type: 'delivery',
+          id: 1
+        }
     };
-
+  
     wsDelivery.send(JSON.stringify(message));
-  };
-
-
-  wsDelivery.onmessage = (event) => { 
-    console.log(event.data);
   }
+
 }, 1000);

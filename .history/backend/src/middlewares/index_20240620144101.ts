@@ -1,26 +1,14 @@
 import express from 'express'; //
 import {get, merge} from 'lodash'
 
-import { getUserById } from '../db/users';
+import { getUserByRefreshToken, getUserById } from '../db/users';
 import { createLog } from '../db/log';
 import jwt from 'jsonwebtoken'
-import { getDevByApiKey } from '../db/dev';
+import { getADevByApiKey } from '../controllers/dev';
 
 
 export const isAuthenticated = async (req : express.Request, res : express.Response, next : express.NextFunction) => {
     try{
-        const apiKey = req.headers['x-api-key'] as string;
-
-        if(apiKey){
-           
-            const dev = await getDevByApiKey(apiKey);
-            if (!dev) {
-              return res.status(401).json({ message: 'Invalid API key' });
-            }
-          
-            next();
-        }
-
         const sessionToken = await req.cookies['auth-session'];
 
         if(!sessionToken) return res.status(400)
@@ -72,3 +60,18 @@ export const logRequest = (req: express.Request, res: express.Response, next: ex
     next();
 }
 
+
+export const apiKeyMiddleware = async(req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const apiKey = req.headers['x-api-key'];
+  
+    if (!apiKey) {
+      return res.status(401).json({ message: 'No API key provided' });
+    }
+
+    const dev = await getADevByApiKey(apiKey);
+    if (!dev) {
+      return res.status(401).json({ message: 'Invalid API key' });
+    }
+  
+    next();
+  };

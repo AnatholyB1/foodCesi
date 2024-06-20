@@ -286,7 +286,7 @@ wss.on("connection", async (ws) => {
         } = JSON.parse(message);
 
         const user_message = {
-          type: "deliveryRequest",
+          type: "delivery",
           order_id: order.id,
           restaurant: restaurant.name,
           restaurant_address: restaurant_address,
