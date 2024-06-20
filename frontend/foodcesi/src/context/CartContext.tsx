@@ -6,6 +6,7 @@ interface CartContextType {
     setCart: (cart: Cart) => void;
     getQuantity: (restaurant: Restaurant, item: MenuItem) => number;
     updateCart: (restaurant: Restaurant, item: MenuItem, quantity: number) => void;
+    resetCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -55,7 +56,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         sessionStorage.setItem("cart", JSON.stringify(newCart));
     };
 
-    return <CartContext.Provider value={{ cart, setCart, getQuantity, updateCart }}>{children}</CartContext.Provider>;
+    const resetCart = () => {
+        const newCart = { ...cart, restaurants: [] };
+        setCart(newCart);
+        sessionStorage.setItem("cart", JSON.stringify(newCart));
+    };
+
+    return <CartContext.Provider value={{ cart, setCart, getQuantity, updateCart, resetCart }}>{children}</CartContext.Provider>;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components

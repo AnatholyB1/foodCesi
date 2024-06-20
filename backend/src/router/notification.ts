@@ -42,6 +42,18 @@ export default (router: express.Router) => {
  *         description: Erreur interne du serveur
  */
    router.delete('/notifications', removeAllNotifications);
+   /**
+ * @swagger
+ * /notifications:
+ *   delete:
+ *     tags: [Notifications]
+ *     summary: Remove all notifications
+ *     responses:
+ *       200:
+ *         description: All notifications successfully removed
+ *       500:
+ *         description: Internal server error
+ */
     router.get('/notifications/:id', getNotification);
     /**
  * @swagger
