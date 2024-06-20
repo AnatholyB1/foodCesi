@@ -93,6 +93,7 @@ export const sponsorUser = withLogging(
       if (!user) return res.status(400).json({message:"user not found"}).end();
 
       const identityId = get(req, 'identity.id') ;
+      console.log(identityId);
       if (!identityId) {
         return res.status(400).json({message: "identity not found"}).end();
       }
@@ -100,7 +101,7 @@ export const sponsorUser = withLogging(
 
       if (!owner) return res.status(400).json({message: "owner not found"}).end();
 
-      if(user.sponsor === true) return res.status(403).json({message: "owner already sponsor"}).end();
+      if(owner.sponsor === true) return res.status(403).json({message: "owner already sponsor"}).end();
 
 
       user.sponsor = true;

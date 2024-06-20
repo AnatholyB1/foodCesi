@@ -8,7 +8,6 @@ class User extends Model {
   public email!: string;
   public password!: string;
   public type!: string;
-  public sponsor_id!: number;
   public admin!: boolean;
   public sponsor_code!: string;
   public sponsor!: boolean;
@@ -30,10 +29,6 @@ User.init(
       type: new DataTypes.STRING(128),
       allowNull: false,
       defaultValue: random(),
-    },
-    sponsor_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
     },
     sponsor :  {
       type: DataTypes.BOOLEAN,
@@ -85,8 +80,6 @@ User.init(
   }
 );
 
-User.hasOne(User, {foreignKey: 'sponsor_id', as: 'user_sponsor'});
-
 
 export default User;
 export const getUsers = () => User.findAll({where: {active:true}});
@@ -98,10 +91,8 @@ export const getUserById = (id: number) => User.findByPk(id);
 export const createUser = (values: Record<string, any>) => User.create(values);
 export const deleteUserById = (id: string) => User.update({ active: false }, { where: { id: id } }) //.destroy({ where: { id } });
 export const deleteAllUsers = () => User.destroy({ where: {} });
-export const updateUserById = async (id: number, values: Record<string, any>) => {
-  await User.update(values, { where: { id } });
-  return User.findOne({ where: { id } });
-};
+export const updateUserById = (id: number, values: Record<string, any>) =>
+  User.update(values, { where: { id } });
 export const getUserByUserType = (userType: string) =>
   User.findAll({ where: { type: userType, active:true } });
 export const getUserBySponsorCode = (sponsorCode: string) =>

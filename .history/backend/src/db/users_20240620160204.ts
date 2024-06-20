@@ -31,10 +31,6 @@ User.init(
       allowNull: false,
       defaultValue: random(),
     },
-    sponsor_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
     sponsor :  {
       type: DataTypes.BOOLEAN,
       allowNull: false,

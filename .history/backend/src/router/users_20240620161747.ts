@@ -17,62 +17,6 @@ export default (router: express.Router) => {
    *   description: Operations about users
    */
   router.put("/users/sponsor/:sponsor_code", isAuthenticated, sponsorUser);
-  /**
- * @swagger
- * /users/sponsor/{sponsor_code}:
- *   put:
- *     tags: [Users]
- *     summary: Sponsor a user by sponsor code
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: sponsor_code
- *         schema:
- *           type: string
- *         required: true
- *         description: Sponsor code of the user
- *     responses:
- *       200:
- *         description: User successfully sponsored
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: user sponsored
- *                 owner:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     username:
- *                       type: string
- *                     email:
- *                       type: string
- *                     password:
- *                       type: string
- *                     type:
- *                       type: string
- *                     refreshToken:
- *                       type: string
- *                     active:
- *                       type: boolean
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *       400:
- *         description: Bad request
- *       403:
- *         description: Forbidden, owner already sponsor
- *       500:
- *         description: Internal server error
- */
   router.get("/users/:id", getAUserById);
   /**
    * @swagger
@@ -178,7 +122,7 @@ export default (router: express.Router) => {
    * @swagger
    * /users/{id}:
    *   delete:
-   *     tags: [Users]
+   *     tags: [User]
    *     description: Supprime un utilisateur par ID
    *     parameters:
    *       - in: path
@@ -202,7 +146,7 @@ export default (router: express.Router) => {
    * @swagger
    * /users/{id}:
    *   put:
-   *     tags: [Users]
+   *     tags: [User]
    *     description: Met à jour un utilisateur par ID
    *     parameters:
    *       - in: body

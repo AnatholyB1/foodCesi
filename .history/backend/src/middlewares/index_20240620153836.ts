@@ -70,10 +70,10 @@ export const isAuthenticated = async (req : express.Request, res : express.Respo
 
 export const isAdmin = async (req : express.Request, res : express.Response, next : express.NextFunction) => {
     try{
-        const identity = get(req, 'identity.admin')
+        const identity = get(req, 'identity') as unknown as User;
         if(!identity) return res.status(401).end()
 
-        if(identity !== true) return res.status(403).end()
+        if(identity.admin !== true) return res.status(403).end()
 
         next()
     }catch(error){
@@ -87,7 +87,7 @@ export const isOwner = async (req : express.Request, res : express.Response, nex
         
         const {id} = req.params;
 
-        const identityId = get(req, 'identity.id');
+        const identityId = get(req, 'identity._id');
 
         if (!identityId) {
             return res.status(400)

@@ -4,7 +4,6 @@ import {
   getUserById,
   deleteAllUsers,
   updateUserById,
-  getUserBySponsorCode,
 } from "../db/users";
 import { withLogging } from "../helpers";
 import User from '../db/users';
@@ -85,32 +84,26 @@ export const sponsorUser = withLogging(
   "sponsorUser",
   async (req: express.Request, res: express.Response) => {
     try {
-      const { sponsor_code } = req.params;
+      const { id } = req.params;
 
-      if (!sponsor_code) return res.status(400).json({message:"sponsor code not found"}).end();
-      const user = await getUserBySponsorCode(sponsor_code);
+      const user = await getUserById(Number(id));
 
       if (!user) return res.status(400).json({message:"user not found"}).end();
 
       const identityId = get(req, 'identity.id') ;
-      if (!identityId) {
-        return res.status(400).json({message: "identity not found"}).end();
-      }
       const owner = await getUserById(Number(identityId));
 
       if (!owner) return res.status(400).json({message: "owner not found"}).end();
 
-      if(user.sponsor === true) return res.status(403).json({message: "owner already sponsor"}).end();
+      if(owner.sponsor === true) return res.status(403).json({message: "owner already sponsor"}).end();
 
 
-      user.sponsor = true;
-      user.save();
+      await updateUserById(Number(id), {sponsor: true});
+      const updatedUser = await getUserById(Number(id));
 
-      owner.sponsor_id = user.id;
-      owner.save();
-       
+      if (!updatedUser) return res.status(400).json({message: "user not sponsored"}).end();
 
-      return res.status(200).json({message : "user sponsored", owner}).end();
+      return res.status(200).json(updatedUser).end();
     } catch (error) {
       console.log(error);
       return res.status(500);
