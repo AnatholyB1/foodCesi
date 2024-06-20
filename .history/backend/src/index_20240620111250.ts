@@ -71,7 +71,6 @@ wss.on("connection", async (ws) => {
         const restaurant_notification = await createNotification({
           userId: restaurant_id,
           message: JSON.stringify(restaurant_message),
-          from: "user"
         });
         if (!restaurant_notification) {
           console.error("Notification not created");
@@ -84,7 +83,7 @@ wss.on("connection", async (ws) => {
 
         const response2 = JSON.stringify(response);
         for (let client of clients) {
-          if (client.ws.readyState === WebSocket.OPEN  && client.type === "restaurant") {
+          if (client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(response2);
           }
         }
@@ -278,10 +277,6 @@ setTimeout(() => {
     };
   
     wsUser.send(JSON.stringify(message));
-  }
-
-  wsUser.onmessage = (event) => {
-    console.log(event.data);
   }
 
   const wsRestaurant = new WebSocket("ws://localhost:8000");

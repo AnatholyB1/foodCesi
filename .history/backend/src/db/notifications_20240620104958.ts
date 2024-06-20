@@ -11,7 +11,7 @@ const NotificationSchema: Schema = new Schema({
   userId: { type: String, required: true },
   message: { type: String, required: true },
   read: { type: Boolean, default: false },
-  from: { type: String, required: true},
+  
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -21,7 +21,7 @@ const Notification = mongoose.model<INotification>(
 );
 
 export default Notification;
-export const getNotifications = (filter : {}) => Notification.find( filter );
+export const getNotifications = (filter: {}) => Notification.find( filter);
 export const getNotificationById = (id: string) => Notification.findById(id);
 export const getNotificationsByUserId = (userId: string) =>
   Notification.find({ userId });

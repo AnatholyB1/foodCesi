@@ -65,13 +65,13 @@ wss.on("connection", async (ws) => {
           username: user.username,
           user_id: user.id,
           address,
+          from: "user",
           order_items,
         };
 
         const restaurant_notification = await createNotification({
           userId: restaurant_id,
           message: JSON.stringify(restaurant_message),
-          from: "user"
         });
         if (!restaurant_notification) {
           console.error("Notification not created");
@@ -84,7 +84,7 @@ wss.on("connection", async (ws) => {
 
         const response2 = JSON.stringify(response);
         for (let client of clients) {
-          if (client.ws.readyState === WebSocket.OPEN  && client.type === "restaurant") {
+          if (client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(response2);
           }
         }

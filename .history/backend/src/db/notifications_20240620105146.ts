@@ -11,7 +11,7 @@ const NotificationSchema: Schema = new Schema({
   userId: { type: String, required: true },
   message: { type: String, required: true },
   read: { type: Boolean, default: false },
-  from: { type: String, required: true},
+
   createdAt: { type: Date, default: Date.now },
 });
 

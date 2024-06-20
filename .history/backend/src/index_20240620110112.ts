@@ -52,7 +52,6 @@ wss.on("connection", async (ws) => {
           ws,
         };
         clients.push(client);
-        console.log(`New ${data} connected`);
         break;
       }
 
@@ -71,7 +70,6 @@ wss.on("connection", async (ws) => {
         const restaurant_notification = await createNotification({
           userId: restaurant_id,
           message: JSON.stringify(restaurant_message),
-          from: "user"
         });
         if (!restaurant_notification) {
           console.error("Notification not created");
@@ -84,7 +82,7 @@ wss.on("connection", async (ws) => {
 
         const response2 = JSON.stringify(response);
         for (let client of clients) {
-          if (client.ws.readyState === WebSocket.OPEN  && client.type === "restaurant") {
+          if (client.ws.readyState === WebSocket.OPEN) {
             client.ws.send(response2);
           }
         }
@@ -279,32 +277,16 @@ setTimeout(() => {
   
     wsUser.send(JSON.stringify(message));
   }
-
-  wsUser.onmessage = (event) => {
-    console.log(event.data);
+  
+  wsUser.onmessage = (message) => {
+    console.log(`message received`, message.data)
   }
 
-  const wsRestaurant = new WebSocket("ws://localhost:8000");
+  wsUser.onerror = (error) => {
+    console.log("WebSocket error: ", error);
+  };
 
-  wsRestaurant.onopen = () => {
-    const message = {
-      type: 'connectionType',
-      data: 'restaurant'
-    };
-  
-    wsRestaurant.send(JSON.stringify(message));
-  }
-  
-
-  const wsDelivery = new WebSocket("ws://localhost:8000");
-
-  wsDelivery.onopen = () => {
-    const message = {
-      type: 'connectionType',
-      data: 'delivery'
-    };
-  
-    wsDelivery.send(JSON.stringify(message));
-  }
-
+  wsUser.onclose = (event) => {
+    console.log("WebSocket is closed. Reason: ", event.reason);
+  };
 }, 1000);
