@@ -47,6 +47,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
                 data = { ...data, restaurant_id: restaurant[0].id };
             }
+
+            if (data.type === "delivery") {
+                const deliveryResponse = await api.get(`/delivery/user/${response.data.id}`);
+
+                if (deliveryResponse.status !== 200) {
+                    console.log(response);
+                    toast({ description: "Echec de la récupération du livreur" });
+                    return;
+                }
+                const deliveries: Delivery[] = deliveryResponse.data;
+
+                if (deliveries.length === 0) {
+                    return;
+                }
+
+                data = { ...data, delivery_id: deliveries[0].id };
+            }
+
             setUser({ ...data });
             sessionStorage.setItem("user", JSON.stringify({ ...data }));
             return true;

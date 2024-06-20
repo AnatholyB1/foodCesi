@@ -20,7 +20,7 @@ export default function HomeUser() {
     useEffect(() => {
         const fetchRestaurants = async () => {
             try {
-                const response = await api.get(`restaurants`);
+                const response = await api.get(`/restaurants`);
 
                 const data = response.data;
                 if (data.length > 0) {

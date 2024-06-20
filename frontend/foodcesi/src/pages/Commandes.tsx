@@ -20,7 +20,7 @@ export default function Commandes() {
                         response = await api.get(`/order/restaurant/${user?.restaurant_id}`);
                         break;
                     case "delivery":
-                        response = await api.get(`/order/delivery/${user?.restaurant_id}`);
+                        response = await api.get(`/order/delivery/${user?.delivery_id}`);
                         break;
                     default:
                         response = await api.get(`/order/user/${user?.id}`);
@@ -36,7 +36,7 @@ export default function Commandes() {
         };
 
         fetchOrders();
-    }, []);
+    }, [user?.delivery_id, user?.id, user?.restaurant_id, user?.type]);
 
     return (
         <Tabs className="w-full p-4 flex flex-col items-center gap-4 max-w-lg mx-auto" defaultValue="progress">

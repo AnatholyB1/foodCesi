@@ -46,7 +46,7 @@ const HomeRestaurant = () => {
     useEffect(() => {
         const fetchRestaurant = async () => {
             try {
-                const response = await api.get(`restaurants/user/${user?.id}`);
+                const response = await api.get(`/restaurants/user/${user?.id}`);
 
                 const data = response.data;
                 if (data.length > 0) {

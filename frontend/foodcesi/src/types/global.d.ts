@@ -8,6 +8,7 @@ declare global {
         type: string;
         refreshToken: string;
         restaurant_id?: number;
+        delivery_id?: number;
     }
     interface Restaurant {
         id?: number;
@@ -116,5 +117,9 @@ declare global {
         read: boolean;
         createdAt: Date;
         from: string;
+    }
+
+    interface Delivery {
+        id: number;
     }
 }
