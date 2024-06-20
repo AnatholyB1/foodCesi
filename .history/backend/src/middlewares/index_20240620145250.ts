@@ -23,14 +23,14 @@ export const isAuthenticated = async (req : express.Request, res : express.Respo
 
         const sessionToken = await req.cookies['auth-session'];
 
-        if(!sessionToken) return res.status(401).json({ message: 'not connected'}).end()
+        if(!sessionToken) return res.status(301).json({ message: 'not connected'}).end()
             
         jwt.verify(sessionToken, process.env.ACCESS_JWT_KEY || "secret", async (err : any, decoded : any) => {
             if(err) return res.status(403).end()
             
             const user = await getUserById(decoded.id)
             
-            if(user == null) return res.status(401).json({message : "invalid token"}).end()
+            if(user == null) return res.status(301).json({message : "invalid token"}).end()
             
             merge(req, {identity: user})
             next()
