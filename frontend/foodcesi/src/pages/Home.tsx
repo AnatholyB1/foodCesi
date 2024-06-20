@@ -1,8 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
 import HomeUser from "./home/HomeUser";
 import HomeRestaurant from "./home/HomeRestaurant";
-import HomeDelivery from "./home/HomeDelivery";
 import HomeDeveloper from "./home/HomeDeveloper";
+import Commandes from "./Commandes";
 
 export default function Home() {
     const { user } = useAuth();
@@ -15,7 +15,7 @@ export default function Home() {
             return <HomeRestaurant />;
 
         case "delivery":
-            return <HomeDelivery />;
+            return <Commandes />;
 
         case "developer":
             return <HomeDeveloper />;

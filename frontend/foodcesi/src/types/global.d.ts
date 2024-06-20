@@ -7,6 +7,7 @@ declare global {
         username: string;
         type: string;
         refreshToken: string;
+        restaurant_id?: number;
     }
     interface Restaurant {
         id?: number;
@@ -71,5 +72,49 @@ declare global {
         city: string;
         state: string;
         country: string;
+    }
+
+    interface Order {
+        id: number;
+        user_id: number;
+        restaurant_id: number;
+        delivery_id: number;
+        address_id: number;
+        total_price: string;
+        status: string;
+        Restaurant: Restaurant;
+        OrderItems: OrderItem[];
+        Address: Address;
+    }
+
+    interface OrderItem {
+        id: number;
+        order_id: number;
+        menu_item_id: number;
+        quantity: number;
+        price: string;
+        total_price: string;
+        MenuItem: MenuItem;
+    }
+
+    interface OrderStatus {
+        key: string;
+        text: string;
+    }
+
+    interface Notif {
+        user_id: string;
+        message: string;
+        read: boolean;
+        createdAt: Date;
+    }
+
+    interface Notification {
+        title: string;
+        description: boolean;
+        link: string;
+        read: boolean;
+        createdAt: Date;
+        from: string;
     }
 }

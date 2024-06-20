@@ -96,7 +96,7 @@ export default function Checkout() {
                         {addresses.map((address, index) => (
                             <div key={index} className={cn("flex flex-col px-6 py-3 bg-white rounded-md shadow-sm border-black", { "border-2": address === selectedAddress })} onClick={() => setSelectedAddress(address)}>
                                 <h3 className="font-bold">{address.name}</h3>
-                                <p>{`${address.street}, ${address.zip_code}, ${address.city}, ${address.country}`}</p>
+                                <p>{`${address.street} ${address.zip_code} ${address.city}, ${address.country}`}</p>
                             </div>
                         ))}
                     </div>

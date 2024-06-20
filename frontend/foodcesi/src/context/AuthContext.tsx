@@ -8,7 +8,7 @@ interface AuthContextType {
     setUser: (user: User | null) => void;
     login: (email: string, password: string) => Promise<true | undefined>;
     logout: () => void;
-    register: (email: string, password: string, username: string, type: string) => Promise<true | undefined>;
+    register: (email: string, password: string, username: string, sponsor_code: string, type: string) => Promise<true | undefined>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,9 +61,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         sessionStorage.removeItem("user");
     };
 
-    const register = async (email: string, password: string, username: string, type: string) => {
+    const register = async (email: string, password: string, username: string, sponsor_code: string, type: string) => {
         try {
-            const response = await api.post("/auth/register", { email, password, username, type });
+            const response = await api.post("/auth/register", { email, password, username, sponsor_code, type });
 
             const data = response.data;
             if (!data) {

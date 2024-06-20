@@ -22,6 +22,7 @@ const Authentification = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
+    const [sponsor_code, setSponsor_code] = useState("");
     const [type, setType] = useState("user");
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,7 +43,7 @@ const Authentification = () => {
         event.preventDefault();
 
         try {
-            const response = await register(email, password, username, type);
+            const response = await register(email, password, username, sponsor_code, type);
 
             if (response) {
                 navigate(from, { replace: true });
@@ -70,13 +71,13 @@ const Authentification = () => {
                                 <Label htmlFor="email" className="text-grey">
                                     Email
                                 </Label>
-                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
+                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" required />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="password" className="text-grey">
                                     Mot de passe
                                 </Label>
-                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="mot de passe" />
+                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="mot de passe" required />
                             </div>
                             <Button type="submit">Connexion</Button>
                         </form>
@@ -95,19 +96,25 @@ const Authentification = () => {
                                 <Label htmlFor="email" className="text-grey">
                                     Email
                                 </Label>
-                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
+                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" required />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="password" className="text-grey">
                                     Mot de passe
                                 </Label>
-                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="mot de passe" />
+                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="mot de passe" required />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="username" className="text-grey">
                                     Nom d'utilisateur
                                 </Label>
-                                <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Nom d'utilisateur" />
+                                <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Nom d'utilisateur" required />
+                            </div>
+                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                                <Label htmlFor="sponsor_code" className="text-grey">
+                                    Code de parrainage
+                                </Label>
+                                <Input id="sponsor_code" type="text" value={sponsor_code} onChange={(e) => setSponsor_code(e.target.value)} placeholder="Code" />
                             </div>
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="type" className="text-grey">
