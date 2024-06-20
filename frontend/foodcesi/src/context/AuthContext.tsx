@@ -6,9 +6,9 @@ import React, { createContext, useState, ReactNode, useContext } from "react";
 interface AuthContextType {
     user: User | null;
     setUser: (user: User | null) => void;
-    login: (email: string, password: string) => void;
+    login: (email: string, password: string) => Promise<true | undefined>;
     logout: () => void;
-    register: (email: string, password: string, username: string, type: string) => void;
+    register: (email: string, password: string, username: string, type: string) => Promise<true | undefined>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,11 +25,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             if (response.status !== 200) {
                 console.log(response);
+                toast({ description: "Echec de la connexion" });
+                return;
             }
-            setUser({ ...response.data });
-            sessionStorage.setItem("user", JSON.stringify({ ...response.data }));
+
+            let data: User = response.data;
+
+            if (data.type === "restaurant") {
+                const restaurantResponse = await api.get(`/restaurants/user/${response.data.id}`);
+
+                if (restaurantResponse.status !== 200) {
+                    console.log(response);
+                    toast({ description: "Echec de la récupération du restaurant" });
+                    return;
+                }
+                const restaurant: Restaurant[] = restaurantResponse.data;
+
+                if (restaurant.length === 0) {
+                    return;
+                }
+
+                data = { ...data, restaurant_id: restaurant[0].id };
+            }
+            setUser({ ...data });
+            sessionStorage.setItem("user", JSON.stringify({ ...data }));
+            return true;
         } catch (error: any) {
             logError(error);
+            return;
         }
     };
 
@@ -49,8 +72,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
             setUser({ ...data });
             sessionStorage.setItem("user", JSON.stringify({ ...data }));
+            return true;
         } catch (error) {
             logError(error);
+            return;
         }
     };
 
