@@ -8,7 +8,6 @@ export default (router: express.Router) => {
      *   name: Orders
      *   description: Operations about orders
      */
-    router.get('/order/restaurant/:restaurant_id', getAllOrdersByRestaurantId);
     router.get('/order', getAllOrders);
 /**
  * @swagger
@@ -91,6 +90,58 @@ export default (router: express.Router) => {
  *               description: Le statut de la commande
  *       500:
  *         description: Erreur interne du serveur
+ */
+    router.get('/order/restaurant/:restaurant_id', getAllOrdersByRestaurantId);
+    /**
+ * @swagger
+ * /order/restaurant/{restaurant_id}:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get all orders by restaurant ID
+ *     parameters:
+ *       - in: path
+ *         name: restaurant_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the restaurant
+ *     responses:
+ *       200:
+ *         description: A list of orders for the specified restaurant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   user_id:
+ *                     type: integer
+ *                   restaurant_id:
+ *                     type: integer
+ *                   delivery_id:
+ *                     type: integer
+ *                   address_id:
+ *                     type: integer
+ *                   total_price:
+ *                     type: number
+ *                     format: float
+ *                   status:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                     format: date-time
+ *                   updated_at:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Missing restaurant_id
+ *       404:
+ *         description: Orders not found
+ *       500:
+ *         description: Internal server error
  */
     router.post('/order', createAnOrder);
 /**

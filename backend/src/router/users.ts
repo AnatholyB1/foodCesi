@@ -6,17 +6,73 @@ export default (router: express.Router) => {
 /**
  * @swagger
  * tags:
- *   name: User
- *   description: Operations about user
+ *   name: Users
+ *   description: Operations about users
  */
     router.get('/users/:id', getAUserById)
+    /**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get a user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: A user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 type:
+ *                   type: string
+ *                 active:
+ *                   type: boolean
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *       400:
+ *         description: id not found
+ *       404:
+ *         description: user not found
+ *       500:
+ *         description: Internal server error
+ */
     router.delete('/users', deleteAllTheUsers)
+    /**
+ * @swagger
+ * /users:
+ *   delete:
+ *     tags: [Users]
+ *     summary: Delete all users
+ *     responses:
+ *       200:
+ *         description: Number of users deleted
+ *       500:
+ *         description: Internal server error
+ */
     router.get('/users', getAllUsers)
     /**
  * @swagger
  * /users:
  *   get:
- *     tags: [User]
+ *     tags: [Users]
  *     description: Récupère tous les utilisateurs
  *     responses:
  *       200:
@@ -58,7 +114,7 @@ export default (router: express.Router) => {
  * @swagger
  * /users/{id}:
  *   delete:
- *     tags: [User]
+ *     tags: [Users]
  *     description: Supprime un utilisateur par ID
  *     parameters:
  *       - in: path
@@ -82,7 +138,7 @@ export default (router: express.Router) => {
  * @swagger
  * /users/{id}:
  *   put:
- *     tags: [User]
+ *     tags: [Users]
  *     description: Met à jour un utilisateur par ID
  *     parameters:
  *       - in: body
