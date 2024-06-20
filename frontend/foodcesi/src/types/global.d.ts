@@ -5,11 +5,13 @@ declare global {
         id: number;
         email: string;
         username: string;
+        sponsor_code: string;
         type: string;
         refreshToken: string;
         restaurant_id?: number;
         delivery_id?: number;
     }
+
     interface Restaurant {
         id?: number;
         name: string;
@@ -104,19 +106,18 @@ declare global {
     }
 
     interface Notif {
-        user_id: string;
-        message: string;
-        read: boolean;
-        createdAt: Date;
+        notification: Notification,
+        type: string;
     }
 
     interface Notification {
+        createdAt: Date;
+        from: string;
+        message: string;
         title: string;
         description: boolean;
         link: string;
         read: boolean;
-        createdAt: Date;
-        from: string;
     }
 
     interface Delivery {

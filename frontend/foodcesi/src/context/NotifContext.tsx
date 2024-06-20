@@ -74,7 +74,35 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     ws.onmessage = (message) => {
         const data: Notif = JSON.parse(message.data);
         console.log(data);
-        toast({ description: data.message });
+        const content = JSON.parse(data.notification.message);
+        console.log(content);
+
+        let title = "";
+        switch (data.notification.from) {
+            case "user":
+                title = "Client";
+                break;
+            case "delivery":
+                title = "Livreur";
+                break;
+            case "restaurant":
+                title = "Restaurant";
+                break;
+            default:
+                title = "???";
+                break;
+        }
+
+        let description = "";
+        switch (data.type) {
+            case "orderRequest":
+                description = `Nouvelle commande.`;
+                break;
+            default:
+                description = "???";
+                break;
+        }
+        toast({ title: title, description: description });
     };
 
     const noneRead = notifications.filter((notif) => !notif.read).length > 0;

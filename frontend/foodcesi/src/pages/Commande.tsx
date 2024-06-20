@@ -9,17 +9,8 @@ import Loading from "@/components/ui/Loading";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import ws from "@/helpers/websocket";
+import { statuses } from "@/data";
 
-const statuses: OrderStatus[] = [
-    { key: "pending", text: "En attente de validation restaurateur" },
-    { key: "validated", text: "En préparation" },
-    { key: "pending delivery", text: "En attente de livreur" },
-    { key: "delivery", text: "En cours de livraison" },
-    { key: "delivered", text: "Livré" },
-    { key: "completed", text: "Terminé" },
-    { key: "cancelled", text: "Annulé" },
-    { key: "revoke", text: "Révoqué" },
-];
 const userStatusKeys = ["pending", "validated", "delivery", "delivered", "completed", "cancelled", "revoke"];
 const restaurantStatusKeys = ["pending", "validated", "pending delivery", "completed", "cancelled", "revoke"];
 const deliveryStatusKeys = ["pending delivery", "delivery", "delivered", "completed", "cancelled", "revoke"];
