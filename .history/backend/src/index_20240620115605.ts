@@ -37,8 +37,7 @@ async function connectMongoDB() {
 const wss = new WebSocket.Server({ server });
 let clients: {
   type: string;
-  ws : WebSocket;
-  id: string;
+  ws : WebSocket
 }[] = [];
 wss.on("connection", async (ws) => {
 
@@ -64,11 +63,6 @@ wss.on("connection", async (ws) => {
 
       case "orderRequest": {
         const { restaurant_id, address, order_items, user, order_id } = data;
-        const ws_restaurant = clients.find(client => client.type === "restaurant"  && client.id === restaurant_id)?.ws;
-        if (!ws_restaurant) {
-          console.error("No restaurant connected");
-          break;
-        }
 
         const restaurant_message = {
           type: "order",
@@ -95,7 +89,11 @@ wss.on("connection", async (ws) => {
         };
 
         const response2 = JSON.stringify(response);
-        ws_restaurant.send(response2);
+        for (let client of clients) {
+          if (client.ws.readyState === WebSocket.OPEN  && client.type === "restaurant") {
+            client.ws.send(response2);
+          }
+        }
 
         break;
       }
@@ -321,10 +319,7 @@ setTimeout(() => {
   wsUser.onopen = () => {
     const message = {
       type: 'connectionType',
-      data: {
-        type: 'user',
-        id: "1"
-      }
+      data: 'user'
     };
   
     wsUser.send(JSON.stringify(message));
@@ -343,7 +338,7 @@ setTimeout(() => {
       type: 'connectionType',
       data: {
         type: 'restaurant',
-        id: "1"
+        id: 1
       }
     };
   
@@ -377,7 +372,7 @@ setTimeout(() => {
       data: 
         {
           type: 'delivery',
-          id: "1"
+          id: 1
         }
     };
   

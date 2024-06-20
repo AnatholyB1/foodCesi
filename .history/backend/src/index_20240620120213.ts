@@ -64,6 +64,7 @@ wss.on("connection", async (ws) => {
 
       case "orderRequest": {
         const { restaurant_id, address, order_items, user, order_id } = data;
+        console.log(typeof(restaurant_id ));
         const ws_restaurant = clients.find(client => client.type === "restaurant"  && client.id === restaurant_id)?.ws;
         if (!ws_restaurant) {
           console.error("No restaurant connected");
@@ -323,7 +324,7 @@ setTimeout(() => {
       type: 'connectionType',
       data: {
         type: 'user',
-        id: "1"
+        id: 1
       }
     };
   
@@ -343,7 +344,7 @@ setTimeout(() => {
       type: 'connectionType',
       data: {
         type: 'restaurant',
-        id: "1"
+        id: 1
       }
     };
   
@@ -377,7 +378,7 @@ setTimeout(() => {
       data: 
         {
           type: 'delivery',
-          id: "1"
+          id: 1
         }
     };
   

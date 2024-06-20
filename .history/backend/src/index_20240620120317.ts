@@ -64,6 +64,7 @@ wss.on("connection", async (ws) => {
 
       case "orderRequest": {
         const { restaurant_id, address, order_items, user, order_id } = data;
+        console.log(typeof(restaurant_id ), typeof(clients[0].id));
         const ws_restaurant = clients.find(client => client.type === "restaurant"  && client.id === restaurant_id)?.ws;
         if (!ws_restaurant) {
           console.error("No restaurant connected");

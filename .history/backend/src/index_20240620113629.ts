@@ -8,11 +8,7 @@ import sequelize from "./db";
 
 import router from "./router/index";
 import WebSocket from "ws";
-import swaggerJsDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
-import { setTimeout } from "timers";
-import { getOrderById } from "./db/orders";
-import { createNotification, getNotificationById } from "./db/notifications";
+import { createNotification } from "./db/notifications";
 
 const app = express();
 const server = http.createServer(app);
@@ -37,8 +33,7 @@ async function connectMongoDB() {
 const wss = new WebSocket.Server({ server });
 let clients: {
   type: string;
-  ws : WebSocket;
-  id: string;
+  ws : WebSocket
 }[] = [];
 wss.on("connection", async (ws) => {
 
@@ -53,22 +48,16 @@ wss.on("connection", async (ws) => {
     switch (type) {
       case "connectionType": {
         const client = {
-          type: data.type,
-          id: data.id,
+          type: data,
           ws,
         };
         clients.push(client);
-        console.log(`New ${data.type} ${data.id} connected`);
+        console.log(`New ${data} connected`);
         break;
       }
 
       case "orderRequest": {
         const { restaurant_id, address, order_items, user, order_id } = data;
-        const ws_restaurant = clients.find(client => client.type === "restaurant"  && client.id === restaurant_id)?.ws;
-        if (!ws_restaurant) {
-          console.error("No restaurant connected");
-          break;
-        }
 
         const restaurant_message = {
           type: "order",
@@ -95,58 +84,16 @@ wss.on("connection", async (ws) => {
         };
 
         const response2 = JSON.stringify(response);
-        ws_restaurant.send(response2);
+        for (let client of clients) {
+          if (client.ws.readyState === WebSocket.OPEN  && client.type === "restaurant") {
+            client.ws.send(response2);
+          }
+        }
 
         break;
       }
       case "orderResponse": {
         const { order_id, response, notification_id } = data;
-
-        const ws_user = clients.find(client => client.type === "user")?.ws;
-        if (!ws_user) {
-          console.error("No restaurant connected");
-          break;
-        }
-
-        const previous_notification = await getNotificationById(notification_id)
-        if (!previous_notification) {
-          console.error("Notification not found");
-          break;
-        }
-
-        previous_notification.read = true;
-        await previous_notification.save();
-        
-
-        const order = await getOrderById(order_id);
-        if (!order) {
-          console.error("Order not found");
-          break;
-        }
-
-        if(response === "ok") {
-          order.status = "validated";
-        }else{
-          order.status = "cancelled";
-        }
-
-        await order.save();
-
-        const new_notification = await createNotification({
-          userId: order.delivery_id,
-          message: JSON.stringify({
-            type: "restaurantResponse",
-            order,
-          }),
-          from: "restaurant"
-        });
-
-        if (!new_notification) {
-          console.error("Notification not created");
-          break;
-        }
-
-
 
         break;
       }
@@ -295,7 +242,9 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use("/", router());
 
-
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import { setTimeout } from "timers";
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -321,10 +270,7 @@ setTimeout(() => {
   wsUser.onopen = () => {
     const message = {
       type: 'connectionType',
-      data: {
-        type: 'user',
-        id: "1"
-      }
+      data: 'user'
     };
   
     wsUser.send(JSON.stringify(message));
@@ -341,10 +287,7 @@ setTimeout(() => {
   wsRestaurant.onopen = () => {
     const message = {
       type: 'connectionType',
-      data: {
-        type: 'restaurant',
-        id: "1"
-      }
+      data: 'restaurant'
     };
   
     wsRestaurant.send(JSON.stringify(message));
@@ -374,11 +317,7 @@ setTimeout(() => {
   wsDelivery.onopen = () => {
     const message = {
       type: 'connectionType',
-      data: 
-        {
-          type: 'delivery',
-          id: "1"
-        }
+      data: 'delivery'
     };
   
     wsDelivery.send(JSON.stringify(message));
