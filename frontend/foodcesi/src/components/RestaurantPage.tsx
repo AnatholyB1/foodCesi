@@ -82,8 +82,8 @@ const RestaurantPage = ({ restaurant, restaurant_id }: RestaurantPageProps) => {
                 },
             });
             setNewItem({ ...newItem, image_url: response.data.file.path });
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            logError(error);
         }
     };
 
@@ -91,7 +91,7 @@ const RestaurantPage = ({ restaurant, restaurant_id }: RestaurantPageProps) => {
         e.preventDefault();
 
         try {
-            const response = await api.post("menu_items", { ...newItem, restaurant_id: restaurant.id });
+            const response = await api.post("/menu_items", { ...newItem, restaurant_id: restaurant.id });
 
             const data = response.data;
             if (!data) {

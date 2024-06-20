@@ -6,7 +6,7 @@ import CategoriesCarousel from "@/components/CategoriesCarousel";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import RestaurantsList from "@/components/RestaurantsList";
 import api from "@/helpers/api";
-import { toast } from "@/components/ui/use-toast";
+import { logError } from "@/helpers/utils";
 
 const addresses = [
     { id: 1, name: "Maison" },
@@ -20,15 +20,14 @@ export default function HomeUser() {
     useEffect(() => {
         const fetchRestaurants = async () => {
             try {
-                const response = await api.get(`restaurants`);
+                const response = await api.get(`/restaurants`);
 
                 const data = response.data;
                 if (data.length > 0) {
                     setBestRestaurants(data);
                 }
             } catch (error: any) {
-                console.error(error);
-                toast({ description: error.response.data.message });
+                logError(error);
             }
         };
         fetchRestaurants();

@@ -1,8 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
 import HomeUser from "./home/HomeUser";
 import HomeRestaurant from "./home/HomeRestaurant";
-import HomeDelivery from "./home/HomeDelivery";
 import HomeDeveloper from "./home/HomeDeveloper";
+import HomeDelivery from "./home/HomeDelivery";
 
 export default function Home() {
     const { user } = useAuth();

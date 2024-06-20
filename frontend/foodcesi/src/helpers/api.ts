@@ -23,24 +23,4 @@ api.interceptors.request.use(
     }
 );
 
-export const getData = async (endpoint: string) => {
-    try {
-        const response = await api.get(endpoint);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching data", error);
-        throw error;
-    }
-};
-
-export const postData = async (endpoint: string, data: Record<string, number | string | Date>) => {
-    try {
-        const response = await api.post(endpoint, data);
-        return response.data;
-    } catch (error) {
-        console.error("Error posting data", error);
-        throw error;
-    }
-};
-
 export default api;

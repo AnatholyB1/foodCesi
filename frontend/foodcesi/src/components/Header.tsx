@@ -1,16 +1,17 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Bell, BellDot, Settings, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Bell, Settings, ShoppingCart } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { useNotif } from "@/context/NotifContext";
 
 export default function Header() {
     const { user } = useAuth();
+    const { noneRead } = useNotif();
     const { cart } = useCart();
     const location = useLocation();
     const navigate = useNavigate();
     const previousLocationRef = useRef<typeof location | null>(null);
-    const hasNotification = false;
 
     // Stockez l'adresse précédente
     useEffect(() => {
@@ -47,11 +48,14 @@ export default function Header() {
                 </>
             )}
             <div className="flex gap-3">
-                <NavLink to="/notifications">{hasNotification ? <BellDot /> : <Bell />}</NavLink>
+                <NavLink to="/notifications" className="relative">
+                    <Bell />
+                    {noneRead && <span className="absolute top-0 right-0 bg-primary border-2 border-light rounded-full w-3 h-3"></span>}
+                </NavLink>
                 {user.type === "user" && (
                     <NavLink to="/panier" className="relative">
                         <ShoppingCart />
-                        {cart.restaurants.length > 0 && <span className="absolute -top-1 -right-1 bg-primary border-2 border-light rounded-full w-3 h-3"></span>}
+                        {cart.restaurants.length > 0 && <span className="absolute top-0 right-0 bg-primary border-2 border-light rounded-full w-3 h-3"></span>}
                     </NavLink>
                 )}
             </div>
