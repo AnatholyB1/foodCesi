@@ -1,7 +1,7 @@
 import express from 'express'; //
 import {get, merge} from 'lodash'
 
-import { getUserByEmail, getUserById } from '../db/users';
+import { getUserById } from '../db/users';
 import { createLog } from '../db/log';
 import jwt from 'jsonwebtoken'
 import { getDevByApiKey } from '../db/dev';
@@ -28,8 +28,8 @@ export const isAuthenticated = async (req : express.Request, res : express.Respo
             
         jwt.verify(sessionToken, process.env.ACCESS_JWT_KEY || "secret", async (err : any, decoded : any) => {
             if(err) return res.status(403).end()
-                
-            const user = await getUserByEmail(decoded.email)
+            console.log(decoded)
+            const user = await getUserById(decoded.id)
             
             if(user == null) return res.status(401).json({message : "invalid token"}).end()
             
