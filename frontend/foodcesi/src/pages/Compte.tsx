@@ -50,11 +50,15 @@ const Compte = () => {
                 <p className="text-lg font-semibold">{user?.username}</p>
             </div>
             <div className="flex flex-col items-center gap-2">
-                {items.map((item, index) => (
-                    <div key={index} className="contents">
-                        {item.item}
-                    </div>
-                ))}
+                {items.map((item, index) => {
+                    if (item.types.includes(user!.type)) {
+                        return (
+                            <div key={index} className="contents">
+                                {item.item}
+                            </div>
+                        );
+                    }
+                })}
                 <Button variant="link" className="underline text-sm">
                     Supprimer le compte
                 </Button>
