@@ -9,7 +9,6 @@ import {
   deleteNotificationsByUserId,
   markNotificationAsRead,
 } from "../db/notifications";
-import e from "express";
 
 export const getAllNotifications = withLogging(
   "getNotifications",
@@ -29,17 +28,6 @@ export const getAllNotifications = withLogging(
   }
 );
 
-export const removeAllNotifications = withLogging(
-  "removeAllNotifications",
-  async (req: express.Request, res: express.Response) => {
-    try {
-      await deleteAllNotifications();
-      res.status(200).end();
-    } catch (e) {
-      res.status(500).json(e).end();
-    }
-  }
-);
 
 export const getNotification = withLogging(
   "getNotification",
@@ -99,6 +87,7 @@ export const removeNotificationsByUser = withLogging(
   }
 );
 
+
 export const markNotification = withLogging(
   "markNotification",
   async (req: express.Request, res: express.Response) => {
@@ -112,3 +101,4 @@ export const markNotification = withLogging(
     }
   }
 );
+
