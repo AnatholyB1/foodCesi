@@ -462,100 +462,6 @@ wss.on("connection", async (ws) => {
         console.log("Delivery departure sent to user from server");
         break;
       }
-      case "deliveryArrival": {
-        const {
-          order : temp_order
-        } = data
-
-        console.log("Delivery arrival received to server from delivery");
-
-        const order = await getOrderById(temp_order.id);
-        if (!order) {
-          console.error("Order not found");
-          break;
-        }
-
-        order.status = "delivered";
-        await order.save();
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryArrival",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryArrival",
-        });
-
-        const user_message = {
-          type: "deliveryArrival",
-          notification: user_notification,
-        };
-
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-        ws_user.send(JSON.stringify(user_message));
-
-        console.log("Delivery arrival sent to user from server");
-        break;
-      }
-      case "deliveryCompleted": {
-        const {
-          order : temp_order
-        } = data
-
-        console.log("Delivery completed received to server from delivery");
-
-        const order = await getOrderById(temp_order.id);
-        if (!order) {
-          console.error("Order not found");
-          break;
-        }
-
-        order.status = "completed";
-        await order.save();
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryCompleted",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryCompleted",
-        });
-
-        const user_message = {
-          type: "deliveryCompleted",
-          notification: user_notification,
-        };
-
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-        ws_user.send(JSON.stringify(user_message));
-
-        console.log("Delivery completed sent to user from server");
-        break;
-      }
       default: {
         console.log(`Received unknown event type: ${type}`);
       }
@@ -688,21 +594,6 @@ setTimeout(() => {
           }
         }));
         break;
-      case "deliveryArrival":
-        console.log("Delivery arrival received");
-        console.log("order status " + info.order.status);
-
-        wsDelivery.send(JSON.stringify({
-          type: "deliveryCompleted",
-          data : {
-            order: info.order,
-          }
-        }));
-        break;
-      case "deliveryCompleted":
-        console.log("Delivery completed received");
-        console.log("order status " + info.order.status);
-        break;    
       default:
         console.log("Unknown message type to user");
     }

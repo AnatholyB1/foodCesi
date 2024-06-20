@@ -698,11 +698,7 @@ setTimeout(() => {
             order: info.order,
           }
         }));
-        break;
-      case "deliveryCompleted":
-        console.log("Delivery completed received");
-        console.log("order status " + info.order.status);
-        break;    
+        break;  
       default:
         console.log("Unknown message type to user");
     }

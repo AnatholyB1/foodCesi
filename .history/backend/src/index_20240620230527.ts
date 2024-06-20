@@ -69,8 +69,7 @@ wss.on("connection", async (ws) => {
 
         const ws_restaurant = clients.find(
           (client) =>
-            client.type === "restaurant" &&
-            client.id === restaurant_id.toString()
+            client.type === "restaurant" && client.id === restaurant_id.toString()
         )?.ws;
         if (!ws_restaurant) {
           console.error("No restaurant connected");
@@ -148,13 +147,8 @@ wss.on("connection", async (ws) => {
         const deliveries_id = deliveries.map((delivery) => delivery.id);
 
         const ws_delivery = clients
-          .filter(
-            (client) =>
-              client.type === "delivery" &&
-              client.ws &&
-              deliveries_id.includes(Number(client.id))
-          )
-          .map((client) => client.ws);
+        .filter(client => client.type === "delivery" && client.ws && deliveries_id.includes(Number(client.id)))
+        .map(client => client.ws);
 
         if (!ws_delivery || ws_delivery.length == 0) {
           console.error("No delivery connected");
@@ -184,16 +178,17 @@ wss.on("connection", async (ws) => {
           break;
         }
 
+
         const user_message = {
           type: "restaurantResponse",
-          notification: new_notification,
+          notification: new_notification
         };
 
         ws_user.send(JSON.stringify(user_message));
 
         console.log("Order response sent to user from server");
 
-        if (response !== "ok") {
+        if(response !== "ok") {
           break;
         }
 
@@ -209,45 +204,42 @@ wss.on("connection", async (ws) => {
 
         const delivery_message = {
           type: "deliveryRequest",
-          notification: delivery_notification,
+          notification: delivery_notification
         };
 
-        ws_delivery.forEach((ws) => ws.send(JSON.stringify(delivery_message)));
+        ws_delivery.forEach(ws => ws.send(JSON.stringify(delivery_message)));
 
         console.log("Delivery request sent to delivery from server");
         break;
       }
       case "deliveryResponse": {
         interface IData {
-          type: string;
-          order: Order;
-          response: string;
-          delivery_id: string;
+          type: string; 
+          order: Order; 
+          response: string; 
+          delivery_id: string; 
         }
         const data_typed: IData = data;
 
-        const { order, response, delivery_id } = data_typed;
+        const {
+          order,
+          response,
+          delivery_id,
+        } = data_typed;
 
         console.log("Delivery response received to server from delivery");
 
         if (response !== "ok") {
           break;
         }
-
-        const working_order = await getOrderById(order.id);
-        if (!working_order) {
-          console.error("Order not found");
-          break;
-        }
-
-        working_order.status = "pending delivery";
-        working_order.delivery_id = Number(delivery_id);
-        await working_order.save();
+        console.log(order)
+        order.status = "pending delivery"
+        order.delivery_id = Number(delivery_id) 
+        await order.save();
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" &&
-            client.id === working_order.user_id.toString()
+            client.type === "user" && client.id === order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -259,7 +251,7 @@ wss.on("connection", async (ws) => {
           userId: order.user_id,
           message: JSON.stringify({
             type: "deliveryResponse",
-            order: working_order,
+            order,
           }),
           from: "delivery",
           type: "deliveryResponse",
@@ -267,293 +259,91 @@ wss.on("connection", async (ws) => {
 
         const user_message = {
           type: "deliveryResponse",
-          notification: user_notification,
+          notification: user_notification
         };
 
         ws_user.send(JSON.stringify(user_message));
 
         console.log("Delivery response sent to user from server");
-
+        
         break;
       }
       case "restaurantReady": {
-
-        console.log("Restaurant ready received to server from restaurant");
         const {
-          order
-        } = data
-
-        const delivery_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "restaurantReady",
-            order,
-          }),
-          from: "restaurant",
-          type: "restaurantReady",
-        });
-
-        const delivery_message = {
-          type: "restaurantReady",
-          notification: delivery_notification,
-        };
-
-        const ws_delivery = clients.find(
-          (client) =>
-            client.type === "delivery" &&
-            client.id === order.delivery_id.toString()
-        )?.ws;
-
-        if (!ws_delivery) {
-          console.error("No delivery connected");
-          break;
-        }
-
-        ws_delivery.send(JSON.stringify(delivery_message));
-
-        console.log("Restaurant ready sent to delivery from server");
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "restaurantReady",
-            order,
-          }),
-          from: "restaurant",
-          type: "restaurantReady",
-        });
+          order,
+          restaurant,
+          restaurant_address,
+          order_address,
+          client,
+          delivery,
+          notification,
+        } = JSON.parse(message);
 
         const user_message = {
-          type: "restaurantReady",
-          notification: user_notification,
+          type: "delivery",
+          order_id: order.id,
+          restaurant: restaurant.name,
+          restaurant_address: restaurant_address,
+          order_address: order_address,
+          username: client.username,
         };
+        notification.read = true;
+        await notification.save();
 
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-
-        ws_user.send(JSON.stringify(user_message));
-
-
-        break;
-      }
-      case "deliveryReady": {
-        const {
-          order
-        } = data
-
-
-        console.log("Delivery ready received to server from delivery");
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryReady",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryReady",
-        });
-
-        const user_message = {
-          type: "deliveryReady",
-          notification: user_notification,
-        };
-
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-        ws_user.send(JSON.stringify(user_message));
-
-        console.log("Delivery ready sent to user from server");
-
-        const restaurant_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryReady",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryReady",
-        });
-
-        const restaurant_message = {
-          type: "deliveryReady",
-          notification: restaurant_notification,
-        };
-
-        const ws_restaurant = clients.find(
-          (client) =>
-            client.type === "restaurant" &&
-            client.id === order.restaurant_id.toString()
-        )?.ws;
-
-        if (!ws_restaurant) {
-          console.error("No restaurant connected");
-          break;
-        }
-
-        ws_restaurant.send(JSON.stringify(restaurant_message));
-
-        console.log("Delivery ready sent to restaurant from server");
-
+        delivery.status = "pending";
+        await delivery.save();
         break;
       }
       case "deliveryDeparture": {
         const {
-          order : temp_order
-        } = data
-
-        console.log("Delivery departure received to server from delivery");
-
-        const order = await getOrderById(temp_order.id);
-        if (!order) {
-          console.error("Order not found");
-          break;
-        }
-
-        order.status = "delivery";
-        await order.save();
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryDeparture",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryDeparture",
-        });
+          delivery,
+          order,
+          restaurant,
+          restaurant_address,
+          order_address,
+          client,
+          notification,
+        } = JSON.parse(message);
 
         const user_message = {
-          type: "deliveryDeparture",
-          notification: user_notification,
+          type: "delivery",
+          order_id: order.id,
+          restaurant: restaurant.name,
+          restaurant_address: restaurant_address,
+          order_address: order_address,
+          username: client.username,
         };
+        notification.read = true;
+        await notification.save();
 
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-        ws_user.send(JSON.stringify(user_message));
-
-        console.log("Delivery departure sent to user from server");
+        delivery.status = "on the way";
+        await delivery.save();
         break;
       }
       case "deliveryArrival": {
         const {
-          order : temp_order
-        } = data
-
-        console.log("Delivery arrival received to server from delivery");
-
-        const order = await getOrderById(temp_order.id);
-        if (!order) {
-          console.error("Order not found");
-          break;
-        }
-
-        order.status = "delivered";
-        await order.save();
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryArrival",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryArrival",
-        });
+          delivery,
+          order,
+          restaurant,
+          restaurant_address,
+          order_address,
+          client,
+          notification,
+        } = JSON.parse(message);
 
         const user_message = {
-          type: "deliveryArrival",
-          notification: user_notification,
+          type: "deliveryRequest",
+          order_id: order.id,
+          restaurant: restaurant.name,
+          restaurant_address: restaurant_address,
+          order_address: order_address,
+          username: client.username,
         };
+        notification.read = true;
+        await notification.save();
 
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-        ws_user.send(JSON.stringify(user_message));
-
-        console.log("Delivery arrival sent to user from server");
-        break;
-      }
-      case "deliveryCompleted": {
-        const {
-          order : temp_order
-        } = data
-
-        console.log("Delivery completed received to server from delivery");
-
-        const order = await getOrderById(temp_order.id);
-        if (!order) {
-          console.error("Order not found");
-          break;
-        }
-
-        order.status = "completed";
-        await order.save();
-
-        const user_notification = await createNotification({
-          userId: order.user_id,
-          message: JSON.stringify({
-            type: "deliveryCompleted",
-            order,
-          }),
-          from: "delivery",
-          type: "deliveryCompleted",
-        });
-
-        const user_message = {
-          type: "deliveryCompleted",
-          notification: user_notification,
-        };
-
-        const ws_user = clients.find(
-          (client) =>
-            client.type === "user" &&
-            client.id === order.user_id.toString()
-        )?.ws;
-
-        if (!ws_user) {
-          console.error("No user connected");
-          break;
-        }
-
-        ws_user.send(JSON.stringify(user_message));
-
-        console.log("Delivery completed sent to user from server");
+        delivery.status = "delivered";
+        await delivery.save();
         break;
       }
       default: {
@@ -636,73 +426,11 @@ setTimeout(() => {
     switch (dataResponse.type) {
       case "restaurantResponse":
         console.log("Restaurant response received to user");
-        console.log("order status " + info.order.status);
+        console.log("order status" + info.order.status);
         break;
-      case "deliveryResponse":
-        console.log("Delivery response received");
-        console.log("order status " + info.order.status);
-
-        const info_restaurant_ready = {
-          type: "restaurantReady",
-          data :{
-            order: info.order,
-          }
-        };
-        wsRestaurant.send(JSON.stringify(info_restaurant_ready) );
-
-        const info_delivery_ready = {
-          type: "deliveryReady",
-          data : {
-            order: info.order,
-          }
-        };
-        wsDelivery.send(JSON.stringify(info_delivery_ready) );
-
-        const info_delivery_departure = {
-          type: "deliveryDeparture",
-          data :{
-            order: info.order,
-          }
-        };
-
-        wsDelivery.send(JSON.stringify(info_delivery_departure) );
+      case "delivery":
+        console.log("Delivery received");
         break;
-      case "restaurantReady":
-        console.log("Restaurant ready received");
-        console.log("order status " + info.order.status);
-        break;
-
-      case "deliveryReady":
-        console.log("Delivery ready received");
-        console.log("order status " + info.order.status);
-        break;
-
-      case "deliveryDeparture":
-        console.log("Delivery departure received");
-        console.log("order status " + info.order.status);
-
-        wsDelivery.send(JSON.stringify({
-          type: "deliveryArrival",
-          data : {
-            order: info.order,
-          }
-        }));
-        break;
-      case "deliveryArrival":
-        console.log("Delivery arrival received");
-        console.log("order status " + info.order.status);
-
-        wsDelivery.send(JSON.stringify({
-          type: "deliveryCompleted",
-          data : {
-            order: info.order,
-          }
-        }));
-        break;
-      case "deliveryCompleted":
-        console.log("Delivery completed received");
-        console.log("order status " + info.order.status);
-        break;    
       default:
         console.log("Unknown message type to user");
     }
@@ -738,17 +466,18 @@ setTimeout(() => {
             notification_id: dataResponse.notification._id,
           },
         };
-
+    
         wsRestaurant.send(JSON.stringify(message));
         console.log("Order response sent to server from restaurant");
         break;
-      case "deliveryReady":
-        console.log("Delivery ready received to restaurant");
-        console.log("order status " + info.order.status);
-        break;  
+      case "restaurantResponse":
+        console.log("Restaurant response received");
+        break;
       default:
         console.log("Unknown message type to restaurant");
     }
+
+
   };
 
   const wsDelivery = new WebSocket("ws://localhost:8000");
@@ -765,10 +494,12 @@ setTimeout(() => {
     wsDelivery.send(JSON.stringify(message));
   };
 
-  wsDelivery.onmessage = (event) => {
+
+  wsDelivery.onmessage = (event) => { 
     //parse a buffer
     const dataResponse = JSON.parse(event.data.toString());
     const info = JSON.parse(dataResponse.notification.message);
+
 
     switch (dataResponse.type) {
       case "deliveryRequest":
@@ -781,16 +512,15 @@ setTimeout(() => {
             delivery_id: "1",
           },
         };
-
+    
         wsDelivery.send(JSON.stringify(message));
         console.log("Delivery response sent to server from delivery");
         break;
-      case "restaurantReady":
-        console.log("Restaurant ready received to delivery");
-        console.log("order status " + info.order.status);
+      case "delivery":
+        console.log("Delivery received");
         break;
       default:
         console.log("Unknown message type to delivery");
     }
-  };
+  }
 }, 1000);
