@@ -4,19 +4,69 @@ import { useAuth } from "./AuthContext";
 import api from "@/helpers/api";
 import { logError } from "@/helpers/utils";
 import ws from "@/helpers/websocket";
+import { ChefHat, CircleHelp, Truck, User } from "lucide-react";
 
 interface NotifContextType {
-    notifications: Notification[];
-    setNotifications: (notifications: Notification[]) => void;
+    notifications: NotificationType[];
+    setNotifications: (notifications: NotificationType[]) => void;
     noneRead: boolean;
 }
 
 const NotifContext = createContext<NotifContextType | undefined>(undefined);
 
+const getNotifContent = (data: NotifContent) => {
+    const notification: NotificationType = {
+        _id: data._id || "",
+        icon: <></>,
+        title: "",
+        description: "",
+        link: "",
+        createdAt: data.createdAt,
+        read: data.read,
+    };
+
+    const content = JSON.parse(data.message);
+
+    switch (data.from) {
+        case "user":
+            notification.title = "Client";
+            notification.icon = <User size={32} />;
+            break;
+        case "delivery":
+            notification.title = "Livreur";
+            notification.icon = <Truck size={32} />;
+            break;
+        case "restaurant":
+            notification.title = "Restaurant";
+            notification.icon = <ChefHat size={32} />;
+            break;
+        default:
+            notification.title = "???";
+            notification.icon = <CircleHelp size={32} />;
+            break;
+    }
+
+    switch (data.type) {
+        case "orderRequest":
+            notification.description = `Nouvelle commande.`;
+            notification.link = `/commandes/${content.order_id}`;
+            break;
+        case "restaurantResponse":
+            notification.description = `Prise en charge de votre commande.`;
+            notification.link = `/commandes/${content.order_id}`;
+            break;
+        default:
+            notification.description = "???";
+            break;
+    }
+
+    return notification;
+};
+
 export const NotifProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const { user } = useAuth();
 
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -27,6 +77,10 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                     case "restaurant":
                         if (user.restaurant_id === undefined) return;
                         response = await api.get(`/notifications/user/${user.restaurant_id}`);
+                        break;
+                    case "delivery":
+                        if (user.delivery_id === undefined) return;
+                        response = await api.get(`/notifications/user/${user.delivery_id}`);
                         break;
                     default:
                         response = await api.get(`notifications/user/${user.id}`);
@@ -44,17 +98,19 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                     toast({ description: "Echec de la récupération des notifications" });
                     return;
                 }
+                const newNotifications: NotificationType[] = [];
 
-                const content = JSON.parse(data[0].message);
-                console.log(data[0]);
-                console.log(content);
+                data.map((notif: NotifContent) => {
+                    try {
+                        newNotifications.push(getNotifContent(notif));
+                    } catch (error: any) {
+                        logError(error);
+                    }
+                });
 
-                // data.forEach((notif: Notif) => {
-                //     const content = JSON.parse(notif.message);
-                //     console.log(content);
-                // });
+                console.log(newNotifications);
 
-                setNotifications(data);
+                setNotifications(newNotifications);
             } catch (error: any) {
                 logError(error);
             }
@@ -73,36 +129,12 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     ws.onmessage = (message) => {
         const data: Notif = JSON.parse(message.data);
-        console.log(data);
-        const content = JSON.parse(data.notification.message);
-        console.log(content);
 
-        let title = "";
-        switch (data.notification.from) {
-            case "user":
-                title = "Client";
-                break;
-            case "delivery":
-                title = "Livreur";
-                break;
-            case "restaurant":
-                title = "Restaurant";
-                break;
-            default:
-                title = "???";
-                break;
-        }
+        const notification = getNotifContent(data.notification);
 
-        let description = "";
-        switch (data.type) {
-            case "orderRequest":
-                description = `Nouvelle commande.`;
-                break;
-            default:
-                description = "???";
-                break;
-        }
-        toast({ title: title, description: description });
+        setNotifications((prev) => [...prev, notification]);
+
+        toast({ title: notification.title, description: notification.description });
     };
 
     const noneRead = notifications.filter((notif) => !notif.read).length > 0;

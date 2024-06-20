@@ -106,17 +106,27 @@ declare global {
     }
 
     interface Notif {
-        notification: Notification,
+        notification: NotifContent;
         type: string;
     }
 
-    interface Notification {
+    interface NotifContent {
+        _id?: string;
         createdAt: Date;
         from: string;
         message: string;
+        read: boolean;
+        user_id: string;
+        type: string;
+    }
+
+    interface NotificationType {
+        _id?: string;
+        icon: JSX.Element;
         title: string;
-        description: boolean;
+        description: string;
         link: string;
+        createdAt: Date;
         read: boolean;
     }
 

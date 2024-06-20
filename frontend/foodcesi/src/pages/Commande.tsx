@@ -10,6 +10,8 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import ws from "@/helpers/websocket";
 import { statuses } from "@/data";
+import { toast } from "@/components/ui/use-toast";
+import { useNotif } from "@/context/NotifContext";
 
 const userStatusKeys = ["pending", "validated", "delivery", "delivered", "completed", "cancelled", "revoke"];
 const restaurantStatusKeys = ["pending", "validated", "pending delivery", "completed", "cancelled", "revoke"];
@@ -30,6 +32,7 @@ function getStatusKeys(userType: string) {
 
 export default function Commande() {
     const { user } = useAuth();
+    const { notifications } = useNotif();
     const { id } = useParams();
 
     const [order, setOrder] = useState<Order | null>(null);
@@ -66,15 +69,21 @@ export default function Commande() {
     });
 
     const acceptOrder = async () => {
+        const notification_id = notifications.find((notif) => notif.link === `/commandes/${order!.id}`)?._id;
+
+        console.log(notification_id);
+
         try {
             const message = {
                 type: "orderResponse",
                 data: {
-                    order_id: order!.id,
+                    order_id: order!.id.toString(),
                     response: "ok",
+                    notification_id: notification_id,
                 },
             };
             ws.send(JSON.stringify(message));
+            toast({ description: "Commande acceptée" });
             setOrder((prevOrder) => ({ ...prevOrder!, status: "validated" }));
             setStatusIndex(statuses.findIndex((status) => status.key === "validated"));
         } catch (error: any) {
@@ -87,7 +96,7 @@ export default function Commande() {
             const message = {
                 type: "orderResponse",
                 data: {
-                    order_id: order!.id,
+                    order_id: order!.id.toString(),
                     response: "no",
                 },
             };
