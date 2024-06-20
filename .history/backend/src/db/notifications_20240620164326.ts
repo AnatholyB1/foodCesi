@@ -5,7 +5,6 @@ interface INotification extends Document {
   message: string;
   read: boolean;
   createdAt: Date;
-  type : string;  
 }
 
 const NotificationSchema: Schema = new Schema({
@@ -13,7 +12,6 @@ const NotificationSchema: Schema = new Schema({
   message: { type: String, required: true },
   read: { type: Boolean, default: false },
   from: { type: String, required: true},
-  type: { type: String, required: true},
   createdAt: { type: Date, default: Date.now },
 });
 
