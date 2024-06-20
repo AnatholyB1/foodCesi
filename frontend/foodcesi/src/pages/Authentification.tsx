@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { logError } from "@/helpers/utils";
 
 const Authentification = () => {
     const { user, login, register } = useAuth();
@@ -25,12 +26,30 @@ const Authentification = () => {
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        login(email, password);
+
+        try {
+            const response = await login(email, password);
+
+            if (response) {
+                navigate(from, { replace: true });
+            }
+        } catch (error: any) {
+            logError(error);
+        }
     };
 
     const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        register(email, password, username, type);
+
+        try {
+            const response = await register(email, password, username, type);
+
+            if (response) {
+                navigate(from, { replace: true });
+            }
+        } catch (error: any) {
+            logError(error);
+        }
     };
 
     return (
