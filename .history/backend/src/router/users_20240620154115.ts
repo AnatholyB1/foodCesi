@@ -7,7 +7,6 @@ import {
   getAUserById,
   sponsorUser,
 } from "../controllers/users";
-import { isAuthenticated } from "../middlewares";
 
 export default (router: express.Router) => {
   /**
@@ -16,7 +15,7 @@ export default (router: express.Router) => {
    *   name: User
    *   description: Operations about user
    */
-  router.put("/users/sponsor/:sponsor_code", isAuthenticated,sponsorUser);
+  router.put("/users/sponsor/:id", sponsorUser);
   router.get("/users/:id", getAUserById);
   router.delete("/users", deleteAllTheUsers);
   router.get("/users", getAllUsers);

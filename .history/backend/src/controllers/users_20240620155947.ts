@@ -93,9 +93,6 @@ export const sponsorUser = withLogging(
       if (!user) return res.status(400).json({message:"user not found"}).end();
 
       const identityId = get(req, 'identity.id') ;
-      if (!identityId) {
-        return res.status(400).json({message: "identity not found"}).end();
-      }
       const owner = await getUserById(Number(identityId));
 
       if (!owner) return res.status(400).json({message: "owner not found"}).end();
@@ -103,14 +100,12 @@ export const sponsorUser = withLogging(
       if(owner.sponsor === true) return res.status(403).json({message: "owner already sponsor"}).end();
 
 
-      user.sponsor = true;
-      user.save();
-
-      owner.sponsor_id = user.id;
+      owner.sponsor = true;
       owner.save();
-       
 
-      return res.status(200).json({message : "user sponsored", owner}).end();
+      
+
+      return res.status(200).json({message : "user sponsored"}).end();
     } catch (error) {
       console.log(error);
       return res.status(500);

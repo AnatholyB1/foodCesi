@@ -31,10 +31,6 @@ User.init(
       allowNull: false,
       defaultValue: random(),
     },
-    sponsor_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
-    },
     sponsor :  {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -85,7 +81,7 @@ User.init(
   }
 );
 
-User.hasOne(User, {foreignKey: 'sponsor_id', as: 'user_sponsor'});
+User.hasOne(User, {foreignKey: 'sponsor_id', as: 'sponsor'});
 
 
 export default User;

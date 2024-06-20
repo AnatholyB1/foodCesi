@@ -8,7 +8,6 @@ class User extends Model {
   public email!: string;
   public password!: string;
   public type!: string;
-  public sponsor_id!: number;
   public admin!: boolean;
   public sponsor_code!: string;
   public sponsor!: boolean;
@@ -30,10 +29,6 @@ User.init(
       type: new DataTypes.STRING(128),
       allowNull: false,
       defaultValue: random(),
-    },
-    sponsor_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
     },
     sponsor :  {
       type: DataTypes.BOOLEAN,
@@ -84,8 +79,6 @@ User.init(
     sequelize, // this is the sequelize instance
   }
 );
-
-User.hasOne(User, {foreignKey: 'sponsor_id', as: 'user_sponsor'});
 
 
 export default User;
