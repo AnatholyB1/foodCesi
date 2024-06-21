@@ -138,7 +138,7 @@ declare global {
     interface ConnectionData {
         type: "connectionType";
         data: {
-            type: "restaurant" | "delivery" | "user";
+            type: "restaurant" | "delivery" | "user" | "commercial";
             id: string;
         }
     }
