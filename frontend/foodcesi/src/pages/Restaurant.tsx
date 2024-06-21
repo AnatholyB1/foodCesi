@@ -17,9 +17,6 @@ export default function Restaurant() {
 
                 const data = response.data;
                 if (data) {
-                    data.image = "/restaurantImages/mcdonalds.jpg";
-                    data.banner = "/restaurantImages/mcdonalds.jpg";
-                    data.logo = "/avatars/mcdonalds.jpg";
                     setRestaurant(data);
                     setLoading(false);
                 }

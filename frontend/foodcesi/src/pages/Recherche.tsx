@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import CategoriesCarousel from "@/components/CategoriesCarousel";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Search, Settings2 } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import RestaurantItem from "@/components/RestaurantItem";
 import CustomCard from "@/components/ui/CustomCard";
 import api from "@/helpers/api";
@@ -31,7 +31,7 @@ export default function Recherche() {
     useEffect(() => {
         const fetchRestaurants = async () => {
             try {
-                const response = await api.get(`/restaurants${location.search}`);
+                const response = await api.get(`/restaurants`);
                 setRestaurants(response.data);
             } catch (error: any) {
                 console.error(error);
@@ -39,7 +39,13 @@ export default function Recherche() {
             }
         };
         fetchRestaurants();
-    }, [location.search]);
+    }, []);
+
+    const filteredRestaurants = restaurants.filter((restaurant) => {
+        if (name && !restaurant.name.toLowerCase().includes(name.toLowerCase())) return false;
+        if (categories.length > 0 && !categories.some((category) => restaurant.categories.map((c) => c.id!).includes(category))) return false;
+        return true;
+    });
 
     return (
         <div className="flex flex-col items-start gap-4 py-4 px-4">
@@ -50,11 +56,11 @@ export default function Recherche() {
                         <input type="search" id="search" className="bg-transparent outline-none grow" value={name} onChange={(e) => setName(e.target.value)} placeholder="Rechercher un restaurant" />
                     </CustomCard>
                 </label>
-                <CustomCard>
+                {/* <CustomCard>
                     <Button size="icon" variant="white" className="w-12 h-12 flex items-center justify-center">
                         <Settings2 />
                     </Button>
-                </CustomCard>
+                </CustomCard> */}
             </div>
             <CategoriesCarousel onChange={setCategories} />
             <DropdownMenu>
@@ -75,7 +81,7 @@ export default function Recherche() {
                 </DropdownMenuContent>
             </DropdownMenu>
             <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {restaurants.map((restaurant, index) => (
+                {filteredRestaurants.map((restaurant, index) => (
                     <RestaurantItem key={index} restaurant={restaurant} />
                 ))}
             </div>
