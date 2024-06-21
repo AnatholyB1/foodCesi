@@ -1,12 +1,15 @@
 import Order from "@/components/Order";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
+import { useNotif } from "@/context/NotifContext";
 import api from "@/helpers/api";
 import { logError } from "@/helpers/utils";
 import { useEffect, useState } from "react";
 
 export default function Commandes() {
     const { user } = useAuth();
+    const { notifications } = useNotif();
+
     const [activeOrders, setActiveOrders] = useState<Order[]>([]);
     const [pastOrders, setPastOrders] = useState<Order[]>([]);
 
@@ -29,15 +32,25 @@ export default function Commandes() {
                 }
 
                 const orders = response.data;
-                setActiveOrders(orders.filter((order: Order) => order.status !== "completed").slice().reverse());
-                setPastOrders(orders.filter((order: Order) => order.status === "completed").slice().reverse());
+                setActiveOrders(
+                    orders
+                        .filter((order: Order) => order.status !== "completed")
+                        .slice()
+                        .reverse()
+                );
+                setPastOrders(
+                    orders
+                        .filter((order: Order) => order.status === "completed")
+                        .slice()
+                        .reverse()
+                );
             } catch (error: any) {
                 logError(error);
             }
         };
 
         fetchOrders();
-    }, [user?.delivery_id, user?.id, user?.restaurant_id, user?.type]);
+    }, [user?.delivery_id, user?.id, user?.restaurant_id, user?.type, notifications]);
 
     return (
         <Tabs className="w-full p-4 flex flex-col items-center gap-4 max-w-lg mx-auto" defaultValue="progress">
