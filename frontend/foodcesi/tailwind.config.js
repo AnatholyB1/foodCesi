@@ -19,7 +19,7 @@ module.exports = {
                 primary: "#D63C31",
                 primary_light: "#E47E77",
                 grey: "#787878",
-                grey_light: "#F6F6F6",
+                grey_light: "#D9D9D9",
             },
             keyframes: {
                 "accordion-down": {
