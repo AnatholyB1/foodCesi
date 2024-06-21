@@ -226,7 +226,7 @@ wss.on("connection", async (ws) => {
         }
         const data_typed: IData = data;
 
-        const { order: order_temp, response, delivery_id } = data_typed;
+        const { order, response, delivery_id } = data_typed;
 
         console.log("Delivery response received to server from delivery");
 
@@ -234,19 +234,20 @@ wss.on("connection", async (ws) => {
           break;
         }
 
-        const order = await getOrderById(order_temp.id);
-        if (!order) {
+        const working_order = await getOrderById(order.id);
+        if (!working_order) {
           console.error("Order not found");
           break;
         }
 
-        order.status = "pending delivery";
-        order.delivery_id = Number(delivery_id);
-        await order.save();
+        working_order.status = "pending delivery";
+        working_order.delivery_id = Number(delivery_id);
+        await working_order.save();
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
+            client.type === "user" &&
+            client.id === working_order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -258,7 +259,7 @@ wss.on("connection", async (ws) => {
           userId: order.user_id,
           message: JSON.stringify({
             type: "deliveryResponse",
-            order,
+            order: working_order,
           }),
           from: "delivery",
           type: "deliveryResponse",
@@ -276,8 +277,11 @@ wss.on("connection", async (ws) => {
         break;
       }
       case "restaurantReady": {
+
         console.log("Restaurant ready received to server from restaurant");
-        const { order } = data;
+        const {
+          order
+        } = data
 
         const delivery_notification = await createNotification({
           userId: order.user_id,
@@ -326,7 +330,8 @@ wss.on("connection", async (ws) => {
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
+            client.type === "user" &&
+            client.id === order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -334,12 +339,17 @@ wss.on("connection", async (ws) => {
           break;
         }
 
+
         ws_user.send(JSON.stringify(user_message));
+
 
         break;
       }
       case "deliveryReady": {
-        const { order } = data;
+        const {
+          order
+        } = data
+
 
         console.log("Delivery ready received to server from delivery");
 
@@ -360,7 +370,8 @@ wss.on("connection", async (ws) => {
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
+            client.type === "user" &&
+            client.id === order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -405,7 +416,9 @@ wss.on("connection", async (ws) => {
         break;
       }
       case "deliveryDeparture": {
-        const { order: temp_order } = data;
+        const {
+          order : temp_order
+        } = data
 
         console.log("Delivery departure received to server from delivery");
 
@@ -435,7 +448,8 @@ wss.on("connection", async (ws) => {
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
+            client.type === "user" &&
+            client.id === order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -449,7 +463,9 @@ wss.on("connection", async (ws) => {
         break;
       }
       case "deliveryArrival": {
-        const { order: temp_order } = data;
+        const {
+          order : temp_order
+        } = data
 
         console.log("Delivery arrival received to server from delivery");
 
@@ -479,7 +495,8 @@ wss.on("connection", async (ws) => {
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
+            client.type === "user" &&
+            client.id === order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -493,7 +510,9 @@ wss.on("connection", async (ws) => {
         break;
       }
       case "deliveryCompleted": {
-        const { order: temp_order } = data;
+        const {
+          order : temp_order
+        } = data
 
         console.log("Delivery completed received to server from delivery");
 
@@ -523,7 +542,8 @@ wss.on("connection", async (ws) => {
 
         const ws_user = clients.find(
           (client) =>
-            client.type === "user" && client.id === order.user_id.toString()
+            client.type === "user" &&
+            client.id === order.user_id.toString()
         )?.ws;
 
         if (!ws_user) {
@@ -592,3 +612,185 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+setTimeout(() => {
+  const wsUser = new WebSocket("ws://localhost:8000");
+
+  // wsUser.onopen = () => {
+  //   const message = {
+  //     type: "connectionType",
+  //     data: {
+  //       type: "user",
+  //       id: "1",
+  //     },
+  //   };
+
+  //   wsUser.send(JSON.stringify(message));
+  // };
+
+  wsUser.onmessage = (event) => {
+    //parse a buffer
+    const dataResponse = JSON.parse(event.data.toString());
+    const info = JSON.parse(dataResponse.notification.message);
+
+    switch (dataResponse.type) {
+      case "restaurantResponse":
+        console.log("Restaurant response received to user");
+        console.log("order status " + info.order.status);
+        break;
+      case "deliveryResponse":
+        console.log("Delivery response received");
+        console.log("order status " + info.order.status);
+
+        const info_restaurant_ready = {
+          type: "restaurantReady",
+          data :{
+            order: info.order,
+          }
+        };
+        wsRestaurant.send(JSON.stringify(info_restaurant_ready) );
+
+        const info_delivery_ready = {
+          type: "deliveryReady",
+          data : {
+            order: info.order,
+          }
+        };
+        wsDelivery.send(JSON.stringify(info_delivery_ready) );
+
+        const info_delivery_departure = {
+          type: "deliveryDeparture",
+          data :{
+            order: info.order,
+          }
+        };
+
+        wsDelivery.send(JSON.stringify(info_delivery_departure) );
+        break;
+      case "restaurantReady":
+        console.log("Restaurant ready received");
+        console.log("order status " + info.order.status);
+        break;
+
+      case "deliveryReady":
+        console.log("Delivery ready received");
+        console.log("order status " + info.order.status);
+        break;
+
+      case "deliveryDeparture":
+        console.log("Delivery departure received");
+        console.log("order status " + info.order.status);
+
+        wsDelivery.send(JSON.stringify({
+          type: "deliveryArrival",
+          data : {
+            order: info.order,
+          }
+        }));
+        break;
+      case "deliveryArrival":
+        console.log("Delivery arrival received");
+        console.log("order status " + info.order.status);
+
+        wsDelivery.send(JSON.stringify({
+          type: "deliveryCompleted",
+          data : {
+            order: info.order,
+          }
+        }));
+        break;
+      case "deliveryCompleted":
+        console.log("Delivery completed received");
+        console.log("order status " + info.order.status);
+        break;    
+      default:
+        console.log("Unknown message type to user");
+    }
+  };
+
+  const wsRestaurant = new WebSocket("ws://localhost:8000");
+
+  // wsRestaurant.onopen = () => {
+  //   const message = {
+  //     type: "connectionType",
+  //     data: {
+  //       type: "restaurant",
+  //       id: "1",
+  //     },
+  //   };
+
+  //   wsRestaurant.send(JSON.stringify(message));
+  // };
+
+  wsRestaurant.onmessage = (event) => {
+    //parse a buffer
+    const dataResponse = JSON.parse(event.data.toString());
+    const info = JSON.parse(dataResponse.notification.message);
+
+    switch (dataResponse.type) {
+      case "orderRequest":
+        console.log("Order request received to restaurant");
+        const message = {
+          type: "orderResponse",
+          data: {
+            order_id: info.order_id,
+            response: "ok",
+            notification_id: dataResponse.notification._id,
+          },
+        };
+
+        wsRestaurant.send(JSON.stringify(message));
+        console.log("Order response sent to server from restaurant");
+        break;
+      case "deliveryReady":
+        console.log("Delivery ready received to restaurant");
+        console.log("order status " + info.order.status);
+        break;  
+      default:
+        console.log("Unknown message type to restaurant");
+    }
+  };
+
+  const wsDelivery = new WebSocket("ws://localhost:8000");
+
+  // wsDelivery.onopen = () => {
+  //   const message = {
+  //     type: "connectionType",
+  //     data: {
+  //       type: "delivery",
+  //       id: "1",
+  //     },
+  //   };
+
+  //   wsDelivery.send(JSON.stringify(message));
+  // };
+
+  wsDelivery.onmessage = (event) => {
+    //parse a buffer
+    const dataResponse = JSON.parse(event.data.toString());
+    const info = JSON.parse(dataResponse.notification.message);
+
+    switch (dataResponse.type) {
+      case "deliveryRequest":
+        console.log("Delivery request received to delivery");
+        const message = {
+          type: "deliveryResponse",
+          data: {
+            ...info,
+            response: "ok",
+            delivery_id: "1",
+          },
+        };
+
+        wsDelivery.send(JSON.stringify(message));
+        console.log("Delivery response sent to server from delivery");
+        break;
+      case "restaurantReady":
+        console.log("Restaurant ready received to delivery");
+        console.log("order status " + info.order.status);
+        break;
+      default:
+        console.log("Unknown message type to delivery");
+    }
+  };
+}, 1000);

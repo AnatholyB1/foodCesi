@@ -51,7 +51,6 @@ const getNotifContent = (data: NotifContent) => {
       notification.icon = <CircleHelp size={32} />;
       break;
   }
-  console.log(content);
 
   switch (data.type) {
     case "orderRequest":
@@ -60,37 +59,7 @@ const getNotifContent = (data: NotifContent) => {
       break;
     case "restaurantResponse":
       notification.description = `Prise en charge de votre commande.`;
-      notification.link = `/commandes/${content.order.id}`;
-      break;
-
-    case "deliveryReady":
-        notification.description = `Commande prête à être livrée.`;
-        notification.link = `/commandes/${content.order.id}`;
-      break;
-    case "deliveryRequest":
-        notification.description = `Nouvelle livraison.`;
-        notification.link = `/commandes/${content.order.id}`;
-      break;
-    case "restaurantReady":
-        notification.description = `Commande prête à être livrée.`;
-        notification.link = `/commandes/${content.order.id}`;
-      break;
-
-    case "deliveryResponse":
-        notification.description = `Livraison acceptée.`;
-        notification.link = `/commandes/${content.order.id}`;
-      break;
-    case "deliveryDeparture":
-        notification.description = `Livraison en cours.`;
-        notification.link = `/commandes/${content.order.id}`;
-      break;
-    case "deliveryArrival":
-        notification.description = `Livraison arrivée.`;
-        notification.link = `/commandes/${content.order.id}`;
-      break;
-    case "deliveryCompleted":
-        notification.description = `Livraison terminée.`;
-        notification.link = `/commandes/${content.order.id}`;
+      notification.link = `/commandes/${content.order_id}`;
       break;
     default:
       notification.description = "???";
@@ -178,88 +147,120 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({
 
   ws.onmessage = (event) => {
     const dataResponse = JSON.parse(event.data.toString());
+    const info = JSON.parse(dataResponse.notification.message);
 
-    let notification : NotificationType;
+    let message;
 
     switch (dataResponse.type) {
       case "orderRequest":
-        notification = getNotifContent(dataResponse.notification);
+        console.log("Order request received to restaurant");
+        message = {
+          type: "orderResponse",
+          data: {
+            order_id: info.order_id,
+            response: "ok",
+            notification_id: dataResponse.notification._id,
+          },
+        };
 
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        ws.send(JSON.stringify(message));
+        console.log("Order response sent to server from restaurant");
         break;
       case "deliveryReady":
-        notification = getNotifContent(dataResponse.notification);
-
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        console.log("Delivery ready received to restaurant");
+        console.log("order status " + info.order.status);
         break;
       case "deliveryRequest":
-        notification = getNotifContent(dataResponse.notification);
+        console.log("Delivery request received to delivery");
+        message = {
+          type: "deliveryResponse",
+          data: {
+            ...info,
+            response: "ok",
+            delivery_id: "1",
+          },
+        };
 
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        ws.send(JSON.stringify(message));
+        console.log("Delivery response sent to server from delivery");
         break;
       case "restaurantReady":
-        notification = getNotifContent(dataResponse.notification);
-
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        console.log("Restaurant ready received to delivery");
+        console.log("order status " + info.order.status);
         break;
       case "restaurantResponse":
-        notification = getNotifContent(dataResponse.notification);
-
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        console.log("Restaurant response received to user");
+        console.log("order status " + info.order.status);
         break;
       case "deliveryResponse":
-        notification = getNotifContent(dataResponse.notification);
+        console.log("Delivery response received");
+        console.log("order status " + info.order.status);
 
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        message = {
+          type: "restaurantReady",
+          data: {
+            order: info.order,
+          },
+        };
+        ws.send(JSON.stringify(message));
 
+        message = {
+          type: "deliveryReady",
+          data: {
+            order: info.order,
+          },
+        };
+        ws.send(JSON.stringify(message));
 
+        message = {
+          type: "deliveryDeparture",
+          data: {
+            order: info.order,
+          },
+        };
+
+        ws.send(JSON.stringify(message));
         break;
 
       case "deliveryDeparture":
+        console.log("Delivery departure received");
+        console.log("order status " + info.order.status);
 
-        notification = getNotifContent(dataResponse.notification);
-
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
-
-
+        ws.send(
+          JSON.stringify({
+            type: "deliveryArrival",
+            data: {
+              order: info.order,
+            },
+          })
+        );
         break;
       case "deliveryArrival":
+        console.log("Delivery arrival received");
+        console.log("order status " + info.order.status);
 
-        notification = getNotifContent(dataResponse.notification);
-
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
-
-      
+        ws.send(
+          JSON.stringify({
+            type: "deliveryCompleted",
+            data: {
+              order: info.order,
+            },
+          })
+        );
         break;
       case "deliveryCompleted":
-
-        notification = getNotifContent(dataResponse.notification);
-
-        setNotifications((prev) => [...prev, notification]);
-    
-        toast({ title: notification.title, description: notification.description });
+        console.log("Delivery completed received");
+        console.log("order status " + info.order.status);
         break;
       default:
         console.log("Unknown message");
     }
 
+    const notification = getNotifContent(dataResponse.notification);
 
+    setNotifications((prev) => [...prev, notification]);
+
+    toast({ title: notification.title, description: notification.description });
   };
 
   const noneRead = notifications.filter((notif) => !notif.read).length > 0;

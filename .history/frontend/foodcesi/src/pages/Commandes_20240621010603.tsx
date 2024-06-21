@@ -29,8 +29,8 @@ export default function Commandes() {
                 }
 
                 const orders = response.data;
-                setActiveOrders(orders.filter((order: Order) => order.status !== "completed").slice().reverse());
-                setPastOrders(orders.filter((order: Order) => order.status === "completed").slice().reverse());
+                setActiveOrders(orders.filter((order: Order) => order.status !== "completed"));
+                setPastOrders(orders.filter((order: Order) => order.status === "completed"));
             } catch (error: any) {
                 logError(error);
             }

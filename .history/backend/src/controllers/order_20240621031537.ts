@@ -306,6 +306,7 @@ export const compareOrderCode = withLogging(
       if (!order) {
         return res.status(404).json({ message: "Order not found" }).end();
       }
+      console.log(order.code, code);
       if (order.code !== Number(code)) {
         return res.status(400).json({ message: "Code does not match" }).end();
       }

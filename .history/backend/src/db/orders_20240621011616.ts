@@ -13,7 +13,6 @@ class Order extends Model {
   public user_id!: number;
   public restaurant_id!: number;
   public delivery_id!: number;
-  public code!: number | null;
   public address_id!: number;
   public total_price!: number;
   public status!: string;
@@ -43,11 +42,6 @@ Order.init(
     total_price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
-    },
-    code:
-    {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM,

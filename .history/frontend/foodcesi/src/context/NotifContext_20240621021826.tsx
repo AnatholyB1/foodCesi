@@ -178,7 +178,9 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({
 
   ws.onmessage = (event) => {
     const dataResponse = JSON.parse(event.data.toString());
+    const info = JSON.parse(dataResponse.notification.message);
 
+    let message;
     let notification : NotificationType;
 
     switch (dataResponse.type) {
@@ -225,30 +227,56 @@ export const NotifProvider: React.FC<{ children: ReactNode }> = ({
         toast({ title: notification.title, description: notification.description });
 
 
+
+        message = {
+          type: "deliveryDeparture",
+          data: {
+            order: info.order,
+          },
+        };
+
+        ws.send(JSON.stringify(message));
         break;
 
       case "deliveryDeparture":
-
+        console.log("Delivery departure received");
+        console.log("order status " + info.order.status);
         notification = getNotifContent(dataResponse.notification);
 
         setNotifications((prev) => [...prev, notification]);
     
         toast({ title: notification.title, description: notification.description });
 
-
+        ws.send(
+          JSON.stringify({
+            type: "deliveryArrival",
+            data: {
+              order: info.order,
+            },
+          })
+        );
         break;
       case "deliveryArrival":
-
+        console.log("Delivery arrival received");
+        console.log("order status " + info.order.status);
         notification = getNotifContent(dataResponse.notification);
 
         setNotifications((prev) => [...prev, notification]);
     
         toast({ title: notification.title, description: notification.description });
 
-      
+        ws.send(
+          JSON.stringify({
+            type: "deliveryCompleted",
+            data: {
+              order: info.order,
+            },
+          })
+        );
         break;
       case "deliveryCompleted":
-
+        console.log("Delivery completed received");
+        console.log("order status " + info.order.status);
         notification = getNotifContent(dataResponse.notification);
 
         setNotifications((prev) => [...prev, notification]);

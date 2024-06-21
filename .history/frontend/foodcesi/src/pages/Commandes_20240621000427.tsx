@@ -20,7 +20,6 @@ export default function Commandes() {
                         response = await api.get(`/order/restaurant/${user?.restaurant_id}`);
                         break;
                     case "delivery":
-                        if (user?.delivery_id === undefined) return;
                         response = await api.get(`/order/delivery/${user?.delivery_id}`);
                         break;
                     default:
@@ -29,8 +28,8 @@ export default function Commandes() {
                 }
 
                 const orders = response.data;
-                setActiveOrders(orders.filter((order: Order) => order.status !== "completed").slice().reverse());
-                setPastOrders(orders.filter((order: Order) => order.status === "completed").slice().reverse());
+                setActiveOrders(orders.filter((order: Order) => order.status !== "delivered"));
+                setPastOrders(orders.filter((order: Order) => order.status === "delivered"));
             } catch (error: any) {
                 logError(error);
             }

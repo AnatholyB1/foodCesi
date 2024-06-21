@@ -6,7 +6,7 @@ declare global {
         email: string;
         username: string;
         sponsor_code: string;
-        type: "user" | "restaurant" | "delivery";
+        type: string;
         refreshToken: string;
         restaurant_id?: number;
         delivery_id?: number;
@@ -88,7 +88,6 @@ declare global {
         Restaurant: Restaurant;
         OrderItems: OrderItem[];
         Address: Address;
-        code: number | null;
     }
 
     interface OrderItem {

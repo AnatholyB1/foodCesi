@@ -88,7 +88,6 @@ declare global {
         Restaurant: Restaurant;
         OrderItems: OrderItem[];
         Address: Address;
-        code: number | null;
     }
 
     interface OrderItem {

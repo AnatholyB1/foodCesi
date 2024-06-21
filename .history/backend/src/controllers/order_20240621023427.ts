@@ -271,20 +271,16 @@ export const getOrderCode = withLogging(
   async (req: express.Request, res: express.Response) => {
     try {
       const { id } = req.params;
-      if (!id) {
-        return res.status(400).json({ message: "Missing order id" }).end();
-      }
       const order = await getOrderById(Number(id));
       if (!order) {
         return res.status(404).json({ message: "Order not found" });
       }
       const random4Digits = Math.floor(1000 + Math.random() * 9000);
       order.code = random4Digits;
-      await order.save();
       return res.status(200).json({ code: order.code }).end();
     } catch (error) {
       console.log(error);
-      return res.status(500).end();
+      return res.status(500);
     }
   }
 );
@@ -294,25 +290,18 @@ export const compareOrderCode = withLogging(
   "compareOrderCode",
   async (req: express.Request, res: express.Response) => {
     try {
-      const { id } = req.params;
-      const {  code } = req.body;
-      if (!code) {
-        return res.status(400).json({ message: "Missing code" }).end();
-      }
-      if (!id) {
-        return res.status(400).json({ message: "Missing order id" }).end();
-      }
+      const { id, code } = req.body;
       const order = await getOrderById(Number(id));
       if (!order) {
-        return res.status(404).json({ message: "Order not found" }).end();
+        return res.status(404).json({ message: "Order not found" });
       }
-      if (order.code !== Number(code)) {
-        return res.status(400).json({ message: "Code does not match" }).end();
+      if (order.code !== code) {
+        return res.status(400).json({ message: "Code does not match" });
       }
       return res.status(200).json({ message: "Code matches" }).end();
     } catch (error) {
       console.log(error);
-      return res.status(500).end();
+      return res.status(500);
     }
   }
 );

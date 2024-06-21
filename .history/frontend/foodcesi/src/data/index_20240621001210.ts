@@ -7,4 +7,4 @@ export const statuses = [
   { key: "completed", text: "Terminé" },
   { key: "cancelled", text: "Annulé" },
   { key: "revoke", text: "Révoqué" },
-] 
+] as OrderStatus[] 

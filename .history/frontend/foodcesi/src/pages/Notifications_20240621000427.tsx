@@ -22,7 +22,7 @@ export default function Notifications() {
 
     return (
         <div className="flex flex-col items-center gap-2 p-4 max-w-lg mx-auto">
-            {notifications.slice().reverse().map((notification, index) => (
+            {notifications.map((notification, index) => (
                 <CustomCard className="w-full" key={index}>
                     <NavLink to={notification.link} className="w-full flex gap-4 p-4">
                         <div className="shrink-0 my-auto">{notification.icon}</div>

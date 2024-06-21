@@ -60,7 +60,6 @@ export default function Commande() {
   const [order, setOrder] = useState<Order | null>(null);
   const [statusIndex, setStatusIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [codeInput, setCodeInput] = useState<number | undefined>();
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -93,51 +92,11 @@ export default function Commande() {
     return statusKeys.includes(status.key);
   });
 
-  const acceptOrderDelivery = async () => {
-    try {
-      const message = {
-        type: "deliveryResponse",
-        data: {
-          order,
-          response: "ok",
-          delivery_id: user?.delivery_id || 2,
-        },
-      };
-      ws.send(JSON.stringify(message));
-      toast({ description: "Commande acceptée" });
-      setOrder((prevOrder) => ({ ...prevOrder!, status: "pending delivery" }));
-      setStatusIndex(
-        statuses.findIndex((status) => status.key === "pending delivery")
-      );
-    } catch (error: any) {
-      logError(error);
-    }
-  };
-
-  const refuseOrderDelivery = async () => {
-    try {
-      const message = {
-        type: "deliveryResponse",
-        data: {
-          order,
-          response: "no",
-          delivery_id: user?.delivery_id || 2,
-        },
-      };
-      ws.send(JSON.stringify(message));
-      setOrder((prevOrder) => ({ ...prevOrder!, status: "cancelled" }));
-      setStatusIndex(
-        statuses.findIndex((status) => status.key === "cancelled")
-      );
-    } catch (error: any) {
-      logError(error);
-    }
-  };
-
   const acceptOrder = async () => {
     const notification_id = notifications.find(
       (notif) => notif.link === `/commandes/${order!.id}`
     )?._id;
+
 
     try {
       const message = {
@@ -174,104 +133,6 @@ export default function Commande() {
       setStatusIndex(
         statuses.findIndex((status) => status.key === "cancelled")
       );
-    } catch (error: any) {
-      logError(error);
-    }
-  };
-
-  const deliveryReady = async () => {
-    try {
-      const message = {
-        type: user?.type == "delivery" ? "deliveryReady" : "restaurantReady",
-        data: {
-          order,
-        },
-      };
-      if (user?.type == "restaurant") {
-        const response = await api.get(`/order/code/${id}`);
-        if (response.status !== 200) {
-          toast({ description: "Echec de la récupération du code" });
-          return;
-        }
-        const code = response.data.code;
-        setOrder((prevOrder) => ({ ...prevOrder!, code: code }));
-      }
-
-      ws.send(JSON.stringify(message));
-    } catch (error: any) {
-      logError(error);
-    }
-  };
-
-  const verifyCode = async () => {
-    const response = await api.post(`/order/code/${id}`, {
-      code: codeInput,
-    });
-    if (response.status !== 200) {
-      toast({ description: "Code incorrect" });
-      return;
-    }
-    toast({ description: "Code correct" });
-    const message = {
-      type: "deliveryDeparture",
-      data: {
-        order,
-      },
-    };
-
-    ws.send(JSON.stringify(message));
-    setOrder((prevOrder) => ({ ...prevOrder!, status: "delivery" }));
-    setStatusIndex(statuses.findIndex((status) => status.key === "delivery"));
-  };
-  const verifyUserCode = async () => {
-    const response = await api.post(`/order/code/${id}`, {
-      code: codeInput,
-    });
-    if (response.status !== 200) {
-      toast({ description: "Code incorrect" });
-      return;
-    }
-    toast({ description: "Code correct" });
-    const message = {
-      type: "deliveryCompleted",
-      data: {
-        order,
-      },
-    };
-
-    ws.send(JSON.stringify(message));
-    setOrder((prevOrder) => ({ ...prevOrder!, status: "completed" }));
-    setStatusIndex(statuses.findIndex((status) => status.key === "completed"));
-  };
-
-  const deliveryArrival = async () => {
-    try {
-      ws.send(
-        JSON.stringify({
-          type: "deliveryArrival",
-          data: {
-            order,
-          },
-        })
-      );
-      setCodeInput(undefined);
-      setOrder((prevOrder) => ({ ...prevOrder!, status: "delivered" }));
-      setStatusIndex(
-        statuses.findIndex((status) => status.key === "delivered")
-      );
-    } catch (error: any) {
-      logError(error);
-    }
-  };
-  const generateCode = async () => {
-    try {
-      const response = await api.get(`/order/code/${id}`);
-      if (response.status !== 200) {
-        toast({ description: "Echec de la génération du code" });
-        return;
-      }
-      const code = response.data.code;
-      setCodeInput(code);
     } catch (error: any) {
       logError(error);
     }
@@ -361,69 +222,6 @@ export default function Commande() {
           <Button onClick={acceptOrder}>Accepter la commande</Button>
         </div>
       )}
-      {user?.type === "delivery" && order.status === "validated" && (
-        <div className="flex flex-col gap-2">
-          <Button onClick={acceptOrderDelivery}>Accepter la livraison</Button>
-          <Button variant="secondary" onClick={refuseOrderDelivery}>
-            Refuser la livraison
-          </Button>
-        </div>
-      )}
-      {user?.type === "delivery" && order.status === "pending delivery" && (
-        <div className="flex flex-col gap-2">
-          <Button onClick={deliveryReady}>Je suis arrivé !</Button>
-          <label htmlFor="code">Code</label>
-          <input
-            onChange={(e) => setCodeInput(Number(e.target.value))}
-            value={codeInput}
-            type="number"
-            id="code"
-          />
-          <Button onClick={verifyCode}>Valider</Button>
-        </div>
-      )}
-      {user?.type === "restaurant" && order.status === "pending delivery" && (
-        <div className="flex flex-col gap-2">
-          {!order.code ? (
-            <Button onClick={deliveryReady}>Commande prête</Button>
-          ) : (
-            <p>Code de la commande : {order.code}</p>
-          )}
-        </div>
-      )}
-      {user?.type === "delivery" && order.status === "delivery" && (
-        <div className="flex flex-col gap-2">
-          <Button onClick={deliveryArrival}>Livrer le client!</Button>
-          <label htmlFor="code">Code</label>
-          <input
-            onChange={(e) => setCodeInput(Number(e.target.value))}
-            value={codeInput}
-            type="number"
-            id="code"
-          />
-          <Button onClick={verifyCode}>Valider</Button>
-        </div>
-      )}
-      {user?.type === "delivery" && order.status === "delivered" && (
-        <div className="flex flex-col gap-2">
-          <label htmlFor="code">Code</label>
-          <input
-            onChange={(e) => setCodeInput(Number(e.target.value))}
-            value={codeInput}
-            type="number"
-            id="code"
-          />
-          <Button onClick={verifyUserCode}>Valider</Button>
-        </div>
-      )}
-      {user?.type === "user" && order.status === "delivered" && (
-        <div className="flex flex-col gap-2">
-          <Button onClick={generateCode}>Générer le code</Button>
-          {codeInput && <p>Code de la commande : {codeInput}</p>}
-        </div>
-      )}
-
-      {}
     </div>
   ) : (
     <p>Problème avec la commande</p>

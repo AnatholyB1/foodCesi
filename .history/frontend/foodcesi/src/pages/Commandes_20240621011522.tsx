@@ -27,6 +27,7 @@ export default function Commandes() {
                         response = await api.get(`/order/user/${user?.id}`);
                         break;
                 }
+                console.log(response);
 
                 const orders = response.data;
                 setActiveOrders(orders.filter((order: Order) => order.status !== "completed").slice().reverse());

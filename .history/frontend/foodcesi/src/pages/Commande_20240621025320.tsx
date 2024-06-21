@@ -187,16 +187,13 @@ export default function Commande() {
           order,
         },
       };
-      if (user?.type == "restaurant") {
-        const response = await api.get(`/order/code/${id}`);
-        if (response.status !== 200) {
-          toast({ description: "Echec de la récupération du code" });
-          return;
-        }
-        const code = response.data.code;
-        setOrder((prevOrder) => ({ ...prevOrder!, code: code }));
+      const response = await api.get(`/order/code/${id}`);
+      if (response.status !== 200) {
+        toast({ description: "Echec de la récupération du code" });
+        return;
       }
-
+      const code = response.data;
+      setOrder((prevOrder) => ({ ...prevOrder!, code: code }));
       ws.send(JSON.stringify(message));
     } catch (error: any) {
       logError(error);
@@ -204,7 +201,7 @@ export default function Commande() {
   };
 
   const verifyCode = async () => {
-    const response = await api.post(`/order/code/${id}`, {
+    const response = await api.post(`/order/order/${id}`, {
       code: codeInput,
     });
     if (response.status !== 200) {
@@ -221,60 +218,9 @@ export default function Commande() {
 
     ws.send(JSON.stringify(message));
     setOrder((prevOrder) => ({ ...prevOrder!, status: "delivery" }));
-    setStatusIndex(statuses.findIndex((status) => status.key === "delivery"));
-  };
-  const verifyUserCode = async () => {
-    const response = await api.post(`/order/code/${id}`, {
-      code: codeInput,
-    });
-    if (response.status !== 200) {
-      toast({ description: "Code incorrect" });
-      return;
-    }
-    toast({ description: "Code correct" });
-    const message = {
-      type: "deliveryCompleted",
-      data: {
-        order,
-      },
-    };
-
-    ws.send(JSON.stringify(message));
-    setOrder((prevOrder) => ({ ...prevOrder!, status: "completed" }));
-    setStatusIndex(statuses.findIndex((status) => status.key === "completed"));
-  };
-
-  const deliveryArrival = async () => {
-    try {
-      ws.send(
-        JSON.stringify({
-          type: "deliveryArrival",
-          data: {
-            order,
-          },
-        })
+    setStatusIndex(
+        statuses.findIndex((status) => status.key === "delivery")
       );
-      setCodeInput(undefined);
-      setOrder((prevOrder) => ({ ...prevOrder!, status: "delivered" }));
-      setStatusIndex(
-        statuses.findIndex((status) => status.key === "delivered")
-      );
-    } catch (error: any) {
-      logError(error);
-    }
-  };
-  const generateCode = async () => {
-    try {
-      const response = await api.get(`/order/code/${id}`);
-      if (response.status !== 200) {
-        toast({ description: "Echec de la génération du code" });
-        return;
-      }
-      const code = response.data.code;
-      setCodeInput(code);
-    } catch (error: any) {
-      logError(error);
-    }
   };
 
   return isLoading ? (
@@ -391,39 +337,6 @@ export default function Commande() {
           )}
         </div>
       )}
-      {user?.type === "delivery" && order.status === "delivery" && (
-        <div className="flex flex-col gap-2">
-          <Button onClick={deliveryArrival}>Livrer le client!</Button>
-          <label htmlFor="code">Code</label>
-          <input
-            onChange={(e) => setCodeInput(Number(e.target.value))}
-            value={codeInput}
-            type="number"
-            id="code"
-          />
-          <Button onClick={verifyCode}>Valider</Button>
-        </div>
-      )}
-      {user?.type === "delivery" && order.status === "delivered" && (
-        <div className="flex flex-col gap-2">
-          <label htmlFor="code">Code</label>
-          <input
-            onChange={(e) => setCodeInput(Number(e.target.value))}
-            value={codeInput}
-            type="number"
-            id="code"
-          />
-          <Button onClick={verifyUserCode}>Valider</Button>
-        </div>
-      )}
-      {user?.type === "user" && order.status === "delivered" && (
-        <div className="flex flex-col gap-2">
-          <Button onClick={generateCode}>Générer le code</Button>
-          {codeInput && <p>Code de la commande : {codeInput}</p>}
-        </div>
-      )}
-
-      {}
     </div>
   ) : (
     <p>Problème avec la commande</p>

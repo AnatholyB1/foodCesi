@@ -1,4 +1,4 @@
-export const statuses = [
+export let statuses: OrderStatus[] = [
   { key: "pending", text: "En attente de validation restaurateur" },
   { key: "validated", text: "En préparation" },
   { key: "pending delivery", text: "En attente de livreur" },
@@ -7,4 +7,4 @@ export const statuses = [
   { key: "completed", text: "Terminé" },
   { key: "cancelled", text: "Annulé" },
   { key: "revoke", text: "Révoqué" },
-] 
+];

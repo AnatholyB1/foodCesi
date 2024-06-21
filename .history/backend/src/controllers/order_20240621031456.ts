@@ -280,7 +280,6 @@ export const getOrderCode = withLogging(
       }
       const random4Digits = Math.floor(1000 + Math.random() * 9000);
       order.code = random4Digits;
-      await order.save();
       return res.status(200).json({ code: order.code }).end();
     } catch (error) {
       console.log(error);

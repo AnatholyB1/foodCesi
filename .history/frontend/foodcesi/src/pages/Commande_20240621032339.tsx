@@ -233,15 +233,15 @@ export default function Commande() {
     }
     toast({ description: "Code correct" });
     const message = {
-      type: "deliveryCompleted",
+      type: "deliveryDeparture",
       data: {
         order,
       },
     };
 
     ws.send(JSON.stringify(message));
-    setOrder((prevOrder) => ({ ...prevOrder!, status: "completed" }));
-    setStatusIndex(statuses.findIndex((status) => status.key === "completed"));
+    setOrder((prevOrder) => ({ ...prevOrder!, status: "delivery" }));
+    setStatusIndex(statuses.findIndex((status) => status.key === "delivery"));
   };
 
   const deliveryArrival = async () => {
@@ -265,12 +265,12 @@ export default function Commande() {
   };
   const generateCode = async () => {
     try {
-      const response = await api.get(`/order/code/${id}`);
+      const response = await api.post(`/order/code/${id}`);
       if (response.status !== 200) {
         toast({ description: "Echec de la génération du code" });
         return;
       }
-      const code = response.data.code;
+      const code = response.data;
       setCodeInput(code);
     } catch (error: any) {
       logError(error);

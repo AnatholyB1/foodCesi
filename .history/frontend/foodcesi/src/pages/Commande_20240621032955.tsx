@@ -233,15 +233,15 @@ export default function Commande() {
     }
     toast({ description: "Code correct" });
     const message = {
-      type: "deliveryCompleted",
+      type: "deliveryDeparture",
       data: {
         order,
       },
     };
 
     ws.send(JSON.stringify(message));
-    setOrder((prevOrder) => ({ ...prevOrder!, status: "completed" }));
-    setStatusIndex(statuses.findIndex((status) => status.key === "completed"));
+    setOrder((prevOrder) => ({ ...prevOrder!, status: "delivery" }));
+    setStatusIndex(statuses.findIndex((status) => status.key === "delivery"));
   };
 
   const deliveryArrival = async () => {
