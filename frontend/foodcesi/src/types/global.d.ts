@@ -6,7 +6,7 @@ declare global {
         email: string;
         username: string;
         sponsor_code: string;
-        type: "user" | "restaurant" | "delivery" | "commercial" | "developer";
+        type: "user" | "restaurant" | "delivery" | "commercial" | "developer" | "commercial" | "developer";
         refreshToken: string;
         restaurant_id?: number;
         delivery_id?: number;
@@ -140,6 +140,6 @@ declare global {
         data: {
             type: "user" | "restaurant" | "delivery" | "commercial" | "developer";
             id: string;
-        }
+        };
     }
 }
