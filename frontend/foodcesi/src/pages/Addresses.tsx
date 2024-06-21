@@ -28,6 +28,8 @@ const Addresses = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [newAddressModalOpen, setNewAddressModalOpen] = useState(false);
     const [newAddress, setNewAddress] = useState<Address>(defaultNewAddress);
+    const [editAddressModalOpen, setEditAddressModalOpen] = useState(false);
+    const [editAddress, setEditAddress] = useState<Address>(defaultNewAddress);
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -51,6 +53,11 @@ const Addresses = () => {
         setNewAddressModalOpen(true);
     };
 
+    const startEditAddress = (address: Address) => {
+        setEditAddress(address);
+        setEditAddressModalOpen(true);
+    };
+
     const handleNewAddressSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -66,6 +73,26 @@ const Addresses = () => {
             setNewAddress(defaultNewAddress);
             setNewAddressModalOpen(false);
             toast({ description: "Adresse ajoutée" });
+        } catch (error: any) {
+            logError(error);
+        }
+    };
+
+    const handleEditAddressSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            const response = await api.put(`/addresses/${editAddress.id}`, { ...editAddress });
+
+            const data: Address = response.data;
+            if (!data) {
+                toast({ description: "Echec de la modification de l'adresse" });
+                return;
+            }
+            setAddresses(addresses.map((a) => (a.id === data.id ? data : a)));
+            setEditAddress(defaultNewAddress);
+            setEditAddressModalOpen(false);
+            toast({ description: "Adresse modifiée" });
         } catch (error: any) {
             logError(error);
         }
@@ -99,7 +126,7 @@ const Addresses = () => {
                                         <div className="flex justify-between items-center">
                                             <h3 className="font-bold">{address.name}</h3>
                                             <div className="flex items-center gap-2">
-                                                <Button variant="link" size="icon" className="w-6 h-6" onClick={() => console.log("Edit: " + address.id)}>
+                                                <Button variant="link" size="icon" className="w-6 h-6" onClick={() => startEditAddress(address)}>
                                                     <Pencil size="20" className="text-primary" />
                                                 </Button>
                                                 <AlertDialog>
@@ -174,6 +201,60 @@ const Addresses = () => {
                                                 Pays
                                             </Label>
                                             <Input id="country" className="col-span-3" value={newAddress.country} onChange={(e) => setNewAddress({ ...newAddress, country: e.target.value })} placeholder="Pays" required />
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button variant="link">Retour</Button>
+                                        </DialogClose>
+                                        <Button type="submit">Valider</Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                        <Dialog open={editAddressModalOpen} onOpenChange={setEditAddressModalOpen}>
+                            <DialogContent className="sm:max-w-[425px]">
+                                <form className="contents" onSubmit={handleEditAddressSubmit}>
+                                    <DialogHeader>
+                                        <DialogTitle>Modifier une adresse</DialogTitle>
+                                        <DialogDescription>Modifier adresse de votre profil</DialogDescription>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="name" className="text-right">
+                                                Nom de l'adresse
+                                            </Label>
+                                            <Input id="name" className="col-span-3" value={editAddress.name} onChange={(e) => setEditAddress({ ...editAddress, name: e.target.value })} placeholder="Nom" required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="street" className="text-right">
+                                                Rue
+                                            </Label>
+                                            <Input id="street" className="col-span-3" value={editAddress.street} onChange={(e) => setEditAddress({ ...editAddress, street: e.target.value })} placeholder="Rue" required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="city" className="text-right">
+                                                Ville
+                                            </Label>
+                                            <Input id="city" className="col-span-3" value={editAddress.city} onChange={(e) => setEditAddress({ ...editAddress, city: e.target.value })} placeholder="Ville" required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="zip_code" className="text-right">
+                                                Code postal
+                                            </Label>
+                                            <Input id="zip_code" className="col-span-3" value={editAddress.zip_code} onChange={(e) => setEditAddress({ ...editAddress, zip_code: e.target.value })} placeholder="Code postal" required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="state" className="text-right">
+                                                Etat
+                                            </Label>
+                                            <Input id="state" className="col-span-3" value={editAddress.state} onChange={(e) => setEditAddress({ ...editAddress, state: e.target.value })} placeholder="Etat" required />
+                                        </div>
+                                        <div className="grid grid-cols-4 items-center gap-4">
+                                            <Label htmlFor="country" className="text-right">
+                                                Pays
+                                            </Label>
+                                            <Input id="country" className="col-span-3" value={editAddress.country} onChange={(e) => setEditAddress({ ...editAddress, country: e.target.value })} placeholder="Pays" required />
                                         </div>
                                     </div>
                                     <DialogFooter>
