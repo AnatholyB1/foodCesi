@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: anatholyb/foodcesi:frontend-latest
+    stdin_open: true
+    build:
+      context: ./frontend/foodcesi
+      dockerfile: Dockerfile 
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app  
+
+  admin:
+    image: anatholyb/foodcesi:admin-latest
+    stdin_open: true
+    build:
+      context: ./frontend/ra-app
+      dockerfile: Dockerfile
+    ports:
+      - '5000:3050'  
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app    
+
+  backend:
+    image: anatholyb/foodcesi:backend-latest
+    build:
+      context: './backend'
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=mongodb://database:27017/mydb
+    depends_on:
+      - database
+      - database2
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+
+  backend_user:
+    image: anatholyb/foodcesi:backend-user-latest
+    build:
+      context: './backend'
+      dockerfile: Dockerfile.user
+    environment:
+      - DATABASE_URL=mongodb://database:27017/mydb
+    depends_on:
+      - database
+      - database2
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+
+
+  database:
+    image: mongo
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'  
+
+  database2:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:  
+       - mysql-data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+
+  nginx:
+    image: anatholyb/foodcesi:nginx-latest
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - '3050:3000'
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+
+
+
+volumes:
+  mongo-data:
+  mysql-data:
