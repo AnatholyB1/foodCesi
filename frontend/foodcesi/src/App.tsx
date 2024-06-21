@@ -17,6 +17,7 @@ import Authentification from "./pages/Authentification";
 import Stats from "./pages/Stats";
 import { Toaster } from "./components/ui/toaster";
 import Addresses from "./pages/Addresses";
+import Parameters from "./pages/Parameters";
 
 function App() {
     return (
@@ -30,7 +31,7 @@ function App() {
                             <Route
                                 path="/unauthorized"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial", "developer"]}>
                                         <Unauthorized />
                                     </RequireAuth>
                                 }
@@ -38,7 +39,7 @@ function App() {
                             <Route
                                 path="/"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial", "developer"]}>
                                         <Home />
                                     </RequireAuth>
                                 }
@@ -46,7 +47,7 @@ function App() {
                             <Route
                                 path="/recherche"
                                 element={
-                                    <RequireAuth allowedTypes={["user"]}>
+                                    <RequireAuth allowedTypes={["user", "commercial"]}>
                                         <Recherche />
                                     </RequireAuth>
                                 }
@@ -54,7 +55,7 @@ function App() {
                             <Route
                                 path="/commandes"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial"]}>
                                         <Commandes />
                                     </RequireAuth>
                                 }
@@ -62,7 +63,7 @@ function App() {
                             <Route
                                 path="/commandes/:id"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial"]}>
                                         <Commande />
                                     </RequireAuth>
                                 }
@@ -70,7 +71,7 @@ function App() {
                             <Route
                                 path="/restaurant/:id"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial"]}>
                                         <Restaurant />
                                     </RequireAuth>
                                 }
@@ -86,7 +87,7 @@ function App() {
                             <Route
                                 path="/compte"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "developer"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial", "developer"]}>
                                         <Compte />
                                     </RequireAuth>
                                 }
@@ -94,7 +95,7 @@ function App() {
                             <Route
                                 path="/addresses"
                                 element={
-                                    <RequireAuth allowedTypes={["user"]}>
+                                    <RequireAuth allowedTypes={["user", "commercial"]}>
                                         <Addresses />
                                     </RequireAuth>
                                 }
@@ -102,7 +103,7 @@ function App() {
                             <Route
                                 path="/notifications"
                                 element={
-                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery"]}>
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial"]}>
                                         <Notifications />
                                     </RequireAuth>
                                 }
@@ -110,7 +111,7 @@ function App() {
                             <Route
                                 path="/panier"
                                 element={
-                                    <RequireAuth allowedTypes={["user"]}>
+                                    <RequireAuth allowedTypes={["user", "commercial"]}>
                                         <Panier />
                                     </RequireAuth>
                                 }
@@ -118,8 +119,16 @@ function App() {
                             <Route
                                 path="/checkout"
                                 element={
-                                    <RequireAuth allowedTypes={["user"]}>
+                                    <RequireAuth allowedTypes={["user", "commercial"]}>
                                         <Checkout />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/parametres"
+                                element={
+                                    <RequireAuth allowedTypes={["user", "restaurant", "delivery", "commercial", "developer"]}>
+                                        <Parameters />
                                     </RequireAuth>
                                 }
                             />

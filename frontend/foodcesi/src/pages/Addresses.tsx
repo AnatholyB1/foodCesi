@@ -75,10 +75,8 @@ const Addresses = () => {
         try {
             const response = await api.delete(`/addresses/${address.id}`);
 
-            const data = response.data;
-            if (!data) {
-                toast({ description: "Echec de la suppression de l'adresse" });
-                return;
+            if (response.status !== 200 && response.status !== 204) {
+                throw new Error("Echec de la suppression de l'adresse");
             }
             setAddresses(addresses.filter((a) => a.id !== address.id));
             toast({ description: "Adresse supprimée" });

@@ -4,11 +4,11 @@ import { BarChartBig, Home, NotepadText, Search, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const NavItems = [
-    { name: "Accueil", path: "/", icon: <Home />, types: ["user", "restaurant", "delivery", "developer"] },
-    { name: "Recherche", path: "/recherche", icon: <Search />, types: ["user"] },
-    { name: "Commandes", path: "/commandes", icon: <NotepadText />, types: ["user", "restaurant"] },
+    { name: "Accueil", path: "/", icon: <Home />, types: ["user", "restaurant", "delivery", "commercial", "developer"] },
+    { name: "Recherche", path: "/recherche", icon: <Search />, types: ["user", "commercial"] },
+    { name: "Commandes", path: "/commandes", icon: <NotepadText />, types: ["user", "restaurant", "commercial"] },
     { name: "Statistiques", path: "/statistiques", icon: <BarChartBig />, types: ["restaurant"] },
-    { name: "Compte", path: "/compte", icon: <User />, types: ["user", "restaurant", "delivery", "developer"] },
+    { name: "Compte", path: "/compte", icon: <User />, types: ["user", "restaurant", "delivery", "commercial", "developer"] },
 ];
 
 export default function NavBar() {

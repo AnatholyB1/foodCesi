@@ -7,15 +7,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenu
 import RestaurantsList from "@/components/RestaurantsList";
 import api from "@/helpers/api";
 import { logError } from "@/helpers/utils";
-
-const addresses = [
-    { id: 1, name: "Maison" },
-    { id: 2, name: "Travail" },
-];
+import { useAuth } from "@/context/AuthContext";
 
 export default function HomeUser() {
-    const [selectedAddress, setSelectedAddress] = useState(addresses[0]);
+    const { user } = useAuth();
+
+    const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
     const [bestRestaurants, setBestRestaurants] = useState<Restaurant[]>([]);
+    const [addresses, setAddresses] = useState<Address[]>([]);
 
     useEffect(() => {
         const fetchRestaurants = async () => {
@@ -33,6 +32,23 @@ export default function HomeUser() {
         fetchRestaurants();
     }, []);
 
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            try {
+                const response = await api.get(`/addresses/user/${user!.id}`);
+
+                const data = response.data;
+                if (data.length > 0) {
+                    setAddresses(data);
+                    setSelectedAddress(data[0]);
+                }
+            } catch (error: any) {
+                logError(error);
+            }
+        };
+        fetchAddresses();
+    }, [user]);
+
     return (
         <div className="flex flex-col items-center gap-4 py-4 px-4">
             <h1 className="text-xl font-bold px-4 lg:text-3xl md:text-2xl lg:py-8 md-py-4">
@@ -41,18 +57,18 @@ export default function HomeUser() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center gap-2 px-0 text-grey">
-                        <span>{selectedAddress.name}</span>
+                        <span>{selectedAddress?.name}</span>
                         <ChevronDown size="16" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuRadioGroup value={selectedAddress.name} onValueChange={(value) => setSelectedAddress(addresses.find((address) => address.name === value) || selectedAddress)}>
+                    <DropdownMenuRadioGroup value={selectedAddress?.name} onValueChange={(value) => setSelectedAddress(addresses.find((address) => address.name === value) || selectedAddress)}>
                         {addresses.map((address, index) => (
                             <DropdownMenuRadioItem key={index} value={address.name}>
                                 {address.name}
                             </DropdownMenuRadioItem>
                         ))}
-                        <NavLink to="/compte" className="p-2">
+                        <NavLink to="/addresses" className="p-2">
                             Ajouter une adresse
                         </NavLink>
                     </DropdownMenuRadioGroup>
