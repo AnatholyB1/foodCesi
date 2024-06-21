@@ -25,15 +25,15 @@ interface NewRestaurantType {
 }
 
 const defaultNewRestaurant: NewRestaurantType = {
-    name: "name",
+    name: "",
     banner: "",
     logo: "",
-    street: "street",
-    city: "city",
-    state: "state",
-    zip_code: "zip_code",
-    country: "country",
-    phone_number: "phone_number",
+    street: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    country: "",
+    phone_number: "",
     categories: [],
 };
 
