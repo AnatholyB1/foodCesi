@@ -128,6 +128,7 @@ const Authentification = () => {
                                         <SelectItem value="user">Utilisateur</SelectItem>
                                         <SelectItem value="restaurant">Restaurateur</SelectItem>
                                         <SelectItem value="delivery">Livreur</SelectItem>
+                                        <SelectItem value="commercial">Commercial</SelectItem>
                                         <SelectItem value="developer">Developpeur</SelectItem>
                                     </SelectContent>
                                 </Select>

@@ -31,7 +31,7 @@ export default function Recherche() {
     useEffect(() => {
         const fetchRestaurants = async () => {
             try {
-                const response = await api.get(`/restaurants`);
+                const response = await api.get(`/restaurants${location.search}`);
                 setRestaurants(response.data);
             } catch (error: any) {
                 console.error(error);

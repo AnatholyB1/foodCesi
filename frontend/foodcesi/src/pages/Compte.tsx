@@ -18,7 +18,7 @@ const Compte = () => {
     const items: Item[] = [
         {
             item: <Informations />,
-            types: ["user", "restaurant", "delivery", "developer"],
+            types: ["user", "restaurant", "delivery", "commercial", "developer"],
         },
         {
             item: (
@@ -26,15 +26,15 @@ const Compte = () => {
                     <AccountItem title="Vos adresses" icon={<MapPin />} />
                 </Link>
             ),
-            types: ["user"],
+            types: ["user", "commercial"],
         },
         {
             item: <Sponsor />,
-            types: ["user", "restaurant", "delivery"],
+            types: ["user", "restaurant", "delivery", "commercial"],
         },
         {
             item: <Logout />,
-            types: ["user", "restaurant", "delivery", "developer"],
+            types: ["user", "restaurant", "delivery", "commercial", "developer"],
         },
     ];
 
