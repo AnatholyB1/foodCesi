@@ -20,6 +20,9 @@ export default function Home() {
         case "developer":
             return <HomeDeveloper />;
 
+        case "commercial":
+            return <HomeUser />;
+
         default:
             break;
     }

@@ -52,7 +52,7 @@ export default function Header() {
                     <Bell />
                     {noneRead && <span className="absolute top-0 right-0 bg-primary border-2 border-light rounded-full w-3 h-3"></span>}
                 </NavLink>
-                {user.type === "user" && (
+                {(user.type === "user" || user.type === "commercial") && (
                     <NavLink to="/panier" className="relative">
                         <ShoppingCart />
                         {cart.restaurants.length > 0 && <span className="absolute top-0 right-0 bg-primary border-2 border-light rounded-full w-3 h-3"></span>}
