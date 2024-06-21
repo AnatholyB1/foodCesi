@@ -245,7 +245,6 @@ export default function Commande() {
         <Loading />
     ) : order ? (
         <div className="flex flex-col gap-4 p-4 min-h-full">
-            <h1>{order.status}</h1>
             <div className="grow flex flex-col gap-2 w-full md:flex-row">
                 <div className="w-full flex flex-col gap-1">
                     <h2 className="text-lg font-bold">Récapitulatif de la commande</h2>
